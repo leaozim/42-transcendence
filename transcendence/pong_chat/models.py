@@ -2,57 +2,28 @@ from django.db import models
 from pong_users.models import User
 
 class Chat(models.Model):
-    ownerId = models.IntegerField(unique=True, db_column='owner_id')
-    isPublic = models.IntegerField(db_column='is_public')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_chats')
+    isPublic = models.BooleanField(default=False,db_column='is_public')
     password = models.BinaryField(null=True)
-    banneds = models.ManyToManyField(User, related_name='chats_banned', blank=True)
-    owner = models.OneToOneField(User, related_name='chats_owned', on_delete=models.CASCADE, db_column='owner')
-#     messages = models.ManyToManyField('Message', related_name='chat_messages', blank=True)
-#     muteds = models.ManyToManyField('MutedOnChat', related_name='chat_muted', blank=True)
-#     usersChats = models.ManyToManyField('UsersOnChat', related_name='chat_users', blank=True)
+    muteds = models.ManyToManyField(User,related_name='muteds_chats',  blank=True)
+    admins = models.ManyToManyField(User, related_name='admins_chats', blank=True)
+    banneds = models.ManyToManyField(User, related_name='banned_chats', blank=True) 
+    messages = models.ManyToManyField(
+        User, 
+        through="Message",
+        through_fields=("chat", "user"))
+    usersChats =  models.ManyToManyField(User, related_name='users_chats', blank=True) 
+    
 
-#     class Meta:
-#         db_table = 'chats'
-        
-# class UsersOnChat(models.Model):
-#     chatId = models.IntegerField(db_column='chat_id')
-#     userId = models.IntegerField(db_column='user_id')
-#     chat = models.ForeignKey(Chat, on_delete=models.CASCADE, db_column='chat')
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user')
+class Message(models.Model):
+    chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.CharField(max_length=500, db_column='content')
+    dateTime = models.DateTimeField(db_column='date_time')
 
-#     class Meta:
-#         unique_together = ('chatId', 'userId')
-#         db_table = 'users_on_chat'
+    class Meta:
+        db_table = 'message'
 
-# class AdminOnChat(models.Model):
-#     chatId = models.IntegerField(db_column='chat_id')
-#     adminId = models.IntegerField(db_column='admin_id')
-#     admin = models.ForeignKey(User, on_delete=models.CASCADE, db_column='admin')
-#     chat = models.ForeignKey(Chat, on_delete=models.CASCADE, db_column='chat')
-
-#     class Meta:
-#         unique_together = ('chatId', 'adminId')
-#         db_table = 'admin_on_chat'
-
-# class MutedOnChat(models.Model):
-#     chatId = models.IntegerField(db_column='chat_id')
-#     mutedId = models.IntegerField(db_column='muted_id')
-#     chat = models.ForeignKey(Chat, on_delete=models.CASCADE, db_column='chat')
-#     muted = models.ForeignKey(User, on_delete=models.CASCADE, db_column='muted')
-
-#     class Meta:
-#         unique_together = ('chatId', 'mutedId')
-#         db_table = 'muted_on_chat'
-
-# class Message(models.Model):
-#     idAuthor = models.IntegerField(db_column='id_author')
-#     content = models.CharField(max_length=500, db_column='content')
-#     dateTime = models.DateTimeField(db_column='date_time')
-#     chatId = models.IntegerField(db_column='chat_id')
-#     chat = models.ForeignKey(Chat, on_delete=models.CASCADE, db_column='chat')
-
-#     class Meta:
-#         db_table = 'message'
 
 # class Match(models.Model):
 #     leftPlayerId = models.IntegerField(unique=True, db_column='left_player_id')
