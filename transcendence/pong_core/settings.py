@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "pong_users",
     "pong_core",
     "pong_chat",
+    "pong_game",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

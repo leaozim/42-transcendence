@@ -10,4 +10,6 @@ class User(AbstractUser):
     expGame = models.FloatField(default=0)
     wins = models.IntegerField(default=0)
     loses = models.IntegerField(default=0)
-
+    blockedUsers = models.ManyToManyField('self', symmetrical=False, related_name='blocking_users', blank=True, db_column='blocked_users')
+    followers = models.ManyToManyField('self', symmetrical=False, related_name='following_users', blank=True)
+    friendships = models.ManyToManyField('self', symmetrical=False, related_name='friend_users', blank=True)
