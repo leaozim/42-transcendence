@@ -35,6 +35,10 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = "srcs_users.User"
 
+AUTHENTICATION_BACKENDS = [
+    'srcs_users.auth.IntraAuthenticationBackend'
+]
+
 # Application definition
 
 INSTALLED_APPS = [

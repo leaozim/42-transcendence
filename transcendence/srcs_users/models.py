@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from .managers import IntraUserOAuth2Manager
 
 class User(AbstractUser):
+    objects = IntraUserOAuth2Manager()
+
     id42 = models.IntegerField(unique=True, null=True, blank=True, db_column='id_42')
     description = models.TextField(blank=True)
     token2F = models.CharField(max_length=255, blank=True, db_column='token_2f')
@@ -13,3 +16,7 @@ class User(AbstractUser):
     blockedUsers = models.ManyToManyField('self', symmetrical=False, related_name='blocking_users', blank=True, db_column='blocked_users')
     followers = models.ManyToManyField('self', symmetrical=False, related_name='following_users', blank=True)
     friendships = models.ManyToManyField('self', symmetrical=False, related_name='friend_users', blank=True)
+    
+    @property
+    def is_authenticated(self):
+        return True
