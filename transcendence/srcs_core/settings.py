@@ -35,12 +35,6 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = "srcs_users.User"
 
-# AUTHENTICATION_BACKENDS = [
-#     'srcs_users.auth.IntraAuthenticationBackend'
-# ]
-
-# Application definition
-
 INSTALLED_APPS = [
     "srcs_users",
     "srcs_core",
@@ -55,6 +49,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'srcs_users.middleware.JWTAuthenticationMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -143,6 +139,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-LOGIN_REDIRECT_URL = 'home'
+# LOGIN_REDIRECT_URL = 'home'
 
-LOGOUT_REDIRECT_URL = 'home'
+# LOGOUT_REDIRECT_URL = 'home'
+
+
+LOGIN_URL = "/oauth2/login/"

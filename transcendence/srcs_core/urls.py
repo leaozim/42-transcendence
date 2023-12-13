@@ -9,6 +9,7 @@ urlpatterns = [
     path('oauth2/', views.home, name='oauth2'),
     path('oauth2/login/', views.intra_login, name='intra_login'),
     path('oauth2/login/redirect', views.intra_login_redirect, name='intra_login_redirect'),
+    path('oauth2/logout', views.logout, name='logout'),
 
     path('admin/', admin.site.urls),
     path('srcs_users/', include(('srcs_users.urls', 'srcs_users'))),
