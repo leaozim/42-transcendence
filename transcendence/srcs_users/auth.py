@@ -1,25 +1,16 @@
-import jwt
-from datetime import datetime, timedelta
-from django.conf import settings
+from django.contrib.auth.backends import BaseBackend
 from .models import User
+from .jwt_token import verify_jwt_token
 
-def generate_jwt_token(user_data):
-    payload = {
-        'user_id':  user_data['id'],
-        'exp': datetime.utcnow() + timedelta(days=1),  # Expira em 1 dia
-        'iat': datetime.utcnow(),
-    }
-    return jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
+class IntraAuthenticationBackend(BaseBackend):
+    def authenticate(self, request, jwt_token=None):
+        if jwt_token:
+            user = verify_jwt_token(jwt_token)
+            return user
+        return None
 
-def verify_jwt_token(token):
-    try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-        print( "payload",payload)
-        user_id = payload['user_id']
-        return User.objects.get(id42=user_id)
-    except jwt.ExpiredSignatureError:
-        return None
-    except jwt.InvalidTokenError:
-        return None
-    except User.DoesNotExist:
-        return None
+    def get_user(self, user_id):
+        try:
+            return User.objects.get(id42=user_id)
+        except User.DoesNotExist:
+            return None

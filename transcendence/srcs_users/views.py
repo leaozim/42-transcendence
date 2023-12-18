@@ -1,15 +1,23 @@
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
 from django.shortcuts import redirect
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout as django_logout
+
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import AnonymousUser
-from .auth import verify_jwt_token, generate_jwt_token
+from .jwt_token import verify_jwt_token, generate_jwt_token
 from .forms import UserCreationForm
 import requests
 from .models import User
+
+from django.contrib.auth.decorators import login_required
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 auth_url_intra =  "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-fec16bce7005bda3749ca50ff01b5f0c8fcf8964b552af66aa05c0dc76a7c485&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Foauth2%2Flogin%2Fredirect&response_type=code"
 
@@ -18,33 +26,33 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('login')
     template_name = 'signup.html'
 
-def home(request: HttpRequest) -> JsonResponse:
-    return JsonResponse({ "msg":  "helo"})
 
-@login_required
+def home(request: HttpRequest) -> JsonResponse:
+    return JsonResponse({ "msg":  "hello"})
+
+
 def get_authenticated_user(request):
-    if request.user.is_authenticated:
-        return HttpResponse(f'Usuário autenticado: {request.user.username}')
-    else:
-        return HttpResponse('Usuário não autenticado')
+    jwt_token = request.COOKIES.get('jwt_token', None)
+    if jwt_token:
+        user = verify_jwt_token(jwt_token)
+        if user:
+            return HttpResponse(f'Usuário autenticado: {user.username}')
+    return HttpResponse('Usuário não autenticado')
         
+
 def intra_login(request: HttpRequest): 
     return redirect(auth_url_intra)
 
+
 def intra_login_redirect(request: HttpRequest):
-    code = request.GET.get('code')
+    code = request.GET.get('code')  
     user_data = exchange_code(code)
-    intra_user = User.objects.filter(id42=user_data['id']).first()
-    if not intra_user:
-        intra_user = User.objects.create(
-            id42=user_data['id'],
-            avatar=user_data['url'],
-            email=user_data['email'],
-            username=user_data['login'],
-        )
-    
+    User.objects.create_new_intra_user(user_data)
     jwt_token = generate_jwt_token(user_data)
-    response = JsonResponse({'token': jwt_token})
+    user = authenticate(request, jwt_token=jwt_token)
+    if user:
+        login(request, user)
+    response = redirect("/auth/user")
     response.set_cookie('jwt_token', jwt_token, httponly=True, samesite='Lax')
     return response
 
@@ -66,13 +74,9 @@ def exchange_code(code: str):
     user = response.json()
     return user
 
-@ensure_csrf_cookie
-def logout(request):
-    for cookie_name, cookie_value in request.COOKIES.items():
-        if cookie_name == 'jwt_token':
-            response = JsonResponse({'message': 'Logout successful'})
-            response.delete_cookie(cookie_name)
-            print(f'Nome do cookie: {cookie_name}, Valor do cookie: {cookie_value}')
-            return response
 
-    return HttpResponse('Cookies processados com sucesso.')
+def logout(request):
+    response = redirect("/login/")
+    response.delete_cookie("jwt_token")
+    django_logout(request)
+    return response

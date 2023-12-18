@@ -48,11 +48,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-MIDDLEWARE = [
-    'srcs_users.middleware.JWTAuthenticationMiddleware',
+AUTHENTICATION_BACKENDS = [
+    # ... outros backends
+    'srcs_users.auth.IntraAuthenticationBackend',
+    # ...
+]
 
-    'django.middleware.security.SecurityMiddleware',
+MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'srcs_users.middleware.JWTAuthenticationMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -139,9 +144,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = '/'
 
-# LOGOUT_REDIRECT_URL = 'home'
-
+LOGOUT_REDIRECT_URL = 'home'
 
 LOGIN_URL = "/oauth2/login/"
+
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'None'

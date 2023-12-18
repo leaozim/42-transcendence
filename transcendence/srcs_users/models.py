@@ -1,10 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from .managers import IntraUserOAuth2Manager
 
-class User(AbstractUser):
+class User(AbstractUser, PermissionsMixin):
     objects = IntraUserOAuth2Manager()
-
     id42 = models.IntegerField(unique=True, null=True, blank=True, db_column='id_42')
     description = models.TextField(blank=True)
     token2F = models.CharField(max_length=255, blank=True, db_column='token_2f')
