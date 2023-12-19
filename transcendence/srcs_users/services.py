@@ -1,4 +1,5 @@
 from .models import User
+from django.http import Http404
 
 """
 find all
@@ -42,18 +43,18 @@ def delete_one(id):
     except User.DoesNotExist:
         raise ValueError(f"User with ID {id} does not exist.")
 
-def compute_victory(id):
+def compute_victory(user_id):
     try:
-        user = User.objects.get(id=id)
+        user = User.objects.get(id=user_id)
         user.wins += 1
         user.save()
         return user
     except User.DoesNotExist:
-        raise ValueError(f"User with ID {id} does not exist.")
+        raise Http404(f"User with ID {user_id} does not exist.")
 
-def compute_loss(id):
+def compute_loss(user_id):
     try:
-        user = User.objects.get(id=id)
+        user = User.objects.get(id=user_id)
         user.loss += 1
         user.save()
         return user

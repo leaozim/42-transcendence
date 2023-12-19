@@ -1,11 +1,11 @@
 from django.test import TestCase
+# from django.db import transaction
 from .. import services
 from .. import models
-from django.db import transaction
 
 
 # Create your tests here.
-@transaction.atomic
+# @transaction.atomic
 class TestUserCase(TestCase):
     def setUp(self):
         models.User.objects.create(id=1, username='cavalinho', id42=1234)
@@ -22,8 +22,8 @@ class TestUserCase(TestCase):
         self.assertEqual(4321, second_user.id42)
 
     def test_compute_victory(self):
-        updated_user = services.compute_victory(5)
-        self.assertEqual(updated_user.wins, 5)
+        updated_user = services.compute_victory(1)
+        self.assertEqual(updated_user.wins, 1)
 
         user2 = services.find_one(2)
         self.assertEqual(user2.wins, 0)
