@@ -5,7 +5,7 @@ from .models import User
 
 class JWTVerificationFailed(Exception):
     pass
-
+    
 def generate_jwt_token(user_data):
     payload = {
         'user_id':  user_data['id'],
