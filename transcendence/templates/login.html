@@ -2,6 +2,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% csrf_token %}
+
 <div class="container">
     {% if user.is_authenticated %}
         <h3>Hi {{ user.username }}!</h3>
@@ -10,8 +12,10 @@
     {% else %}
         <p>Welcome to Transcendence</p>
         <p>Kindly login or signup</p>
-        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+        {% comment %} <a href="{% url 'login' %}" class="btn btn-primary">Login</a> {% endcomment %}
         <a href="{% url 'srcs_users:signup' %}" class="btn btn-success">Sign Up</a>
+        <a href="{% url 'srcs_users:intra_login' %}" class="btn btn-primary">Login com 42</a>
+
     {% endif %}
 </div>
 {% endblock %}
