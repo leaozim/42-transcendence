@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:13
+    container_name: db_transcendence
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - ./transcendence/.env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    
+  pgadmin:
+    image: dpage/pgadmin4
+    env_file:
+      - ./transcendence/.env
+    ports:
+      - "8081:80"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres:
+    name: postgres_db
