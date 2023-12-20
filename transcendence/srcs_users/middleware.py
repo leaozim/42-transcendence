@@ -15,27 +15,28 @@ class JWTAuthenticationMiddleware:
 
     def __call__(self, request):
         print("Middleware __call__ is called")
-
         request.user = AnonymousUser()
-        is_allowed_route = request.path_info in self.allowed_routes 
 
-        if is_allowed_route:
-            jwt_token = request.COOKIES.get('jwt_token', None)
-            if jwt_token:
-                try:
-                    print( "aaaaaaaaaaaa")
-                    user = verify_jwt_token(jwt_token)
-                    request.user = user
-                except JWTVerificationFailed as e:
-                    print( "bbbbbbbbbbb")
-                    return self.handle_verification_failure(request)
-            else:
-                return self.handle_verification_failure(request)
-        
-        response = self.get_response(request)
-        return response
+        if self._is_allowed_route(request.path_info):
+            return self._authenticate_user(request)
+        return self.get_response(request)
 
-    def handle_verification_failure(self, request):
+    def _is_allowed_route(self, path_info):
+        return path_info in self.allowed_routes
+
+    def _authenticate_user(self, request):
+        jwt_token = request.COOKIES.get('jwt_token', None)
+        if jwt_token:
+            try:
+                user = verify_jwt_token(jwt_token)
+                request.user = user
+                return self.get_response(request)
+            except JWTVerificationFailed:
+                return self._handle_verification_failure(request)
+        else:
+            return self._handle_verification_failure(request)
+
+    def _handle_verification_failure(self, request):
         if request.path_info in self.allowed_routes:
             request.jwt_redirect_attempted = True  
             return redirect('/')  
