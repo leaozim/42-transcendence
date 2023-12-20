@@ -17,8 +17,6 @@ class IntraUserOAuth2Manager(models.UserManager):
         existing_user = self.filter(username=username).first()
         if existing_user:
             return existing_user
-
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-
         return self.create_user(email, username, password, **extra_fields)
