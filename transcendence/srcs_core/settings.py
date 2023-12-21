@@ -49,9 +49,8 @@ INSTALLED_APPS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    # ... outros backends
     'srcs_users.auth.IntraAuthenticationBackend',
-    # ...
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 MIDDLEWARE = [
@@ -146,9 +145,9 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 LOGIN_REDIRECT_URL = '/'
 
-LOGOUT_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = '/'
 
-LOGIN_URL = "/oauth2/login/"
+LOGIN_URL = "/"
 
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = 'None'

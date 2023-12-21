@@ -1,8 +1,12 @@
 # .gitignore
 
+*venv
 .venv
+*__pycache__*
 venv
 __pycache__
-
-
+.coverage
+.scannerwork/
+coverage.xml
+.coveragerc
 .env

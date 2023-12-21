@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from srcs_users.models import User  
 from django.core.management import CommandError
 import os
+from srcs_users.managers import IntraUserOAuth2Manager
 
 class Command(BaseCommand):
     help = 'Cria um superusuário padrão automaticamente'
@@ -10,7 +11,6 @@ class Command(BaseCommand):
         username = os.getenv("POSTGRES_USER")
         email = ''
         password = os.getenv("POSTGRES_PASSWORD")
-
         try:
             user = User.objects.get(username=username)
             self.stdout.write(self.style.SUCCESS(f'Superusuário "{user}" já existe. Nenhum novo superusuário foi criado.'))
