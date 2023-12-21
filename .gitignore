@@ -7,6 +7,5 @@ venv
 __pycache__
 .coverage
 .scannerwork/
-coverage.xml
 .coveragerc
 .env
