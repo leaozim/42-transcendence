@@ -31,10 +31,11 @@ class TestUserCase(TestCase):
         for _ in range(total_users):
             users.append(UserFactory())
         
-        self.assertEqual(len(models.User.objects.all()), total_users)
+        all_users = services.find_all()
+        self.assertEqual(len(all_users), total_users)
         for i in range(total_users):
-            self.assertEqual(users[i].username, services.find_one(i + 1).username)
-            self.assertEqual(users[i].description, services.find_one(i + 1).description)
+            self.assertEqual(users[i].username, all_users[i].username)
+            self.assertEqual(users[i].description, all_users[i].description)
         
     def test_update(self):
         user = UserFactory()
