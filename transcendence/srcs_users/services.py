@@ -28,15 +28,13 @@ def find_one(id):
 def find_all():
     return User.objects.all()
 
-def update(id, new_date):
+def update(user_id, new_user):
     try:
-        user = User.objects.get(id=id)
-        for key, value in new_date.items():
-            setattr(user, key, value)
+        user = User.objects.get(id=user_id)
+        user = new_user
         user.save()
-        return user
     except User.DoesNotExist:
-        raise Http404(f"User with ID {id} does not exist.")
+        raise Http404("User does not exist")
 
 def delete_one(id):
     try:
@@ -50,6 +48,7 @@ def compute_victory(user_id):
         user = User.objects.get(id=user_id)
         user.wins += 1
         user.save()
+        print (user)
         return user
     except User.DoesNotExist:
         raise Http404(f"User with ID {user_id} does not exist.")
@@ -63,14 +62,14 @@ def compute_loss(user_id):
     except User.DoesNotExist:
         raise Http404(f"User with ID {id} does not exist.")
 
-def compute_experience(id, exp):
+def compute_experience(user_id, exp):
     try:
-        user = User.objects.get(id=id)
+        user = User.objects.get(id=user_id)
         user.expGame += exp
         user.save()
         return user
     except User.DoesNotExist:
-        raise Http404(f"User with ID {id} does not exist.")
+        raise Http404(f"User with ID {user_id} does not exist.")
 
 def exchange_code(code: str):
     data = {
