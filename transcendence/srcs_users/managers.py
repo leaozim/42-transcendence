@@ -5,9 +5,13 @@ class IntraUserOAuth2Manager(models.UserManager):
         existing_user = self.filter(id42=user['id']).first()
         if existing_user:
             return existing_user
+        avatar_link = user['image']['link']
+        if avatar_link is None:
+            avatar_link = 'https://res.cloudinary.com/dw9xon1xs/image/upload/v1699535128/nico_nk9vdi.jpg' 
+        print(avatar_link)
         new_user = self.create(
             id42=user['id'],
-            avatar=user['url'],
+            avatar=avatar_link,
             email=user['email'],
             username=user['login'],
         )
