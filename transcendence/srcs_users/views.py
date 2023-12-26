@@ -3,11 +3,11 @@ from django.views.generic.edit import CreateView
 from django.shortcuts import redirect
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login, logout
-from .jwt_token import verify_jwt_token, generate_jwt_token, JWTVerificationFailed
-from .forms import UserCreationForm
+from srcs_users.jwt_token import verify_jwt_token, generate_jwt_token, JWTVerificationFailed
+from srcs_users.forms import UserCreationForm
 import os
-from .services import exchange_code
-from .models import User
+from srcs_users.services import exchange_code
+from srcs_users.models import User
 import requests
 
 from django.contrib.auth.decorators import login_required

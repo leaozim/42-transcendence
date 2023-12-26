@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "srcs_core",
     "srcs_chat",
     "srcs_game",
+    "srcs_tournament",
+    "srcs_message",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

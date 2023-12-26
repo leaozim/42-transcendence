@@ -1,5 +1,5 @@
 from django.contrib.auth.models import AnonymousUser
-from .jwt_token import verify_jwt_token, JWTVerificationFailed
+from srcs_users.jwt_token import verify_jwt_token, JWTVerificationFailed
 from django.urls import reverse
 from django.shortcuts import redirect
 from django.urls import path

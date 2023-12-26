@@ -1,4 +1,6 @@
 from django.db import models
+from srcs_users.models import User
+from srcs_chat.models import Chat
 
 class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)

@@ -1,9 +1,6 @@
 from .models import Chat
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import get_object_or_404
-from .models import Chat
-from django.contrib.auth.hashers import make_password
-from django.shortcuts import get_object_or_404
 
 def add_admin(chat, user):
     try:
