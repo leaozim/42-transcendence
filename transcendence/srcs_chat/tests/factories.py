@@ -4,15 +4,6 @@ from srcs_chat.models import Chat
 import random
 from srcs_user.tests.factories import UserFactory
 
-    # Example:
-    # username = factory.Faker('name')
-    # id42 = factory.LazyAttribute(lambda _: random.randrange(1000, 9999))
-    # description = factory.Faker('sentence', nb_words=10)
-    # is2fActive = FuzzyChoice(choices=[True, False])
-    # expGame = factory.LazyAttribute(lambda _:random.randrange(0, 50))
-    # wins = factory.LazyAttribute(lambda _:random.randrange(0, 50))
-    # loss = factory.LazyAttribute(lambda _:random.randrange(0, 50))
-
 class ChatFactory(factory.django.DjangoModelFactory):
     """ Creates fake Chats """
 
@@ -20,3 +11,19 @@ class ChatFactory(factory.django.DjangoModelFactory):
         model = Chat
 
     id = factory.Sequence(lambda n: n + 1)
+    blocked = False
+    
+    @factory.post_generation
+    def usersChats(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            self.usersChats.set(extracted)
+
+    @factory.post_generation
+    def create_users(self, create, extracted, **kwargs):
+        if create:
+            user1 = UserFactory()
+            user2 = UserFactory()
+            self.usersChats.set([user1, user2])
