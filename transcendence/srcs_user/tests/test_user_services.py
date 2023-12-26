@@ -61,37 +61,16 @@ class TestUserCase(TestCase):
         self.assertRaises(Http404, services.delete_one, 2)
         self.assertEqual(user.id, services.find_one(1).id)
 
-    def test_compute_victory(self):
+
+    def test_compute_mmr_points(self):
         user = UserFactory()
-        wins = user.wins
+        mmr = user.mmr
 
-        services.compute_victory(user.id)
+        services.compute_mmr_points(user.id, 20)
+        self.assertEqual(services.find_one(1).mmr, mmr + 20)
 
-        self.assertEqual(services.find_one(1).wins, wins + 1)
+        services.compute_mmr_points(user.id, -20)
+        self.assertEqual(services.find_one(1).mmr, mmr)
 
-    def test_compute_victory_when_user_not_found(self):
-        self.assertRaises(Http404, services.compute_victory, 1)
-
-    def test_compute_loss(self):
-        user = UserFactory()
-        loss = user.loss
-
-        services.compute_loss(user.id)
-
-        self.assertEqual(services.find_one(1).loss, loss + 1)
-
-    def test_compute_loss_when_user_not_found(self):
-        self.assertRaises(Http404, services.compute_loss, 1)
-
-    def test_compute_experience(self):
-        user = UserFactory()
-        expGame = user.expGame
-
-        services.compute_experience(user.id, 20)
-        self.assertEqual(services.find_one(1).expGame, expGame + 20)
-
-        services.compute_experience(user.id, -20)
-        self.assertEqual(services.find_one(1).expGame, expGame)
-
-    def test_compute_experience_when_user_not_found(self):
-        self.assertRaises(Http404, services.compute_experience, 1, 20)
+    def test_compute_mmr_points_when_user_not_found(self):
+        self.assertRaises(Http404, services.compute_mmr_points, 1, 20)

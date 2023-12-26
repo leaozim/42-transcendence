@@ -27,7 +27,7 @@ def delete_one(id):
     except User.DoesNotExist:
         raise Http404(f"User with ID {id} does not exist.")
 
-def compute_mmr_poins(user_id, points):
+def compute_mmr_points(user_id, points):
     try:
         user = User.objects.get(id=user_id)
         user.mmr += points

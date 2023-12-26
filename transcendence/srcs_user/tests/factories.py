@@ -14,9 +14,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     id42 = factory.LazyAttribute(lambda _: random.randrange(1000, 9999))
     description = factory.Faker('sentence', nb_words=10)
     is2fActive = FuzzyChoice(choices=[True, False])
-    expGame = factory.LazyAttribute(lambda _:random.randrange(0, 50))
-    wins = factory.LazyAttribute(lambda _:random.randrange(0, 50))
-    loss = factory.LazyAttribute(lambda _:random.randrange(0, 50))
+    mmr = factory.LazyAttribute(lambda _:random.randrange(0, 50))
 
 
 """
