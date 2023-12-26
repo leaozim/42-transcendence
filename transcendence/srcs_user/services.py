@@ -3,22 +3,6 @@ from django.http import Http404
 import os
 import requests
 
-"""
-find all
-
-find one
-
-update
-
-delete one
-
-computeVictory
-
-computeLoss
-
-computeExperience
-"""
-
 def find_one(id):
     try:
         return User.objects.get(id=id)
@@ -40,25 +24,6 @@ def delete_one(id):
     try:
         user = User.objects.get(id=id)
         user.delete()
-    except User.DoesNotExist:
-        raise Http404(f"User with ID {id} does not exist.")
-
-def compute_victory(user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        user.wins += 1
-        user.save()
-        print (user)
-        return user
-    except User.DoesNotExist:
-        raise Http404(f"User with ID {user_id} does not exist.")
-
-def compute_loss(user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        user.loss += 1
-        user.save()
-        return user
     except User.DoesNotExist:
         raise Http404(f"User with ID {id} does not exist.")
 
