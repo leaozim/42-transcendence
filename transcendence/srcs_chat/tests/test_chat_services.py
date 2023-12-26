@@ -1,7 +1,7 @@
 from django.test import TestCase
 from srcs_chat import services
 from srcs_chat.models import Chat, Message
-from srcs_users.tests.factories import UserFactory
+from srcs_user.tests.factories import UserFactory
 from django.utils import timezone
 
 # Create your tests here.

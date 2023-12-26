@@ -1,5 +1,5 @@
 from django.db import models
-from srcs_users.models import User
+from srcs_user.models import User
 from srcs_game.models import Game
 
 class Tournament(models.Model):

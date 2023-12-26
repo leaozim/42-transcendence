@@ -2,7 +2,7 @@ import factory
 from factory.fuzzy import FuzzyChoice, FuzzyDate
 from srcs_chat.models import Chat, Message
 import random
-from srcs_users.tests.factories import UserFactory
+from srcs_user.tests.factories import UserFactory
 
     # Example:
     # username = factory.Faker('name')

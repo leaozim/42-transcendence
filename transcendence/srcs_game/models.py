@@ -1,5 +1,5 @@
 from django.db import models
-from srcs_users.models import User
+from srcs_user.models import User
 
 class Game(models.Model):
     leftPlayer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='matches_as_left_player', db_column='left_player')

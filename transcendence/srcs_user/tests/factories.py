@@ -1,6 +1,6 @@
 import factory
 from factory.fuzzy import FuzzyChoice, FuzzyDate
-from srcs_users.models import User
+from srcs_user.models import User
 import random
 
 class UserFactory(factory.django.DjangoModelFactory):

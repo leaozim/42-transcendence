@@ -1,4 +1,4 @@
-from srcs_users.models import User
+from srcs_user.models import User
 from django.http import Http404
 import os
 import requests

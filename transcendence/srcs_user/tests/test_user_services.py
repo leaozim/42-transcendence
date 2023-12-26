@@ -1,8 +1,8 @@
 from django.test import TestCase
 # from django.db import transaction
 from django.http import Http404
-from srcs_users import services, models
-from srcs_users.tests.factories import UserFactory
+from srcs_user import services, models
+from srcs_user.tests.factories import UserFactory
 
 # Create your tests here.
 # @transaction.atomic

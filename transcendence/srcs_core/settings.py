@@ -33,10 +33,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = "srcs_users.User"
+AUTH_USER_MODEL = "srcs_user.User"
 
 INSTALLED_APPS = [
-    "srcs_users",
+    "srcs_user",
     "srcs_core",
     "srcs_chat",
     "srcs_game",
@@ -51,13 +51,13 @@ INSTALLED_APPS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'srcs_users.auth.IntraAuthenticationBackend',
+    'srcs_user.auth.IntraAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'srcs_users.middleware.JWTAuthenticationMiddleware',
+    'srcs_user.middleware.JWTAuthenticationMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

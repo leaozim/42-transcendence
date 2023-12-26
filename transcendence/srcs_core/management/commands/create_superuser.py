@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
-from srcs_users.models import User  
+from srcs_user.models import User  
 from django.core.management import CommandError
 import os
-from srcs_users.managers import IntraUserOAuth2Manager
+from srcs_user.managers import IntraUserOAuth2Manager
 
 class Command(BaseCommand):
     help = 'Cria um superusuário padrão automaticamente'

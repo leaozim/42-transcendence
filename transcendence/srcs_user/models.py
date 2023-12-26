@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
-from srcs_users.managers import IntraUserOAuth2Manager
+from srcs_user.managers import IntraUserOAuth2Manager
 
 class User(AbstractUser, PermissionsMixin):
     objects = IntraUserOAuth2Manager()

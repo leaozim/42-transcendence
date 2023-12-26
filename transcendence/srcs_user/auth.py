@@ -1,6 +1,6 @@
 from django.contrib.auth.backends import BaseBackend
-from srcs_users.models import User
-from srcs_users.jwt_token import verify_jwt_token
+from srcs_user.models import User
+from srcs_user.jwt_token import verify_jwt_token
 
 class IntraAuthenticationBackend(BaseBackend):
     def authenticate(self, request, jwt_token=None):

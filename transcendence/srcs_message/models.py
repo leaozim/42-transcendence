@@ -1,5 +1,5 @@
 from django.db import models
-from srcs_users.models import User
+from srcs_user.models import User
 from srcs_chat.models import Chat
 
 class Message(models.Model):

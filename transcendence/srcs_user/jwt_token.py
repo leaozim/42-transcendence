@@ -1,7 +1,7 @@
 import jwt
 from datetime import datetime, timedelta
 from django.conf import settings
-from srcs_users.models import User
+from srcs_user.models import User
 
 class JWTVerificationFailed(Exception):
     pass
