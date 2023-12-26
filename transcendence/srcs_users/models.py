@@ -9,12 +9,12 @@ class User(AbstractUser, PermissionsMixin):
     token2F = models.CharField(max_length=255, blank=True, db_column='token_2f')
     is2fActive = models.BooleanField(default=False, db_column='is_2f_active')
     avatar = models.CharField(max_length=255, blank=True)
-    expGame = models.FloatField(default=0)
-    wins = models.IntegerField(default=0)
-    loss = models.IntegerField(default=0)
-    blockedUsers = models.ManyToManyField('self', symmetrical=False, related_name='blocking_users', blank=True, db_column='blocked_users')
-    followers = models.ManyToManyField('self', symmetrical=False, related_name='following_users', blank=True)
-    friendships = models.ManyToManyField('self', symmetrical=False, related_name='friend_users', blank=True)
+    mmr = models.FloatField(default=0)
+    # wins = models.IntegerField(default=0)
+    # loss = models.IntegerField(default=0)
+    # blockedUsers = models.ManyToManyField('self', symmetrical=False, related_name='blocking_users', blank=True, db_column='blocked_users')
+    # followers = models.ManyToManyField('self', symmetrical=False, related_name='following_users', blank=True)
+    # friendships = models.ManyToManyField('self', symmetrical=False, related_name='friend_users', blank=True)
     
     @property
     def is_authenticated(self):

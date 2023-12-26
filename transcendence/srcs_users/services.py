@@ -62,10 +62,10 @@ def compute_loss(user_id):
     except User.DoesNotExist:
         raise Http404(f"User with ID {id} does not exist.")
 
-def compute_experience(user_id, exp):
+def compute_mmr_poins(user_id, points):
     try:
         user = User.objects.get(id=user_id)
-        user.expGame += exp
+        user.mmr += points
         user.save()
         return user
     except User.DoesNotExist:
