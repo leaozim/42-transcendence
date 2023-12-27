@@ -49,6 +49,6 @@ jobs:
 
     - name: Check Coverage
       run: |
-        chmode 777 test.sh
+        chmod 777 test.sh
         ./test.sh
         
