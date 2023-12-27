@@ -18,6 +18,7 @@ jobs:
       POSTGRES_HOST: postgres
       POSTGRES_DB: db_transcendence
       POSTGRES_PORT: 5432
+      POSTGRES_NAME: db_transcendence
 
     steps:
     - uses: actions/checkout@v3
@@ -39,10 +40,5 @@ jobs:
       run: |
         sleep 20
         cd transcendence
-        export POSTGRES_USER=cavalinho
-        export POSTGRES_PASSWORD=root
-        export POSTGRES_HOST=postgres
-        export POSTGRES_DB=db_transcendence
-        export POSTGRES_PORT=5432
         coverage run --source='.' manage.py test
         
