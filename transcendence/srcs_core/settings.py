@@ -96,7 +96,7 @@ DATABASES = {
         'NAME': 'db_transcendence',
         'USER': 'cavalinho',
         'PASSWORD': 'root',
-        'HOST': 'postgres',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
