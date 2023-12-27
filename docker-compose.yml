@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_USER: cavalinho
       POSTGRES_PASSWORD: root
-      POSTGRES_HOST: postgres
+      POSTGRES_HOST: localhost
       POSTGRES_DB: db_transcendence
       POSTGRES_NAME: db_transcendence
     volumes:

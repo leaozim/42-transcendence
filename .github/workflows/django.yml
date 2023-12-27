@@ -25,7 +25,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r transcendence/requirements/local.txt
-        
+
     - name: Create .env file
       run: |
         echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" > .env
@@ -36,7 +36,9 @@ jobs:
         echo "POSTGRES_NAME=${{ secrets.POSTGRES_NAME }}" >> .env
 
     - name: Run docker-compose
-      run: docker-compose up -d --build
+      run: |
+        export $(cat .env | xargs)
+        docker-compose up -d --build
 
     - name: Apply Migrations
       run: |
