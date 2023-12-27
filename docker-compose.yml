@@ -11,6 +11,7 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_HOST: postgres
       POSTGRES_DB: db_transcendence
+      POSTGRES_NAME: db_transcendence
     volumes:
       - postgres:/var/lib/postgresql/data
     networks:
