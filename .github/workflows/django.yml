@@ -45,10 +45,7 @@ jobs:
     - name: Run Tests
       run: |
         cd transcendence
-        coverage run --source='.' manage.py test
-
-    - name: Check Coverage
-      run: |
         chmod 777 test.sh
         ./test.sh
+        
         
