@@ -48,7 +48,7 @@ jobs:
         coverage run --source='.' manage.py test
 
     - name: Generate report
-      run : coverage report -m --omit=*\__init__.py,*urls.py,*factories.py,*\tests\*,*\migrations\*,*\models.py,*\apps.py,*\admin.py,srcs_core\*,*\forms.py > teste.txt
+      run : coverage report -m --omit=*/__init__.py,*urls.py,*factories.py,*/tests/*,*/migrations/*,*/models.py,*/apps.py,*/admin.py,srcs_core/*,*/forms.py > teste.txt
 
     - name: Check Coverage
       run: |
