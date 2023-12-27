@@ -23,28 +23,28 @@ jobs:
       SECRET_KEY:${{ secrets.SECRET_KEY }} 
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r transcendence/requirements/local.txt
-    - name: Run docker-compose
-      run: |
-        docker-compose up -d --build
-    - name: Apply Migrations
-      run: |
-        sleep 30
-        cd transcendence
-        python manage.py migrate
-      
-    - name: Run Tests
-      run: |
-        cd transcendence
-        chmod 777 test.sh
-        ./test.sh
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r transcendence/requirements/local.txt
+      - name: Run docker-compose
+        run: |
+          docker-compose up -d --build
+      - name: Apply Migrations
+        run: |
+          sleep 30
+          cd transcendence
+          python manage.py migrate
+        
+      - name: Run Tests
+        run: |
+          cd transcendence
+          chmod 777 test.sh
+          ./test.sh
