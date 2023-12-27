@@ -12,6 +12,11 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: [3.11.4]
+    env:
+      POSTGRES_USER: cavalinho
+      POSTGRES_PASSWORD: root
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: db_transcendence
 
     steps:
     - uses: actions/checkout@v3

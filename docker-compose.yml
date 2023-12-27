@@ -2,27 +2,31 @@ version: '3.8'
 services:
   postgres:
     image: postgres:13
-    container_name: db_transcendence
+    container_name: ${{ secrets.POSTGRES_NAME }}
     restart: always
     ports:
       - 5432:5432
-    env_file:
-      - ./transcendence/.env
+    environment:
+      POSTGRES_USER: cavalinho
+      POSTGRES_PASSWORD: root
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: db_transcendence
     volumes:
       - postgres:/var/lib/postgresql/data
     networks:
       - sonarnet
 
-  pgadmin:
-    image: dpage/pgadmin4
-    env_file:
-      - ./transcendence/.env
-    ports:
-      - "8081:80"
-    depends_on:
-      - postgres
-    networks:
-      - sonarnet
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   env_file:
+  #     - ./transcendence/.env
+  #   ports:
+  #     - "8081:80"
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - sonarnet
 
   # sonarqube:
   #   image: sonarqube:community
