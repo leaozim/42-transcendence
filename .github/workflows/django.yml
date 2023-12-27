@@ -35,10 +35,15 @@ jobs:
 
     - name: Run docker-compose
       run: docker-compose up -d --build
+
+    - name: Apply Migrations
+      run: |
+        sleep 30
+        cd transcendence
+        python manage.py migrate
       
     - name: Run Tests
       run: |
-        sleep 30
         cd transcendence
         coverage run --source='.' manage.py test
         
