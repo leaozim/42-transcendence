@@ -1,6 +1,8 @@
 from django.test import TestCase
 from srcs_message.models import Message
+from srcs_message import services as messageServices
 from srcs_chat.models import Chat
+from srcs_chat import services as chatServices
 from srcs_user.tests.factories import UserFactory
 from srcs_chat.tests.factories import ChatFactory
 from srcs_message.tests.factories import MessageFactory
@@ -25,6 +27,26 @@ class TestMessage(TestCase):
         
         self.assertEqual(message.chat, self.chat)
         self.assertEqual(len(messages), 3)
+
+    def test_add_message_to_an_unblocked_chat_should_succeed(self):
+        self.assertEqual(len(messages), 0) # Just to garantee that it starts with 0 messages
+        messageServices.add_message(chat_id=self.chat.id, content='cavalinho', user=self.user1.id)
+
+        messages = Message.objects.filter(chat=self.chat)
+        self.assertEqual(len(messages), 1)
+    
+    def test_add_message_to_block_chat_should_fail(self):
+        self.assertEqual(len(messages), 0)
+        chatServices.block_chat(self.chat.id)
+
+        messageServices.add_message(chat_id=self.chat.id, content='cavalinho', user=self.user1.id)
+
+        messages = Message.objects.filter(chat=self.chat)
+        self.assertEqual(len(messages), 0)
+
+
+
+        
 
 
 
