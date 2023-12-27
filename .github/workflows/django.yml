@@ -35,6 +35,7 @@ jobs:
         echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
         echo "POSTGRES_NAME=${{ secrets.POSTGRES_NAME }}" >> .env
 
+
     - name: Run docker-compose
       run: |
         export $(cat .env | xargs)
