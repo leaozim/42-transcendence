@@ -51,6 +51,7 @@ jobs:
       
     - name: Run Tests
       run: |
+        export $(cat .env | xargs)
         cd transcendence
         chmod 777 test.sh
         ./test.sh
