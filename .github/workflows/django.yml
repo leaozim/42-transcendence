@@ -44,14 +44,9 @@ jobs:
     - name: Apply Migrations
       run: |
         sleep 30
+        export $(cat .env | xargs)
         cd transcendence
         python manage.py migrate
-      env: 
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DEBUG: "True"
-          DB_NAME: ${{ secrets.POSTGRES_DB }}
-          DB_USER: ${{ secrets.POSTGRES_USER }}
-          DB_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       
     - name: Run Tests
       run: |
