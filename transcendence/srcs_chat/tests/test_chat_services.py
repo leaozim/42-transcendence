@@ -21,3 +21,6 @@ class ChatTests(TestCase):
         self.assertEqual(self.chat.usersChats.count(), 2)
         self.assertEqual(self.chat.blocked, False)
         self.assertEqual(self.chat.id, 1)
+
+    # def test_blocked_chat_doesnt_allow_new_messages(self):
+    #     services.add_message()
