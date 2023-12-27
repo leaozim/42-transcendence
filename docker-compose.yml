@@ -16,6 +16,12 @@ services:
     networks:
       - sonarnet
 
+  wait_for_db:
+    image: alpine:latest
+    depends_on:
+      - postgres
+    command: sh -c 'until nc -z postgres 5432; do sleep 1; done'
+
 
   # pgadmin:
   #   image: dpage/pgadmin4
