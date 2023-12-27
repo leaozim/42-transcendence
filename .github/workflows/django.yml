@@ -32,7 +32,10 @@ jobs:
         pip install -r transcendence/requirements/local.txt
 
     - name: Run docker-compose
-      run: docker-compose up --build
+      run: docker-compose up -d --build
+
+    - name: Wait postgres to get on
+      run: sleep 20
       
     - name: Run Tests
       run: |
