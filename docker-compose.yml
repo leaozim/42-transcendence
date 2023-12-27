@@ -48,9 +48,9 @@ services:
 volumes:
   postgres:
     name: postgres_db
-  sonarqube_data:
-  sonarqube_extensions:
-  sonarqube_logs:
+  # sonarqube_data:
+  # sonarqube_extensions:
+  # sonarqube_logs:
 
 networks:
   sonarnet:
