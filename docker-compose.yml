@@ -2,7 +2,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:13
-    container_name: ${{ secrets.POSTGRES_NAME }}
+    container_name: db_transcendence
     restart: always
     ports:
       - 5432:5432
