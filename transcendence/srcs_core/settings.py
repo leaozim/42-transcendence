@@ -42,26 +42,32 @@ INSTALLED_APPS = [
     "srcs_game",
     "srcs_tournament",
     "srcs_message",
+    "srcs_auth",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'srcs_user.auth.IntraAuthenticationBackend',
+    'srcs_auth.auth.IntraAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'srcs_user.middleware.JWTAuthenticationMiddleware',
+    'srcs_auth.middleware.JWTAuthenticationMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -132,6 +138,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+PHONENUMBER_DEFAULT_REGION = 'BR'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -145,11 +152,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/auth/user'
 
 LOGOUT_REDIRECT_URL = '/'
 
-LOGIN_URL = "/"
+LOGIN_URL = 'two_factor:login'
+
+TWO_FACTOR_PROFILE = 'two_factor:qrcode'
+
 
 SESSION_COOKIE_SECURE = True
+
 SESSION_COOKIE_SAMESITE = 'None'
