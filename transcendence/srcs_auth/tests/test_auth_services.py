@@ -8,8 +8,8 @@ class TestAuthServices(TestCase):
 
     @patch.object(services, 'requests', Mock(wraps=requests))
     def test_exchange_code_on_success(self):
-        services.requests.post.return_value = Mock(spec=requests.Response, json={'access_token': 'cavalinho'})
-        services.requests.get.return_value = Mock(spec=requests.Response, json={'user': 'cavalinho'})
+        services.requests.post.return_value = Mock(spec=requests.Response, json=json.loads('{"access_token": "cavalinho"}'))
+        services.requests.get.return_value = Mock(spec=requests.Response, json=json.loads('{"user": "cavalinho"}'))
         
         result = services.exchange_code('cavalinho')
 
