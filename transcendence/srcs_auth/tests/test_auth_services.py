@@ -35,7 +35,7 @@ class TestAuthServices(TestCase):
             json=Mock(return_value=json.loads('{}'))
         )
         
-        self.assertRaises(Exception, services.exchange_code, 'cavalinho')
+        self.assertRaises(ValueError, services.exchange_code, 'cavalinho')
 
     @patch.object(services, 'requests', Mock(wraps=requests))
     def test_exchange_code_on_fail_at_user_get(self):
