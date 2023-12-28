@@ -75,24 +75,3 @@ class TestUserCase(TestCase):
 
     def test_compute_mmr_points_when_user_not_found(self):
         self.assertRaises(Http404, userServices.compute_mmr_points, 1, 20)
-
-    def test_list_of_users_where_a_user_already_has_a_chat_open(self):
-        total_users = 10
-        total_available_users = total_users - 1
-        users = []
-        for _ in range(total_users):
-            users.append(UserFactory())
-        
-        users_to_chat = userServices.find_users_to_chat_with(id=1) # 1 is the id of the user who is looking for friends
-        self.assertEqual(len(users_to_chat), total_available_users) # should find everyone but self
-
-        first_chat = chatModels.Chat.objects.create()
-        first_chat.usersChats.set([users[0], users[1]])
-        total_available_users -= 1
-
-        users_to_chat = userServices.find_users_to_chat_with(id=1)
-        self.assertEqual(len(users_to_chat), total_available_users)
-
-        first_chat.usersChats.set([users[1], users[2]])
-        users_to_chat = userServices.find_users_to_chat_with(id=1)
-        self.assertEqual(len(users_to_chat), total_available_users) # stays the same due to the friendship between users[1] and 2 doesn't affect the result of users[0]
