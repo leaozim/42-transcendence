@@ -39,7 +39,7 @@ jobs:
 
     - name: Apply Migrations
       run: |
-        sleep 30
+        sleep 24
         cd transcendence
         python manage.py migrate
       
