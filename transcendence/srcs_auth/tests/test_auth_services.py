@@ -30,8 +30,8 @@ class TestAuthServices(TestCase):
     def test_exchange_code_on_fail_at_token_post(self):
         services.requests.post.return_value = Mock(
             spec=requests.Response,
-            status_code=401
-            ok=False
+            status_code=401,
+            ok=False,
             json=Mock(return_value=json.loads('{}'))
         )
         
@@ -48,8 +48,8 @@ class TestAuthServices(TestCase):
 
         services.requests.get.return_value = Mock(
             spec=requests.Response,
-            status_code=401
-            ok=False
+            status_code=401,
+            ok=False,
             json=Mock(return_value=json.loads('{}'))
         )
 
