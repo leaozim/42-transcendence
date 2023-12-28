@@ -1,5 +1,5 @@
 from django.contrib.auth.models import AnonymousUser
-from srcs_user.jwt_token import verify_jwt_token, JWTVerificationFailed
+from srcs_auth.jwt_token import verify_jwt_token, JWTVerificationFailed
 from django.urls import reverse
 from django.shortcuts import redirect
 from django.urls import path
@@ -10,7 +10,7 @@ class JWTAuthenticationMiddleware:
         self.get_response = get_response
         self.allowed_routes = [
             reverse('srcs_user:oauth2'),
-            reverse('srcs_user:logout_user'),
+            reverse('srcs_auth:logout_user'),
         ]
 
     def __call__(self, request):
