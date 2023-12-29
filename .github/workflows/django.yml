@@ -41,6 +41,7 @@ jobs:
       run: |
         sleep 24
         cd transcendence
+        python manage.py makemigrations
         python manage.py migrate
       
     - name: Run Tests
