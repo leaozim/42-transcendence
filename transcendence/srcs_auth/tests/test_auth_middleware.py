@@ -2,7 +2,7 @@ import json
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
-from srcs_auth.jwt_token import create_jwt_token
+from srcs_auth.jwt_token import generate_jwt_token, JWTVerificationFailed, verify_jwt_token
 from srcs_auth.middleware import JWTAuthenticationMiddleware
 from django.contrib.auth.models import AnonymousUser
 
@@ -22,7 +22,7 @@ class JWTAuthenticationMiddlewareTest(TestCase):
         self.assertEqual(request.user, AnonymousUser())
 
     def test_allowed_route_with_valid_token(self):
-        jwt_token = create_jwt_token(self.user)
+        jwt_token = generate_jwt_token(self.user)
         request = self.factory.get(self.allowed_route, HTTP_COOKIE=f'jwt_token={jwt_token}')
         middleware = JWTAuthenticationMiddleware(lambda r: None)
         response = middleware(request)
@@ -32,9 +32,9 @@ class JWTAuthenticationMiddlewareTest(TestCase):
     def test_allowed_route_with_invalid_token(self):
         request = self.factory.get(self.allowed_route, HTTP_COOKIE='jwt_token=invalid_token')
         middleware = JWTAuthenticationMiddleware(lambda r: None)
-        response = middleware(request)
-        self.assertEqual(response.status_code, 302)  # Redirect status code
-        self.assertTrue(getattr(request, 'jwt_redirect_attempted', False))
+        with self.assertRaises(JWTVerificationFailed):
+            middleware(request)
+
         self.assertEqual(request.user, AnonymousUser())
 
     def test_not_allowed_route(self):
