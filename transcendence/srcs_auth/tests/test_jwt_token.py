@@ -9,7 +9,7 @@ class TestJwtToken(TestCase):
         user = UserFactory()
         test_id = user.id42
 
-        token = generate_jwt_token({'id': 1})
-        result_id = verify_jwt_token(token)
+        token = generate_jwt_token({'id': test_id})
+        result = verify_jwt_token(token)
 
-        self.assertEqual(test_id, id)
+        self.assertEqual(user, result)
