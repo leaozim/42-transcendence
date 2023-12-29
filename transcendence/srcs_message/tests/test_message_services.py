@@ -11,7 +11,7 @@ from srcs_message.tests.factories import MessageFactory
 class TestMessage(TestCase):
     def setUp(self):
         self.chat = ChatFactory()
-        self.user1, self.user2 = self.chat.usersChats.all()
+        self.user1, self.user2 = self.chat.users_on_chat.all()
 
     def tearDown(self):
         UserFactory.reset_sequence()

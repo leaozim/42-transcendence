@@ -20,14 +20,14 @@ def unblock_chat(chat_id):
 def open_chat(user_id_1, user_id_2):
    
     chat = Chat.objects.create()
-    chat.usersChats.set([user_id_1, user_id_2])
+    chat.users_on_chat.set([user_id_1, user_id_2])
     chat.save()
     return chat
 
 def find_open_chats(user_id):
    
     user = User.objects.get(id=user_id) 
-    user_chats = Chat.objects.filter(usersChats=user)
+    user_chats = Chat.objects.filter(users_on_chat=user)
 
     return user_chats
 

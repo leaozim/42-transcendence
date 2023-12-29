@@ -19,7 +19,7 @@ class ChatTests(TransactionTestCase):
         UserFactory.reset_sequence()
 
     def test_chat_creation_factory(self):
-        self.assertEqual(self.chat.usersChats.count(), 2)
+        self.assertEqual(self.chat.users_on_chat.count(), 2)
         self.assertEqual(self.chat.blocked, False)
         self.assertEqual(self.chat.id, 1)
 
