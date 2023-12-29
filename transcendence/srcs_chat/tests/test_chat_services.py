@@ -90,10 +90,20 @@ class ChatTests(TransactionTestCase):
         self.assertEqual(len(result), 3)
 
     def block_chat_when_user_doesnt_exist_should_raise_Http404(self):
-        self.assertRaises(Http404, chatServices.block_chat, 1, 12512521)
+        user_id = 999999999
+        with self.assertRaises(Http404) as context:
+            chatServices.block_chat(1, user_id)
+        
+        message = str(context.exception)
+        self.assertEqual(message, f"Chat with ID {user_id} does not exist.")
 
     def block_chat_when_chat_doesnt_exist_should_raise_Http404(self):
-        self.assertRaises(Http404, chatServices.block_chat, 5, 1)
+        chat_id = 9999999
+        with self.assertRaises(Http404) as context:
+            chatServices.block_chat(chat_id, 1)
+        
+        message = str(context.exception)
+        self.assertEqual(message, f"Chat with ID {chat_id} does not exist.")
 
 
 
