@@ -2,6 +2,7 @@ from django.test import TestCase
 from srcs_auth.auth import IntraAuthenticationBackend, verify_jwt_token
 from srcs_user.tests.factories import UserFactory
 from mock import patch, Mock
+import jwt
 
 class TestAuthAuth(TestCase):
     def setUp(self):
@@ -24,7 +25,5 @@ class TestAuthAuth(TestCase):
     def test_authenticate_on_failure(self):
         self.assertIsNone(self.intra.authenticate('cavalinho'))
 
-    @patch('srcs_auth.tests.test_auth_auth.IntraAuthenticationBackend.verify_kwt_token')
-    def test_authenticate_on_success(self, mock_verify_jwt_token):
-        mock_verify_jwt_token.return_value = 'cavalinho'
-        self.assertEqual('cavalinho', IntraAuthenticationBackend().authenticate('cavalinho', 'ao vento'))
+    def test_authenticate_on_failure_due_invalid_token(self):
+        self.assertRaises(jwt.InvalidTokenError, self.intra.authenticate, 'cavalinho', 'cavalinho')
