@@ -4,6 +4,7 @@ from srcs_chat.models import Chat
 from srcs_message.models import Message
 from srcs_user.tests.factories import UserFactory
 from srcs_chat.tests.factories import ChatFactory
+from django.http import Http404
 
 # Create your tests here.
 SETUP_CHAT_ID = 1
@@ -87,6 +88,12 @@ class ChatTests(TransactionTestCase):
         result = chatServices.find_open_chats(4)
 
         self.assertEqual(len(result), 3)
+
+    def block_chat_when_user_doesnt_exist_should_raise_Http404(self):
+        self.assertRaises(Http404, chatServices.block_chat, 1, 12512521)
+
+    def block_chat_when_chat_doesnt_exist_should_raise_Http404(self):
+        self.assertRaises(Http404, chatServices.block_chat, 5, 1)
 
 
 
