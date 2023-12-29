@@ -21,4 +21,4 @@ class TestAuthAuth(TestCase):
         self.assertIsNotNone(user)
 
     def test_authenticate_on_failure(self):
-        self.assertIsNone(self.intra.authenticate())
+        self.assertIsNone(self.intra.authenticate('cavalinho'))
