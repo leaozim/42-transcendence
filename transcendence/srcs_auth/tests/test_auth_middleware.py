@@ -10,8 +10,8 @@ from django.contrib.auth.models import AnonymousUser
 class JWTAuthenticationMiddlewareTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
-        self.allowed_route = reverse('srcs_user:oauth2')
-        self.not_allowed_route = reverse('some_other_route')
+        self.allowed_route = reverse('auth/user/')
+        self.not_allowed_route = reverse('oauth2/logout/')
         self.user = User.objects.create_user(username='testuser', password='testpassword')
 
     def test_allowed_route_without_token(self):
