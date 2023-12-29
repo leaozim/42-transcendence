@@ -1,8 +1,5 @@
 from srcs_chat.models import Chat
 from srcs_user.models import User
-import logging
-
-logging.basicConfig(filename='app.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def block_chat(chat_id):
     chat = Chat.objects.get(id=chat_id)
