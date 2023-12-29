@@ -31,7 +31,7 @@ class TestMessage(TestCase):
     def test_add_message_to_an_unblocked_chat_should_succeed(self):
         messages = Message.objects.filter(chat=self.chat)
         self.assertEqual(len(messages), 0) # Just to garantee that it starts with 0 messages
-        messageServices.add_message(chat_id=self.chat.id, content='cavalinho', user=self.user1.id)
+        messageServices.add_message(chat_id=self.chat.id, content='cavalinho', user_id=self.user1.id)
 
         messages = Message.objects.filter(chat=self.chat)
         self.assertEqual(len(messages), 1)
@@ -39,9 +39,9 @@ class TestMessage(TestCase):
     def test_add_message_to_block_chat_should_fail(self):
         messages = Message.objects.filter(chat=self.chat)
         self.assertEqual(len(messages), 0)
-        chatServices.block_chat(self.chat.id)
+        chatServices.block_chat(self.chat.id, self.user1.id)
 
-        messageServices.add_message(chat_id=self.chat.id, content='cavalinho', user=self.user1.id) # Choose to handle return or raise exception
+        messageServices.add_message(chat_id=self.chat.id, content='cavalinho', user_id=self.user1.id) # Choose to handle return or raise exception
 
         messages = Message.objects.filter(chat=self.chat)
         self.assertEqual(len(messages), 0) # if raise exception, use assertRaises instead
@@ -50,7 +50,7 @@ class TestMessage(TestCase):
         messages = Message.objects.filter(chat=self.chat)
         self.assertEqual(len(messages), 0)
 
-        messageServices.add_message(chat_id=self.chat.id, content=('créu' * 500), user=self.user1.id)
+        messageServices.add_message(chat_id=self.chat.id, content=('créu' * 500), user_id=self.user1.id)
 
         self.assertEqual(len(messages), 0)
 
@@ -58,7 +58,7 @@ class TestMessage(TestCase):
         messages = Message.objects.filter(chat=self.chat)
         self.assertEqual(len(messages), 0)
 
-        messageServices.add_message(chat_id=self.chat.id, content=(''), user=self.user1.id)
+        messageServices.add_message(chat_id=self.chat.id, content=(''), user_id=self.user1.id)
 
         self.assertEqual(len(messages), 0)
 
