@@ -24,7 +24,7 @@ class TestAuthAuth(TestCase):
     def test_authenticate_on_failure(self):
         self.assertIsNone(self.intra.authenticate('cavalinho'))
 
-    @patch('srcs_auth.tests.test_auth_auth.verify_kwt_token')
+    @patch('srcs_auth.tests.test_auth_auth.IntraAuthenticationBackend.verify_kwt_token')
     def test_authenticate_on_success(self, mock_verify_jwt_token):
         mock_verify_jwt_token.return_value = 'cavalinho'
         self.assertEqual('cavalinho', IntraAuthenticationBackend().authenticate('cavalinho', 'ao vento'))
