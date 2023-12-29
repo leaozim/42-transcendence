@@ -5,14 +5,14 @@ from django.contrib.auth.models import User
 from srcs_auth.jwt_token import generate_jwt_token, JWTVerificationFailed, verify_jwt_token
 from srcs_auth.middleware import JWTAuthenticationMiddleware
 from django.contrib.auth.models import AnonymousUser
-from srcs_auth.views import SignUpView
+from srcs_auth import views
 
 
 class JWTAuthenticationMiddlewareTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
-        self.allowed_route = reverse(SignUpView.intra_login)
-        self.not_allowed_route = reverse(SignUpView.get_authenticated_user)
+        self.allowed_route = reverse(views.intra_login)
+        self.not_allowed_route = reverse(views.get_authenticated_user)
         self.user = User.objects.create_user(username='testuser', password='testpassword')
 
     def test_allowed_route_without_token(self):
