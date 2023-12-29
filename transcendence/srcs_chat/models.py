@@ -8,7 +8,7 @@ class Chat(models.Model):
         related_name='users_chats', 
         blank=True, 
         db_column='users_chats') 
-  
+    
     class Meta:
         db_table = 'chat'
 
