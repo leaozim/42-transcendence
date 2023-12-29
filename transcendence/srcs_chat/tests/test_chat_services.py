@@ -24,27 +24,27 @@ class ChatTests(TransactionTestCase):
         self.assertEqual(self.chat.id, 1)
 
     def test_block_chat(self):
-        self.chat = chatServices.block_chat(SETUP_CHAT_ID)
+        self.chat = chatServices.block_chat(SETUP_CHAT_ID, 1)
 
         self.assertTrue(Chat.objects.get(id=SETUP_CHAT_ID).id)
 
     def test_unblock_chat(self):
         self.assertFalse(self.chat.blocked)
-        self.chat = chatServices.block_chat(SETUP_CHAT_ID)
+        self.chat = chatServices.block_chat(SETUP_CHAT_ID, 1)
 
         self.assertTrue(self.chat.blocked)
-        self.chat = chatServices.unblock_chat(SETUP_CHAT_ID)
+        self.chat = chatServices.unblock_chat(SETUP_CHAT_ID, 1)
 
         self.assertFalse(self.chat.blocked)
 
     def test_block_and_unblock_chat_twice_in_a_row_should_not_affect_it(self):
-        self.chat = chatServices.block_chat(SETUP_CHAT_ID)
-        self.chat = chatServices.block_chat(SETUP_CHAT_ID)
+        self.chat = chatServices.block_chat(SETUP_CHAT_ID, 1)
+        self.chat = chatServices.block_chat(SETUP_CHAT_ID, 1)
 
         self.assertTrue(self.chat.blocked)
 
-        self.chat = chatServices.unblock_chat(SETUP_CHAT_ID)
-        self.chat = chatServices.unblock_chat(SETUP_CHAT_ID)
+        self.chat = chatServices.unblock_chat(SETUP_CHAT_ID, 1)
+        self.chat = chatServices.unblock_chat(SETUP_CHAT_ID, 1)
 
         self.assertFalse(self.chat.blocked)
 

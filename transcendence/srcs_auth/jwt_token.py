@@ -8,7 +8,7 @@ class JWTVerificationFailed(Exception):
     
 def generate_jwt_token(user_data):
     payload = {
-        'user_id':  user_data['id'],
+        'id_42':  user_data['id'],
         # 'exp': datetime.utcnow() + timedelta(days=1),
         'exp': datetime.utcnow() + timedelta(minutes=1),
         'iat': datetime.utcnow(),
@@ -18,8 +18,8 @@ def generate_jwt_token(user_data):
 def verify_jwt_token(token):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-        user_id = payload['user_id']
-        return User.objects.get(id42=user_id)
+        id_42 = payload['id_42']
+        return User.objects.get(id42=id_42)
     except jwt.ExpiredSignatureError:
         raise JWTVerificationFailed("Token has expired")
     except jwt.InvalidTokenError:

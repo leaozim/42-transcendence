@@ -7,9 +7,9 @@ import jwt
 class TestJwtToken(TestCase):
     def test_generate_jwt_token(self):
         user = UserFactory()
-        test_id = user.id42
+        test_id_42 = user.id42
 
-        token = generate_jwt_token({'id': test_id})
+        token = generate_jwt_token({'id': test_id_42})
         result = verify_jwt_token(token)
 
         self.assertEqual(user, result)
