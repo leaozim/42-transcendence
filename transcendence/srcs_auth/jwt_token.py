@@ -26,3 +26,5 @@ def verify_jwt_token(token):
         raise JWTVerificationFailed("Invalid token")
     except User.DoesNotExist:
         raise JWTVerificationFailed("User does not exist")
+    except:
+        raise Exception

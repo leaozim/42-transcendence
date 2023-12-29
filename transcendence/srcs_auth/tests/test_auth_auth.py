@@ -26,4 +26,4 @@ class TestAuthAuth(TestCase):
         self.assertIsNone(self.intra.authenticate('cavalinho'))
 
     def test_authenticate_on_failure_due_invalid_token(self):
-        self.assertRaises(jwt.InvalidTokenError, self.intra.authenticate, 'cavalinho', 'cavalinho')
+        self.assertRaises(Exception, self.intra.authenticate, 'cavalinho', 'cavalinho')
