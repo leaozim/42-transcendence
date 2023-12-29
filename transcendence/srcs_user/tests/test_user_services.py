@@ -1,5 +1,4 @@
-from django.test import TestCase
-# from django.db import transaction
+from django.test import TransactionTestCase
 from django.http import Http404
 from srcs_user import services as userServices, models as userModels
 from srcs_chat import services as chatServices, models as chatModels
@@ -7,8 +6,8 @@ from srcs_user.tests.factories import UserFactory
 
 # Create your tests here.
 # @transaction.atomic
-class TestUserCase(TestCase):
-
+class TestUserCase(TransactionTestCase):
+    reset_sequences = True
     def tearDown(self):
         UserFactory.reset_sequence()
 

@@ -2,7 +2,7 @@ import requests
 import os
 import json
 
-def exchange_code(code: str):
+def get_access_token(code: str):
     data = {
         "client_id": os.environ.get('CLIENT_ID'),
         "client_secret": os.environ.get('CLIENT_SECRET'),
@@ -14,7 +14,14 @@ def exchange_code(code: str):
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     response = requests.post("https://api.intra.42.fr/oauth/token", data=data, headers=headers)
     credentials = response.json()
-    access_token = credentials['access_token']
-    response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': 'Bearer %s' % access_token})
-    user = response.json()
-    return user
+    return credentials.get('access_token')
+
+def get_user_info(access_token: str):
+    headers = {'Authorization': f'Bearer {access_token}'}
+    response = requests.get('https://api.intra.42.fr/v2/me', headers=headers)
+    return response.json()
+
+def exchange_code(code: str):
+    access_token = get_access_token(code)
+    user_info = get_user_info(access_token)
+    return user_info

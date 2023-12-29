@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TransactionTestCase
 from srcs_chat import services as chatServices
 from srcs_chat.models import Chat
 from srcs_message.models import Message
@@ -9,8 +9,8 @@ from srcs_chat.tests.factories import ChatFactory
 SETUP_CHAT_ID = 1
 
 # @transaction.atomic
-class ChatTests(TestCase):
-
+class ChatTests(TransactionTestCase):
+    reset_sequences = True
     def setUp(self):
         self.chat = ChatFactory()
 
@@ -24,40 +24,41 @@ class ChatTests(TestCase):
         self.assertEqual(self.chat.id, 1)
 
     def test_block_chat(self):
-        chatServices.block_chat(SETUP_CHAT_ID)
+        self.chat = chatServices.block_chat(SETUP_CHAT_ID)
 
-        self.assertTrue(self.chat.blocked)
+        self.assertTrue(Chat.objects.get(id=SETUP_CHAT_ID).id)
 
     def test_unblock_chat(self):
-        chatServices.block_chat(SETUP_CHAT_ID)
+        self.assertFalse(self.chat.blocked)
+        self.chat = chatServices.block_chat(SETUP_CHAT_ID)
 
         self.assertTrue(self.chat.blocked)
-        chatServices.unblock_chat(SETUP_CHAT_ID)
+        self.chat = chatServices.unblock_chat(SETUP_CHAT_ID)
 
         self.assertFalse(self.chat.blocked)
 
     def test_block_and_unblock_chat_twice_in_a_row_should_not_affect_it(self):
-        chatServices.block_chat(SETUP_CHAT_ID)
-        chatServices.block_chat(SETUP_CHAT_ID)
+        self.chat = chatServices.block_chat(SETUP_CHAT_ID)
+        self.chat = chatServices.block_chat(SETUP_CHAT_ID)
 
         self.assertTrue(self.chat.blocked)
 
-        chatServices.unblock_chat(SETUP_CHAT_ID)
-        chatServices.unblock_chat(SETUP_CHAT_ID)
+        self.chat = chatServices.unblock_chat(SETUP_CHAT_ID)
+        self.chat = chatServices.unblock_chat(SETUP_CHAT_ID)
 
         self.assertFalse(self.chat.blocked)
 
     def test_open_chat(self):
-        start_chat_count = Chat.objects.all().count
+        start_chat_count = Chat.objects.all().count()
         UserFactory()
 
-        chatServices.open_chat(2, 3)
-        result_chat_count = Chat.objects.all().count
+        self.chat = chatServices.open_chat(2, 3)
+        result_chat_count = Chat.objects.all().count()
 
         self.assertEqual(result_chat_count, start_chat_count + 1)
 
-        chatServices.open_chat(1, 3)
-        result_chat_count = Chat.objects.all().count
+        self.chat = chatServices.open_chat(1, 3)
+        result_chat_count = Chat.objects.all().count()
 
         self.assertEqual(result_chat_count, start_chat_count + 2)
 
@@ -68,12 +69,12 @@ class ChatTests(TestCase):
         
         result = chatServices.find_open_chats(1)
 
-        self.assertEqual(result, 1)
+        self.assertEqual(len(result), 1)
 
-        chatServices.open_chat(1, 3)
+        self.chat = chatServices.open_chat(1, 3)
         result = chatServices.find_open_chats(1)
 
-        self.assertEqual(result, 2)
+        self.assertEqual(len(result), 2)
 
         chatServices.open_chat(1, 4)
         chatServices.open_chat(2, 4)
@@ -81,11 +82,11 @@ class ChatTests(TestCase):
         chatServices.open_chat(3, 4)
         result = chatServices.find_open_chats(1)
 
-        self.assertEqual(result, 2)
+        self.assertEqual(len(result), 3)
 
         result = chatServices.find_open_chats(4)
 
-        self.assertEqual(result, 3)
+        self.assertEqual(len(result), 3)
 
 
 

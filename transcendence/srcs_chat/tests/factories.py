@@ -9,9 +9,6 @@ class ChatFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Chat
-
-    id = factory.Sequence(lambda n: n + 1)
-    blocked = False
     
     @factory.post_generation
     def usersChats(self, create, extracted, **kwargs):
