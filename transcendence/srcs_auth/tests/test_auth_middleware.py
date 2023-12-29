@@ -1,6 +1,6 @@
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User
+from srcs_user.models import User
 from srcs_auth.jwt_token import generate_jwt_token, JWTVerificationFailed
 from srcs_auth.middleware import JWTAuthenticationMiddleware
 from django.contrib.auth.models import AnonymousUser
@@ -20,7 +20,7 @@ class JWTAuthenticationMiddlewareTest(TestCase):
         self.assertEqual(request.user, AnonymousUser())
 
     def test_allowed_route_with_valid_token(self):
-        jwt_token = generate_jwt_token({'id': self.user.id})  # Ajuste conforme necessário
+        jwt_token = generate_jwt_token({'id': self.user.id})
         request = self.factory.get(self.allowed_route, HTTP_COOKIE=f'jwt_token={jwt_token}')
         middleware = JWTAuthenticationMiddleware(lambda r: None)
         response = middleware(request)
