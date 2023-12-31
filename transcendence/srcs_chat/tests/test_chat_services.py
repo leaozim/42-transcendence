@@ -105,6 +105,9 @@ class ChatTests(TransactionTestCase):
         message = str(context.exception)
         self.assertEqual(message, f"Chat with ID {chat_id} does not exist.")
 
+    def test_unblock_chat_can_only_be_performed_by_the_user_who_bocked_it_first(self):
+        chatServices.block_chat(SETUP_CHAT_ID, 1)
 
+        chat = chatServices.unblock_chat(SETUP_CHAT_ID, 2)
 
-
+        self.assertTrue(chat.blocked)
