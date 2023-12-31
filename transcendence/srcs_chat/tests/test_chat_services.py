@@ -111,3 +111,18 @@ class ChatTests(TransactionTestCase):
         chat = chatServices.unblock_chat(SETUP_CHAT_ID, 2)
 
         self.assertTrue(chat.blocked)
+
+    def test_block_chat_can_only_be_performed_by_players_in_chat(self):
+        UserFactory()
+        UserFactory()
+        chat = chatServices.block_chat(SETUP_CHAT_ID, 3)
+
+        self.assertFalse(chat.blocked)
+
+    def test_unblock_chat_can_only_be_performed_by_players_in_chat(self):
+        UserFactory()
+        UserFactory()
+        chatServices.block_chat(SETUP_CHAT_ID, 1)
+        chat = chatServices.unblock_chat(SETUP_CHAT_ID, 3)
+
+        self.assertTrue(chat.blocked)
