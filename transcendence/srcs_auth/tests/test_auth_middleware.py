@@ -4,6 +4,9 @@ from srcs_user.models import User
 from srcs_auth.jwt_token import generate_jwt_token, JWTVerificationFailed
 from srcs_auth.middleware import JWTAuthenticationMiddleware
 from django.contrib.auth.models import AnonymousUser
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 class JWTAuthenticationMiddlewareTest(TestCase):
     def setUp(self):

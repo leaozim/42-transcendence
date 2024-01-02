@@ -3,7 +3,10 @@ from srcs_auth.jwt_token import verify_jwt_token, JWTVerificationFailed
 from django.urls import reverse
 from django.shortcuts import redirect
 from django.urls import path
+from django.http import HttpResponse
+import logging
 
+logging.basicConfig(level=logging.INFO)
 
 class JWTAuthenticationMiddleware:
     def __init__(self, get_response):
@@ -14,7 +17,6 @@ class JWTAuthenticationMiddleware:
         ]
 
     def __call__(self, request):
-        print("Middleware __call__ is called")
         request.user = AnonymousUser()
 
         if self._is_allowed_route(request.path_info):
@@ -25,19 +27,16 @@ class JWTAuthenticationMiddleware:
         return path_info in self.allowed_routes
 
     def _authenticate_user(self, request):
-        jwt_token = request.COOKIES.get('jwt_token', None)
-        if jwt_token:
-            try:
-                user = verify_jwt_token(jwt_token)
-                request.user = user
-                return self.get_response(request)
-            except JWTVerificationFailed:
-                return self._handle_verification_failure(request)
-        else:
+        try:
+            jwt_token = request.COOKIES.get('jwt_token', None)
+            user = verify_jwt_token(jwt_token)
+            logging.info(jwt_token)
+            request.user = user
+            return self.get_response(request)
+        except JWTVerificationFailed:
             return self._handle_verification_failure(request)
 
     def _handle_verification_failure(self, request):
         if request.path_info in self.allowed_routes:
             request.jwt_redirect_attempted = True  
             return redirect('/')  
-        return None

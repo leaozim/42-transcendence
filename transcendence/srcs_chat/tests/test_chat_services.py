@@ -41,7 +41,7 @@ class ChatTests(TransactionTestCase):
     def test_block_and_unblock_chat_twice_in_a_row_should_not_affect_it(self):
         self.chat = chatServices.block_chat(SETUP_CHAT_ID, 1)
         self.chat = chatServices.block_chat(SETUP_CHAT_ID, 1)
-
+        
         self.assertTrue(self.chat.blocked)
 
         self.chat = chatServices.unblock_chat(SETUP_CHAT_ID, 1)
@@ -98,7 +98,7 @@ class ChatTests(TransactionTestCase):
         self.assertEqual(message, f"User with ID {user_id} does not exist.")
 
     def test_block_chat_when_chat_doesnt_exist_should_raise_Http404(self):
-        chat_id = 9999999
+        chat_id = 999999999
         with self.assertRaises(Http404) as context:
             chatServices.block_chat(chat_id, 1)
         
@@ -126,3 +126,4 @@ class ChatTests(TransactionTestCase):
         chat = chatServices.unblock_chat(SETUP_CHAT_ID, 3)
 
         self.assertTrue(chat.blocked)
+
