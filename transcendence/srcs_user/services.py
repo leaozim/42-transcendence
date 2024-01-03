@@ -33,3 +33,10 @@ def compute_mmr_points(user_id, points):
         return user
     except User.DoesNotExist:
         raise Http404(f"User with ID {user_id} does not exist.")
+
+
+def get_validated_user(user_id):
+    try:
+        return User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        raise Http404(f"User with ID {user_id} does not exist.")
