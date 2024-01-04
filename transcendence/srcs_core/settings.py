@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "srcs_tournament",
     "srcs_message",
     "srcs_auth",
+    "daphne",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -164,3 +165,16 @@ TWO_FACTOR_PROFILE = 'two_factor:qrcode'
 SESSION_COOKIE_SECURE = True
 
 SESSION_COOKIE_SAMESITE = 'None'
+
+ASGI_APPLICATION = "srcs_core.asgi.application"
+
+# Channels
+ASGI_APPLICATION = "srcs_core.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
