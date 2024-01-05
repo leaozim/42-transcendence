@@ -46,6 +46,6 @@ def open_chat(user_id_1, user_id_2):
 
 def find_open_chats(user_id):
     user = get_validated_user(user_id)
-    user_chats = Chat.objects.filter(users_on_chat=user)
-    return user_chats
+    chats = Chat.objects.filter(users_on_chat=user)
+    return chats
 

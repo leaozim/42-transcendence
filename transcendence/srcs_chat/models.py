@@ -8,7 +8,7 @@ class Chat(models.Model):
         related_name='users_chats', 
         blank=True, 
         db_column='users_chats')
-    blocked_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
+    blocked_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True)
   
     class Meta:
         db_table = 'chat'
