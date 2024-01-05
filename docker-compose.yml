@@ -17,6 +17,12 @@ services:
     networks:
       - sonarnet
 
+  redis:
+    image: redis:6
+    container_name: redis_channels
+    ports:
+      - "6379:6379"
+
 volumes:
   postgres:
     name: postgres_db
