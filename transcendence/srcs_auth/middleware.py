@@ -14,10 +14,11 @@ class JWTAuthenticationMiddleware:
         self.allowed_routes = [
             reverse('srcs_user:oauth2'),
             reverse('srcs_auth:logout_user'),
+            reverse('srcs_chat:room', kwargs={'room_name': 'nome_da_sala'}),
         ]
 
     def __call__(self, request):
-        request.user = AnonymousUser()
+        # request.user = AnonymousUser()
 
         if self._is_allowed_route(request.path_info):
             return self._authenticate_user(request)
@@ -30,8 +31,10 @@ class JWTAuthenticationMiddleware:
         try:
             jwt_token = request.COOKIES.get('jwt_token', None)
             user = verify_jwt_token(jwt_token)
-            logging.info(jwt_token)
+            print(user)
+            print( "------------------------------")
             request.user = user
+            print(request.user)
             return self.get_response(request)
         except JWTVerificationFailed:
             return self._handle_verification_failure(request)

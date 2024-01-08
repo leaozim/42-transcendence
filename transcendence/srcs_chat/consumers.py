@@ -78,9 +78,12 @@ class ChatConsumer(WebsocketConsumer):
 
     def get_user_id_from_cookie(self):
         cookie_header = next((value for name, value in self.scope['headers'] if name == b'cookie'), None)
+        print(cookie_header)
         if cookie_header:
             cookie_str = cookie_header.decode('utf-8')
-            jwt_token = cookie_str.split('; ')[1].split('=')[1]
+            parts = cookie_str.split("jwt_token=")
+            if len(parts) > 1:
+                jwt_token = parts[1].split(";")[0]
             user = verify_jwt_token(jwt_token)
             return user.id
         return None
