@@ -33,6 +33,8 @@
             margin-bottom: 5px;
         }
     </style>
+    <div id="user-info" class="mb-3"></div>
+
 </head>
 
 <body class="bg-light">
@@ -121,5 +123,23 @@
     </script>
 
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Fazer uma requisição AJAX para obter informações do usuário autenticado
+        $.ajax({
+            url: 'http://localhost:8000/auth/user/',  // Atualize a URL conforme necessário
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                // Atualizar o DOM com o nome do usuário autenticado
+                $('#user-info').text('Logged in as: ' + data.username);
+            },
+            error: function(error) {
+                console.error("Erro ao obter informações do usuário:", error);
+            }
+        });
+    });
+</script>
 
 </html>
