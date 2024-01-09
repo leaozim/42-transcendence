@@ -31,13 +31,14 @@ class ChatConsumer(WebsocketConsumer):
 
         chat_id = int(self.room_name)
         user = User.objects.get(id=user_id)
+        self.save_message_to_db(chat_id, message, user_id)
         async_to_sync(self.channel_layer.group_send)(
 		    self.room_group_name, {
             'type': 'chat_message', 
             'message': message,
             'user_id': user.id, 
             'username': user.username,
-            }
+         }
 		)
 
     def chat_message(self, event):
