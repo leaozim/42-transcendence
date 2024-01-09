@@ -17,16 +17,19 @@ class SignUpView(CreateView):
     template_name = 'signup.html'
 
 def get_authenticated_user(request):
-    jwt_token = request.COOKIES.get('jwt_token', None)
+    if request.user.is_authenticated:
+        return JsonResponse({'username': request.user.username})
     
-    if jwt_token:   
+    jwt_token = request.COOKIES.get('jwt_token', None)
+    if jwt_token:
         try:
             user = verify_jwt_token(jwt_token)
             if user:
-                return HttpResponse(f'Usuário autenticado: {user.username}')
+                return JsonResponse({'username': user.username})
         except JWTVerificationFailed as e:
-            return HttpResponse(e)
-    return HttpResponse('Usuário não autenticado')
+            return JsonResponse({'error': str(e)}, status=400)
+    
+    return JsonResponse({'error': 'Usuário não autenticado'}, status=401)
 
 def intra_login(request: HttpRequest): 
     return redirect(os.environ.get('AUTH_URL_INTRA'))
