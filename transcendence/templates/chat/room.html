@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,6 +13,21 @@
             overflow-y: auto; /* permite rolagem vertical se o conteúdo exceder a altura máxima */
             margin-bottom: 10px; /* espaço abaixo para o input e botão */
         }
+
+        /* Estilos para mensagens enviadas e recebidas */
+        .sent-message {
+            text-align: right;
+            margin-right: 10px;
+            color: #fff;
+            padding: 5px 10px;
+        }
+
+        .received-message {
+            text-align: left;
+            margin-left: 10px;
+            color: #000;
+            padding: 5px 10px;
+        }
     </style>
 </head>
 
@@ -22,9 +38,11 @@
     <div id="chat-log">
 
         {% if messages %}
-        {% for message in messages %}
-        <p>{{ message.user.username }}: {{ message.content }}</p>
-        {% endfor %}
+            {% for message in messages %}
+            <p class="{% if message.user.username == user.username %} sent-message{% else %}received-message{% endif %}">
+                {{ message.user.username }}: {{ message.content }}
+            </p>
+            {% endfor %}
         {% endif %}
 
     </div>
@@ -44,7 +62,11 @@
         chatSocket.onmessage = function(event) {
             let parsed = JSON.parse(event.data);
             const chatLog = document.querySelector('#chat-log');
-            chatLog.innerHTML += '<p>' + parsed.message + '</p>';
+            console.log(parsed)
+            // Determina a classe com base no usuário
+            let messageClass = parsed.sender === "{{ user.username }}" ? "sent-message" : "received-message";
+
+            chatLog.innerHTML += '<p class="' + messageClass + '">' + parsed.message + '</p>';
 
             // Rola a div do chat para o último item
             chatLog.scrollTop = chatLog.scrollHeight;

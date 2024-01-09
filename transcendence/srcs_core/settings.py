@@ -170,6 +170,7 @@ ASGI_APPLICATION = "srcs_core.asgi.application"
 
 # Channels
 ASGI_APPLICATION = "srcs_core.asgi.application"
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
