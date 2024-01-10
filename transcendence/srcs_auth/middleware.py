@@ -20,27 +20,34 @@ class JWTAuthenticationMiddleware:
 
     def __call__(self, request):
         request.custom_authenticated = self.is_authenticated
+
         if self._is_allowed_route(request.path_info):
             return self._authenticate_user(request)
-        return self.get_response(request)
+        
+        response = self.get_response(request) 
+        return response
 
 
     def _is_allowed_route(self, path_info):
         if path_info in self.allowed_routes:
             return True
-        dynamic_route_start = "/chat/"
+        
+        dynamic_route_start = "chat"
+        
         if path_info.startswith(dynamic_route_start):
             return True
         return False
     
     def _authenticate_user(self, request):
+        jwt_token = request.COOKIES.get('jwt_token', None)
+        
         try:
-            jwt_token = request.COOKIES.get('jwt_token', None)
             user = verify_jwt_token(jwt_token)
             request.user = user
             self.is_authenticated = True
             request.custom_authenticated = self.is_authenticated
             return self.get_response(request)
+        
         except JWTVerificationFailed:
             return self._handle_verification_failure(request)
 
@@ -48,6 +55,7 @@ class JWTAuthenticationMiddleware:
         if request.path_info in self.allowed_routes or not self.is_authenticated:
             request.jwt_redirect_attempted = True  
             return redirect('/')  
+        
         return self.get_response(request)
 
     

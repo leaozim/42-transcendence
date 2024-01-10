@@ -45,11 +45,15 @@
                 <div id="chat-log" class="border rounded">
                     {% if messages %}
                         {% for message in messages %}
-                        <p class="received-message">                            
-                            {{ message.user.username }}: {{ message.content }}
-                        </p>
-                        {% endfor %}
-                    {% endif %}
+                            {% if current_user and message.user.username == current_user.username %}
+                                <p class="sent-message">
+                            {% else %}
+                                <p class="received-message">
+                            {% endif %}
+                                {{ message.user.username }}: {{ message.content }}
+                            </p>
+                    {% endfor %}
+                {% endif %}
                 </div>
 
                 <div class="input-group mb-3">
@@ -71,27 +75,24 @@
         base_url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/chat/' + "{{ room_name }}" + '/';
 
         chatSocket = new WebSocket(base_url);
-        
+    
         function addReceivedMessage(sender, message) {
             const chatLog = document.querySelector('#chat-log');
             const messageElement = document.createElement('p');
-            fetch('http://localhost:8000/auth/user/') 
-            .then(response => response.json())
-            .then(data => {
-                const loggedInUsername = data.username;
-
+            console.log( "aaaaaaaaaaaaaa")
+            getLoggedInUsername().then(loggedInUsername => {
+                console.log(loggedInUsername);
+                console.log(sender);
+        
                 if (sender === loggedInUsername) {
                     messageElement.className = 'sent-message';
                 } else {
                     messageElement.className = 'received-message';
                 }
-
-                messageElement.textContent = sender +  ": " + message;
+        
+                messageElement.textContent = sender + ": " + message;
                 chatLog.appendChild(messageElement);
                 chatLog.scrollTop = chatLog.scrollHeight;
-            })
-            .catch(error => {
-                console.error("Erro ao obter o nome de usuário:", error);
             });
         }
 
@@ -108,6 +109,19 @@
             }));
             messageInputDom.value = '';
         }
+
+        async function getLoggedInUsername() {  
+            try {
+                const response = await fetch('http://localhost:8000/auth/user/');
+                const data = await response.json();
+                console.log(data);
+                return data.username;
+            } catch (error) {
+                console.error("Erro ao obter o nome de usuário:", error);
+                return null;
+            }
+        }
+        
         
         document.querySelector('#chat-message-input').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') { 
@@ -123,23 +137,4 @@
     </script>
 
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function() {
-        // Fazer uma requisição AJAX para obter informações do usuário autenticado
-        $.ajax({
-            url: 'http://localhost:8000/auth/user/',  // Atualize a URL conforme necessário
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                // Atualizar o DOM com o nome do usuário autenticado
-                $('#user-info').text('Logged in as: ' + data.username);
-            },
-            error: function(error) {
-                console.error("Erro ao obter informações do usuário:", error);
-            }
-        });
-    });
-</script>
-
 </html>
