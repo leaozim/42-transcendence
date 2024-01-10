@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from srcs_chat.models import Chat
-from srcs_auth.middleware import JWTAuthenticationMiddleware
 from django.http import HttpResponseForbidden
+from srcs_auth.decorators import login_or_jwt_required
 
 def index(request):
     return render(request, "chat/index.html")
 
-
+@login_or_jwt_required
 def room(request, room_name):
     chat = Chat.objects.get(id=int(room_name))
     messages = chat.message_set.all().order_by('timestamp')

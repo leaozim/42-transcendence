@@ -79,7 +79,6 @@
         function addReceivedMessage(sender, message) {
             const chatLog = document.querySelector('#chat-log');
             const messageElement = document.createElement('p');
-            console.log( "aaaaaaaaaaaaaa")
             getLoggedInUsername().then(loggedInUsername => {
                 console.log(loggedInUsername);
                 console.log(sender);
@@ -114,7 +113,6 @@
             try {
                 const response = await fetch('http://localhost:8000/auth/user/');
                 const data = await response.json();
-                console.log(data);
                 return data.username;
             } catch (error) {
                 console.error("Erro ao obter o nome de usuário:", error);

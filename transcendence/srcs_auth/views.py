@@ -19,7 +19,6 @@ class SignUpView(CreateView):
 def get_authenticated_user(request):
     if request.user.is_authenticated:
         return JsonResponse({'username': request.user.username})
-    
     jwt_token = request.COOKIES.get('jwt_token', None)
     if jwt_token:
         try:

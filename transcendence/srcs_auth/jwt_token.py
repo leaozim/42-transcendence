@@ -17,7 +17,6 @@ def generate_jwt_token(user_data):
 
 def verify_jwt_token(token):
     try:
-        print(token)
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
         id_42 = payload['id_42']
         user = User.objects.get(id42=id_42)
