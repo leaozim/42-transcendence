@@ -1,5 +1,7 @@
-all:
-	echo "[WARNING] SEE IF YOU SETUP DE ENV FILE"
+SERVER_CONTAINER_NAME="transcendence-server"
+
+build:
+	@echo "[WARNING] SEE IF YOU SETUP DE ENV FILE"
 	PWD=$$PWD docker-compose -f ./docker-compose.yml up -d --build
 
 down:
@@ -8,5 +10,8 @@ down:
 clear:
 	docker-compose -f ./docker-compose.yml down --rmi all -v
 
-.PHONY: all down clear
+test: build
+	docker exec -i ${SERVER_CONTAINER_NAME} sh test.sh
+
+.PHONY: down clear build
 
