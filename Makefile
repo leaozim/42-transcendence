@@ -2,7 +2,7 @@ SERVER_CONTAINER_NAME="transcendence-server"
 
 build:
 	@echo "[WARNING] SEE IF YOU SETUP DE ENV FILE"
-	PWD=$$PWD docker-compose -f ./docker-compose.yml up -d --build
+	docker-compose -f ./docker-compose.yml up -d --build
 
 down:
 	docker-compose -f ./docker-compose.yml down
