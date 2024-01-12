@@ -64,13 +64,16 @@ AUTHENTICATION_BACKENDS = [
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'srcs_auth.middleware.CustomAuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SESSION_COOKIE_NAME = 'sessionid'
 
 ROOT_URLCONF = 'srcs_core.urls'
 
@@ -179,3 +182,4 @@ CHANNEL_LAYERS = {
         },
     },
 }
+

@@ -7,6 +7,12 @@ def find_one(id):
     except User.DoesNotExist:
         raise Http404(f"User with ID {id} does not exist.")
 
+def find_one_intra(id_42):
+    try:
+        return User.objects.get(id42=id_42)
+    except User.DoesNotExist:
+        raise Http404(f"User with ID {id_42} does not exist.")
+
 def find_all():
     return User.objects.all()
 
