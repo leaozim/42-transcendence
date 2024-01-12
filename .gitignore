@@ -9,4 +9,4 @@ __pycache__
 .scannerwork/
 .coveragerc
 .env
-app.log
+.DS_Store

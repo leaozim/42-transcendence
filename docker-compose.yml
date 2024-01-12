@@ -1,9 +1,8 @@
 version: '3.8'
 services:
-  postgres:
+  db:
     image: postgres:13
     container_name: db_transcendence
-    restart: always
     ports:
       - 5432:5432
     environment:
@@ -16,12 +15,42 @@ services:
       - postgres:/var/lib/postgresql/data
     networks:
       - sonarnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "$POSTGRES_DB"]
+      interval: 10s
+      timeout: 30s
+      retries: 3
 
   redis:
     image: redis:6
-    container_name: redis_channels
     ports:
       - "6379:6379"
+    networks:
+      - sonarnet
+       
+  transcendence-server:
+    image: transcendence
+    build: ./transcendence/
+    container_name: transcendence-server
+    environment:
+      AUTH_URL_INTRA: ${AUTH_URL_INTRA}
+      REDIRECT_URI: ${REDIRECT_URI}
+      CLIENT_SECRET: ${CLIENT_SECRET}
+      CLIENT_ID: ${CLIENT_ID}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_NAME: ${POSTGRES_NAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: db
+      SECRET_KEY: ${SECRET_KEY}
+    volumes:
+      - ./transcendence:/transcendence
+    ports:
+      - 8000:8000
+    networks:
+      - sonarnet
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   postgres:
@@ -29,4 +58,4 @@ volumes:
 
 networks:
   sonarnet:
-    driver: bridge
+    name: sonarnet

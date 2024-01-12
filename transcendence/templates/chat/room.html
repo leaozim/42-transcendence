@@ -111,7 +111,7 @@
 
         async function getLoggedInUsername() {  
             try {
-                const response = await fetch('http://localhost:8000/auth/user/');
+                const response = await fetch('http://0.0.0.0:8000/auth/user/');
                 const data = await response.json();
                 return data.username;
             } catch (error) {
