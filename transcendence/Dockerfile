@@ -10,7 +10,10 @@ RUN pip install pip --upgrade; \
     rm requirements.txt; \
     adduser -D app
 
+
 COPY --chown=app:app . .
+
+CMD ["daphne", "src_core.asgi:application", "-u", "transcendence/daphne.sock"]
 
 RUN chmod +x ./entrypoint.sh
 

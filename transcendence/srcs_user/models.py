@@ -14,6 +14,9 @@ class User(AbstractUser, PermissionsMixin):
     @property
     def is_authenticated(self):
         return True
-
+    
+    def is_active(self):
+        return True
+    
     class Meta:
         db_table = 'user'

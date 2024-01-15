@@ -42,29 +42,38 @@ INSTALLED_APPS = [
     "srcs_game",
     "srcs_tournament",
     "srcs_message",
+    "srcs_auth",
+    "daphne",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'srcs_user.auth.IntraAuthenticationBackend',
+    'srcs_auth.auth.IntraAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'srcs_user.middleware.JWTAuthenticationMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'srcs_auth.middleware.CustomAuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SESSION_COOKIE_NAME = 'sessionid'
 
 ROOT_URLCONF = 'srcs_core.urls'
 
@@ -79,6 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'srcs_core.context_processors.custom_context_processor'
             ],
         },
     },
@@ -132,6 +142,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+PHONENUMBER_DEFAULT_REGION = 'BR'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -145,11 +156,31 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/auth/user'
 
 LOGOUT_REDIRECT_URL = '/'
 
-LOGIN_URL = "/"
+LOGIN_URL = '/'
+
+TWO_FACTOR_PROFILE = 'two_factor:qrcode'
+
 
 SESSION_COOKIE_SECURE = True
+
 SESSION_COOKIE_SAMESITE = 'None'
+
+ASGI_APPLICATION = "srcs_core.asgi.application"
+
+# Channels
+ASGI_APPLICATION = "srcs_core.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '0.0.0.0']

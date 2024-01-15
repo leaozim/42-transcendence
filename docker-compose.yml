@@ -21,6 +21,13 @@ services:
       timeout: 30s
       retries: 3
 
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"
+    networks:
+      - sonarnet
+       
   transcendence-server:
     image: transcendence
     build: ./transcendence/
@@ -44,6 +51,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
 volumes:
   postgres:
     name: postgres_db

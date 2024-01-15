@@ -9,21 +9,18 @@ class ChatFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Chat
-
-    id = factory.Sequence(lambda n: n + 1)
-    blocked = False
     
     @factory.post_generation
-    def usersChats(self, create, extracted, **kwargs):
+    def users_on_chat(self, create, extracted, **kwargs):
         if not create:
             return
 
         if extracted:
-            self.usersChats.set(extracted)
+            self.users_on_chat.set(extracted)
 
     @factory.post_generation
     def create_users(self, create, extracted, **kwargs):
         if create:
             user1 = UserFactory()
             user2 = UserFactory()
-            self.usersChats.set([user1, user2])
+            self.users_on_chat.set([user1, user2])

@@ -9,7 +9,6 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
     
-    id = factory.Sequence(lambda n: n + 1)
     username = factory.Faker('name')
     id42 = factory.LazyAttribute(lambda _: random.randrange(1000, 9999))
     description = factory.Faker('sentence', nb_words=10)
