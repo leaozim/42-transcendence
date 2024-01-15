@@ -15,15 +15,15 @@ from django.contrib.auth.decorators import login_required
 class SignUpView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
-    template_name = 'signup.html'
+    template_name = 'account/signup.html'
 
 def home(request: HttpRequest) -> JsonResponse:
     return JsonResponse({ "msg":  "hello"})
 
 def get_authenticated_user(request):
     jwt_token = request.COOKIES.get('jwt_token', None)
-    
-    if jwt_token:   
+
+    if jwt_token:
         try:
             user = verify_jwt_token(jwt_token)
             if user:
@@ -32,11 +32,11 @@ def get_authenticated_user(request):
             return HttpResponse(e)
     return HttpResponse('Usuário não autenticado')
 
-def intra_login(request: HttpRequest): 
+def intra_login(request: HttpRequest):
     return redirect(os.environ.get('AUTH_URL_INTRA'))
 
 def intra_login_redirect(request: HttpRequest):
-    code = request.GET.get('code')  
+    code = request.GET.get('code')
     user_data = exchange_code(code)
     User.objects.create_new_intra_user(user_data)
     jwt_token = generate_jwt_token(user_data)

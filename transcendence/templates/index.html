@@ -1,24 +1,16 @@
-<!-- {% load static %}
 
-<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
+{% extends 'includes/base.html' %}
 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Projeto</title>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-</head>
-<body>
+{% block content %}
+{% csrf_token %}
 
 <div class="container">
-    <h1>Hello, World!</h1> -->
-    <!-- Adicione o resto do seu conteúdo aqui -->
-<!-- </div>
 
-</body>
-</html> -->
+    <p>Welcome to Transcendence</p>
+    <p>Kindly login or signup</p>
+    {% comment %} <a href="{% url 'login' %}" class="btn btn-primary">Login</a> {% endcomment %}
+    <a href="{% url 'srcs_user:signup' %}" class="btn btn-success">Sign Up</a>
+    <a href="{% url 'srcs_user:intra_login' %}" class="btn btn-primary">Login com 42</a>
+
+</div>
+{% endblock %}
