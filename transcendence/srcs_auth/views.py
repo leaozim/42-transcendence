@@ -18,7 +18,7 @@ from srcs_auth.auth import IntraAuthenticationBackend
 class SignUpView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
-    template_name = 'signup.html'
+    template_name = 'account/signup.html'
 
 def get_authenticated_user(request):
     if request.user.is_authenticated:

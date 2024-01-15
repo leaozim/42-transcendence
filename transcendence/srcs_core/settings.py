@@ -160,7 +160,7 @@ LOGIN_REDIRECT_URL = '/auth/user'
 
 LOGOUT_REDIRECT_URL = '/'
 
-LOGIN_URL = 'two_factor:login'
+LOGIN_URL = '/'
 
 TWO_FACTOR_PROFILE = 'two_factor:qrcode'
 
