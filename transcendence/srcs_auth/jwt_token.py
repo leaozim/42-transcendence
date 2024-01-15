@@ -10,6 +10,7 @@ def generate_jwt_token(user_data):
     payload = {
         'id_42':  user_data['id'],
         'exp': datetime.utcnow() + timedelta(days=1),
+        # 'exp': datetime.utcnow() + timedelta(seconds=20),
         'iat': datetime.utcnow(),
     }
     return jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')

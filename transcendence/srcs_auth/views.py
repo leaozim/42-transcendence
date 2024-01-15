@@ -2,7 +2,7 @@ from django.shortcuts import render
 from srcs_auth.jwt_token import verify_jwt_token, generate_jwt_token, JWTVerificationFailed
 from django.contrib.auth import authenticate, login, logout
 from srcs_user.models import User
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest, JsonResponse, HttpResponse
 from django.shortcuts import redirect
 import os
 from srcs_auth.services import exchange_code
@@ -23,6 +23,7 @@ class SignUpView(CreateView):
 def get_authenticated_user(request):
     if request.user.is_authenticated:
         return JsonResponse({'username': request.user.username})
+
     return JsonResponse({'error': 'Usuário não autenticado'}, status=401)
 
 def intra_login(request: HttpRequest): 
@@ -47,3 +48,16 @@ def logout_user(request):
     logout(request)
     return response
 
+def refresh_token(request):
+    jwt_token = request.COOKIES.get('jwt_token')
+
+    if jwt_token:
+        try:
+            user_data = verify_jwt_token(jwt_token)
+            new_jwt_token = generate_jwt_token(user_data)
+            response = JsonResponse({'jwt_token': new_jwt_token})
+            response.set_cookie('jwt_token', new_jwt_token, httponly=True, samesite='Lax')
+            return response
+        except JWTVerificationFailed:
+            pass
+    return JsonResponse({'error': 'Erro ao atualizar o token'}, status=400)

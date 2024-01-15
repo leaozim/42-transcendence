@@ -9,4 +9,6 @@ urlpatterns = [
     path('oauth2/login/', views.intra_login, name='intra_login'),
     path('oauth2/login/redirect/', views.intra_login_redirect, name='intra_login_redirect'),
     path('oauth2/logout/', views.logout_user, name='logout_user'),
+    path('oauth2/refresh_token/', views.refresh_token, name='refresh_token'),
+
 ]
