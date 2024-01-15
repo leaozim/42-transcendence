@@ -7,7 +7,4 @@ def IndexView(request: HttpRequest):
     context = {"segment": "index"}
     template = loader.get_template("index.html")
 
-    if request.user.is_anonymous:
-        return HttpResponse(template.render(context, request))
-
-    return HttpResponseRedirect(reverse_lazy("onboarding:welcome"))
+    return HttpResponse(template.render(context, request))
