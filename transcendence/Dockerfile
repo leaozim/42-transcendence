@@ -4,6 +4,7 @@ WORKDIR transcendence
 
 COPY ./requirements/local.txt ./requirements.txt
 
+ENV PATH="/venv/bin:$PATH"
 
 RUN pip install pip --upgrade; \
     pip install -r requirements.txt; \

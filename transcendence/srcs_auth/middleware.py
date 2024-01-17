@@ -9,11 +9,18 @@ class CustomAuthenticationMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+
         jwt_token = request.COOKIES.get('jwt_token')
+
         if jwt_token:
             try:
                 user_data = verify_jwt_token(jwt_token)
-                request.user = User.objects.get(id42=user_data['id_42'])
+                try:
+                    request.user = User.objects.get(id42=user_data['id_42'])
+                except User.DoesNotExist:
+                    redirect('/')
+                    return self.get_response(request)
+                
             except JWTVerificationFailed as e:
                 request.jwt_redirect_attempted = True 
                 redirect('/oauth2/refresh_token/') 

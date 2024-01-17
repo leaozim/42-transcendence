@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste TOTP</title>
+</head>
+<body>
+
+<form id="testForm" onsubmit="sendTOTPRequest(); return false;">
+    <label for="token">Token TOTP:</label>
+    <input type="text" id="token" name="token" required>
+    <input type="submit" value="Enviar Solicitação">
+</form>
+
+<div id="result"></div>
+
+<script>
+function sendTOTPRequest() {
+
+    var totpToken = document.getElementById("token").value;
+
+
+    console.log(document.cookie);
+    var jwtToken = decodeURIComponent(getCookie("jwt_token"));
+    console.log("aaaaaaaaaaaa", jwtToken);
+
+    fetch("http://localhost:8000/totp/login/" + totpToken + "/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+            "jwt_token": getCookie("jwt_token"),
+            "Authorization": "JWT " + getCookie("jwt_token")
+
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Erro na solicitação");
+        }
+        return response.json();
+    })
+    .then(data => {
+        document.getElementById("result").innerText = "Resposta: " + JSON.stringify(data);
+    })
+    .catch(error => {
+        console.error("Erro:", error);
+    });
+}
+
+function getCookie(name) {
+    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    if (match) return match[2];
+}
+</script>
+
+</body>
+</html>

@@ -15,7 +15,9 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-env_path = os.path.join(os.path.dirname(__file__), '../', '.env')
+env_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+env_path = os.path.join(env_dir, '.env')
+
 load_dotenv(env_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -53,7 +55,7 @@ INSTALLED_APPS = [
     'django_otp',
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
-    'two_factor',
+
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -156,13 +158,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-LOGIN_REDIRECT_URL = '/auth/user'
+LOGIN_REDIRECT_URL = '/oauth2'
 
 LOGOUT_REDIRECT_URL = '/'
 
-LOGIN_URL = '/'
-
-TWO_FACTOR_PROFILE = 'two_factor:qrcode'
+# LOGIN_URL = 'two_factor:login'
 
 
 SESSION_COOKIE_SECURE = True
@@ -178,9 +178,13 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
+            # "hosts": [("127.0.0.1", 6379)],
+
             "hosts": [("redis", 6379)],
         },
     },
 }
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '0.0.0.0']
+
+

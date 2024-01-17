@@ -9,11 +9,10 @@ from srcs_auth.services import exchange_code
 from srcs_auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
-from two_factor.views import LoginView as TwoFactorLoginView 
 from django.urls import reverse
 from django.views import View
 from srcs_auth.auth import IntraAuthenticationBackend
-# from srcs_auth.decorators import login_or_jwt_required
+from django_otp.decorators import otp_required
 
 class SignUpView(CreateView):
     form_class = UserCreationForm
@@ -29,6 +28,7 @@ def get_authenticated_user(request):
 def intra_login(request: HttpRequest): 
     return redirect(os.environ.get('AUTH_URL_INTRA'))
 
+# @otp_required
 def intra_login_redirect(request: HttpRequest):
     code = request.GET.get('code')  
     user_intra = exchange_code(code)
@@ -37,7 +37,7 @@ def intra_login_redirect(request: HttpRequest):
     
     if user:
         login(request, user, 'srcs_auth.auth.IntraAuthenticationBackend')
-    
+
     response = redirect("/auth/user") #alterar o retirecionamento para o two-factor
     response.set_cookie('jwt_token', jwt_token, httponly=True, samesite='Lax')
     return response
@@ -61,3 +61,6 @@ def refresh_token(request):
         except JWTVerificationFailed:
             pass
     return JsonResponse({'error': 'Erro ao atualizar o token'}, status=400)
+
+def test_form_view(request):
+    return render(request, 'registration/test_form.html')
