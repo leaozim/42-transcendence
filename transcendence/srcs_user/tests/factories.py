@@ -10,7 +10,7 @@ class UserFactory(factory.django.DjangoModelFactory):
         model = User
     
     username = factory.Faker('name')
-    id42 = factory.LazyAttribute(lambda _: random.randrange(1000, 9999))
+    id_42 = factory.LazyAttribute(lambda _: random.randrange(1000, 9999))
     description = factory.Faker('sentence', nb_words=10)
     is2fActive = FuzzyChoice(choices=[True, False])
     mmr = factory.LazyAttribute(lambda _:random.randrange(0, 50))

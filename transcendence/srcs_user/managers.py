@@ -2,7 +2,7 @@ from django.contrib.auth import models
 
 class IntraUserOAuth2Manager(models.UserManager):
     def create_new_intra_user(self, user):
-        existing_user = self.filter(id42=user['id']).first()
+        existing_user = self.filter(id_42=user['id']).first()
         if existing_user:
             return existing_user
         avatar_link = user['image']['link']
@@ -10,7 +10,7 @@ class IntraUserOAuth2Manager(models.UserManager):
             avatar_link = 'https://res.cloudinary.com/dw9xon1xs/image/upload/v1699535128/nico_nk9vdi.jpg' 
         print(avatar_link)
         new_user = self.create(
-            id42=user['id'],
+            id_42=user['id'],
             avatar=avatar_link,
             email=user['email'],
             username=user['login'],

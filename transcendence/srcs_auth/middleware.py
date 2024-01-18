@@ -16,14 +16,14 @@ class CustomAuthenticationMiddleware:
             try:
                 user_data = verify_jwt_token(jwt_token)
                 try:
-                    request.user = User.objects.get(id42=user_data['id_42'])
+                    request.user = User.objects.get(id_42=user_data['id_42'])
                 except User.DoesNotExist:
                     redirect('/')
                     return self.get_response(request)
                 
             except JWTVerificationFailed as e:
                 request.jwt_redirect_attempted = True 
-                redirect('/oauth2/refresh_token/') 
+                redirect('srcs_auth:refresh_token') 
                 return self.get_response(request)
                 
         response = self.get_response(request)

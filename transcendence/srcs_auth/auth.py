@@ -7,7 +7,7 @@ class IntraAuthenticationBackend(BaseBackend):
         if jwt_token:
             user_data = verify_jwt_token(jwt_token)
             try:
-                user = User.objects.get(id42=user_data['id_42'])
+                user = User.objects.get(id_42=user_data['id_42'])
             except User.DoesNotExist:
                 user = User.objects.create_new_intra_user(user_intra)
                 
@@ -16,6 +16,6 @@ class IntraAuthenticationBackend(BaseBackend):
 
     def get_user(self, user_id):
         try:
-            return User.objects.get(id42=user_id)
+            return User.objects.get(id_42=user_id)
         except User.DoesNotExist:
             return None

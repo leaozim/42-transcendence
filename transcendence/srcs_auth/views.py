@@ -9,8 +9,6 @@ from srcs_auth.services import exchange_code
 from srcs_auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
-from django.urls import reverse
-from django.views import View
 from srcs_auth.auth import IntraAuthenticationBackend
 from django_otp.decorators import otp_required
 
@@ -18,6 +16,7 @@ class SignUpView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'account/signup.html'
+
 
 def get_authenticated_user(request):
     if request.user.is_authenticated:
@@ -28,7 +27,7 @@ def get_authenticated_user(request):
 def intra_login(request: HttpRequest): 
     return redirect(os.environ.get('AUTH_URL_INTRA'))
 
-# @otp_required
+
 def intra_login_redirect(request: HttpRequest):
     code = request.GET.get('code')  
     user_intra = exchange_code(code)
@@ -38,8 +37,12 @@ def intra_login_redirect(request: HttpRequest):
     if user:
         login(request, user, 'srcs_auth.auth.IntraAuthenticationBackend')
 
-    response = redirect("/auth/user") #alterar o retirecionamento para o two-factor
+    if user.is_2f_active:
+        response = redirect("/test-form/")
+    else:
+        response = redirect("/auth/user") #alterar o retirecionamento para o two-factor
     response.set_cookie('jwt_token', jwt_token, httponly=True, samesite='Lax')
+
     return response
 
 def logout_user(request):

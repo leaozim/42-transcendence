@@ -80,8 +80,7 @@
             const chatLog = document.querySelector('#chat-log');
             const messageElement = document.createElement('p');
             getLoggedInUsername().then(loggedInUsername => {
-                console.log(loggedInUsername);
-                console.log(sender);
+
         
                 if (sender === loggedInUsername) {
                     messageElement.className = 'sent-message';
@@ -111,7 +110,7 @@
 
         async function getLoggedInUsername() {  
             try {
-                const response = await fetch('http://0.0.0.0:8000/auth/user/');
+                const response = await fetch('http://localhost:8000/auth/user/');
                 const data = await response.json();
                 return data.username;
             } catch (error) {
