@@ -1,17 +1,18 @@
-
 {% extends 'includes/base.html' %}
+{% load static %}
 
 {% block content %}
 {% csrf_token %}
 
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'index/css/styles.css' %}">
+{% endblock stylesheet %}
+
+<div class="background-image">
+  <img src="../static/index/home_page 1.jpg" width="1920" height="572">
+</div>
+
 <div class="container">
-
-    <p>Welcome to Transcendence</p>
-    <p>Kindly login or signup</p>
-    
-    <a href="{% url 'srcs_auth:login-django' %}" class="btn btn-primary">Login</a>
-    <a href="{% url 'srcs_auth:signup' %}" class="btn btn-success">Sign Up</a>
-    <a href="{% url 'srcs_auth:intra_login' %}" class="btn btn-primary">Login com 42</a>
-
+  <button class="btn btn-primary">Login with 42-intra</button>
 </div>
 {% endblock %}
