@@ -24,7 +24,7 @@ class CustomAuthenticationMiddleware:
                 try:
                     request.user = User.objects.get(id_42=user_data['id_42'])
                 except User.DoesNotExist:
-                    redirect('/')
+                    redirect('home')
                     return request
                 
             except JWTVerificationFailed as e:
@@ -34,7 +34,10 @@ class CustomAuthenticationMiddleware:
 
     def verify_two_factor_auth(self, request):
         if request.user.is_authenticated and request.user.is_2f_active:
-            is_two_factor_authenticated = request.session.get('is_two_factor_authenticated', False)
+            
+            is_two_factor_authenticated =  request.COOKIES.get('two_factor')
             if not is_two_factor_authenticated:
-                redirect('/')
+                redirect('srcs_auth:validate_token_2f')
                 return request
+
+

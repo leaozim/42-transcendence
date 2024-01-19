@@ -4,17 +4,19 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.contrib.sessions.models import Session
 from django.views import View
 from django.views.generic.edit import CreateView
 from django.http import HttpRequest, JsonResponse
 from django.urls import reverse_lazy
+from django.utils import timezone
+from datetime import timedelta 
 
 from srcs_auth.decorators import two_factor_required
 from srcs_auth.jwt_token import verify_jwt_token, generate_jwt_token, JWTVerificationFailed
 from srcs_auth.forms import UserCreationForm
 from srcs_auth.auth import IntraAuthenticationBackend
 from srcs_auth.services import TOTPService, exchange_code
-from srcs_user.models import User
 
 class SignUpView(CreateView):
     form_class = UserCreationForm
@@ -44,15 +46,16 @@ def intra_login_redirect(request: HttpRequest):
     if user.is_2f_active:
         response = redirect("srcs_auth:validate_token_2f")
     else:
-        response = redirect("/auth/user") #alterar o retirecionamento para o two-factor
+        response = redirect("srcs_auth:get_authenticated_user")
+        
     response.set_cookie('jwt_token', jwt_token, httponly=True, samesite='Lax')
-
     return response
 
 
 def logout_user(request):
-    response = redirect("/")
+    response = redirect("home")
     response.delete_cookie("jwt_token")
+    response.delete_cookie("two_factor")
     request.session.flush()
     logout(request)
     return response
@@ -70,6 +73,7 @@ def refresh_token(request):
             return response
         except JWTVerificationFailed:
             pass
+        
     return JsonResponse({'error': 'Erro ao atualizar o token'}, status=400)
 
 
@@ -87,8 +91,9 @@ class TOTPVerifyView(LoginRequiredMixin, View):
         totp_service = TOTPService()
 
         if totp_service.verify_totp_token(user, token):
-            request.session['is_two_factor_authenticated'] = True
-            return JsonResponse({'success': True}, status=200)
+            response = JsonResponse({'success': True}, status=200)
+            response.set_cookie('two_factor', True, max_age=3600, secure=True, httponly=True, samesite='Lax')
+            return response
 
         return JsonResponse({'error': 'Invalid token'}, status=400)
 

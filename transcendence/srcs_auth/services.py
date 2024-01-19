@@ -1,13 +1,11 @@
 import requests
 import os
-import json
 import qrcode
 import base64
 
 from io import BytesIO
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from urllib.parse import parse_qs, urlparse
-from django.http import HttpRequest
 
 def get_access_token(code: str):
     data = {
