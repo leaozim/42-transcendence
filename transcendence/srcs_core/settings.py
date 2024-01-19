@@ -162,8 +162,7 @@ LOGIN_REDIRECT_URL = '/oauth2'
 
 LOGOUT_REDIRECT_URL = '/'
 
-# LOGIN_URL = 'two_factor:login'
-
+LOGIN_URL = 'srcs_auth:intra_login'
 
 SESSION_COOKIE_SECURE = True
 

@@ -9,7 +9,13 @@ class CustomAuthenticationMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        self.verify_jwt(request)
+        self.verify_two_factor_auth(request)
 
+        response = self.get_response(request)
+        return response
+
+    def verify_jwt(self, request):
         jwt_token = request.COOKIES.get('jwt_token')
 
         if jwt_token:
@@ -19,12 +25,16 @@ class CustomAuthenticationMiddleware:
                     request.user = User.objects.get(id_42=user_data['id_42'])
                 except User.DoesNotExist:
                     redirect('/')
-                    return self.get_response(request)
+                    return request
                 
             except JWTVerificationFailed as e:
                 request.jwt_redirect_attempted = True 
                 redirect('srcs_auth:refresh_token') 
-                return self.get_response(request)
-                
-        response = self.get_response(request)
-        return response
+                return request
+
+    def verify_two_factor_auth(self, request):
+        if request.user.is_authenticated and request.user.is_2f_active:
+            is_two_factor_authenticated = request.session.get('is_two_factor_authenticated', False)
+            if not is_two_factor_authenticated:
+                redirect('/')
+                return request
