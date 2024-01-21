@@ -169,8 +169,6 @@ SESSION_COOKIE_SECURE = True
 
 SESSION_COOKIE_SAMESITE = 'None'
 
-ASGI_APPLICATION = "srcs_core.asgi.application"
-
 # Channels
 ASGI_APPLICATION = "srcs_core.asgi.application"
 

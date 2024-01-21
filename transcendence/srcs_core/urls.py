@@ -14,4 +14,5 @@ urlpatterns = [
     path('', include(('srcs_auth.urls', 'srcs_auth'))),
     path("chat/", include("srcs_chat.urls")),
     path('', include(two_factor_urls)),
+    path('game/', include('srcs_game.urls'))
 ]
