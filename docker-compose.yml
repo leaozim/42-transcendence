@@ -23,6 +23,7 @@ services:
 
   redis:
     image: redis:6
+    container_name: redis
     ports:
       - "6379:6379"
     networks:
@@ -59,3 +60,4 @@ volumes:
 networks:
   sonarnet:
     name: sonarnet
+

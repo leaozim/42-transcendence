@@ -18,7 +18,7 @@ class TestAuthAuth(TestCase):
 
     def test_get_user_on_success(self):
         uf = UserFactory()
-        user = self.intra.get_user(uf.id42)
+        user = self.intra.get_user(uf.id_42)
 
         self.assertIsNotNone(user)
 

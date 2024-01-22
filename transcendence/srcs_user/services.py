@@ -9,7 +9,7 @@ def find_one(id):
 
 def find_one_intra(id_42):
     try:
-        return User.objects.get(id42=id_42)
+        return User.objects.get(id_42=id_42)
     except User.DoesNotExist:
         raise Http404(f"User with ID {id_42} does not exist.")
 
