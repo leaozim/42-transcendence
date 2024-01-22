@@ -20,6 +20,8 @@ RUN chmod +x ./entrypoint.sh
 
 RUN chmod +x ./test.sh
 
+RUN chmod 777 .coverage
+
 EXPOSE 8000
 
 USER app
