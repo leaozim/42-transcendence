@@ -24,4 +24,3 @@ EXPOSE 8000
 USER app
 
 ENTRYPOINT ./entrypoint.sh
-
