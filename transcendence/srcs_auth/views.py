@@ -37,6 +37,7 @@ def intra_login(request: HttpRequest):
 def intra_login_redirect(request: HttpRequest):
     code = request.GET.get('code')  
     user_intra = exchange_code(code)
+    print(user_intra)
     jwt_token = generate_jwt_token(user_intra)
     user = IntraAuthenticationBackend().authenticate(request, jwt_token=jwt_token, user_intra=user_intra)
     

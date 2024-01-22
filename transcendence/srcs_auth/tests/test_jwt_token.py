@@ -11,5 +11,7 @@ class TestJwtToken(TestCase):
 
         token = generate_jwt_token({'id': test_id_42})
         result = verify_jwt_token(token)
+        
+        payload_user_id = result.get('id_42')
 
-        self.assertEqual(user, result)
+        self.assertEqual(user.id_42, payload_user_id)
