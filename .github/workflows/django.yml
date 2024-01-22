@@ -29,5 +29,5 @@ jobs:
     - name: Run Script in Docker Container
       run: |
         docker-compose -f ./docker-compose.yml up -d --build
-        docker exec -i ${transcendence-server} sh -c "python manage.py makemigrations && python manage.py migrate"
-        docker exec -i ${transcendence-server} sh -c "./test.sh"
+        docker exec -i transcendence-server sh -c "python manage.py makemigrations && python manage.py migrate"
+        docker exec -i transcendence-server sh -c "./test.sh"
