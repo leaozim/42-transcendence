@@ -23,11 +23,11 @@ jobs:
       CLIENT_ID: ${{ secrets.CLIENT_ID }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
-    steps:
-      - uses: actions/checkout@v3
+  steps:
+    - uses: actions/checkout@v3
 
-      - name: Run Script in Docker Container
+    - name: Run Script in Docker Container
       run: |
-        run: docker-compose up -d --build
+        docker-compose up -d --build
         docker exec -i ${SERVER_CONTAINER_NAME} sh -c "python manage.py makemigrations && python manage.py migrate"
         docker exec -i ${SERVER_CONTAINER_NAME} sh -c "./test.sh"
