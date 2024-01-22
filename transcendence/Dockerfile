@@ -4,6 +4,8 @@ WORKDIR transcendence
 
 COPY ./requirements/local.txt ./requirements.txt
 
+COPY .coverage .coverage
+
 ENV PATH="/venv/bin:$PATH"
 
 RUN pip install pip --upgrade; \
@@ -20,6 +22,7 @@ RUN chmod +x ./entrypoint.sh
 
 RUN chmod +x ./test.sh
 
+RUN chmod +x .coverage
 
 
 EXPOSE 8000
