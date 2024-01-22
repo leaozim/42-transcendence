@@ -1,4 +1,41 @@
 body {
   background-color: #000012;
   color: #FFFFFF;
+  font-family: 'Exo 2', sans-serif;
+}
+.popup-container {
+  width: 450px;
+  max-width: 100%;
+}
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #00000E;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  background-image: url('../images/bg_title_pink.png');
+  background-position: center center;
+  background-repeat: no-repeat;
+  margin-top: 46px;
+  margin-bottom: 25px;
+}
+.form-label {
+  color: #52C0D7;
+  text-transform: lowercase;
+}
+.form-control {
+  color: #fff;
+  border-radius: 15px;
+  border: 1px solid #52C0D7;
+  background-color: #1E1E1E;
+}
+.btn-primary {
+  width: 100%;
+  padding-top: 12px;
+  padding-bottom: 18px;
+  color: #00000E;
+  border-radius: 15px;
+  border: 1px solid #3FA9F5;
+  background: #3FA9F5;
 }
