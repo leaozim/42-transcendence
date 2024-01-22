@@ -28,4 +28,3 @@ USER app
 
 ENTRYPOINT ./entrypoint.sh
 
-ENTRYPOINT ./test.sh
