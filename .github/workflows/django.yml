@@ -22,5 +22,20 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: test
-      run: make test
+    # - name: test
+    #   run: make test
+        - name: Run docker-compose
+      run: docker-compose up -d --build
+
+    - name: Apply Migrations
+      run: |
+        sleep 24
+        cd transcendence
+        python manage.py makemigrations
+        python manage.py migrate
+      
+    - name: Run Tests
+      run: |
+        cd transcendence
+        chmod 777 test.sh
+        ./test.sh
