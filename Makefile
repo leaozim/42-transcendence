@@ -11,7 +11,7 @@ clear:
 	docker-compose -f ./docker-compose.yml down --rmi all -v
 
 test: build
-	docker exec -it ${SERVER_CONTAINER_NAME} sh -c "chmod +x test.sh && ./test.sh"
+	docker exec -i ${SERVER_CONTAINER_NAME} sh -c "chmod +x test.sh && ./test.sh"
 
 .PHONY: down clear build
 
