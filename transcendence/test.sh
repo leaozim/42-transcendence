@@ -15,7 +15,7 @@
 
 #!/bin/bash
 
-COVERAGE_DIR=/transcendence/coverage/
+COVERAGE_DIR=/transcendence/coverage
 
 # Ajuste o caminho do arquivo .coverage
 coverage run --source='.' /transcendence/manage.py test
