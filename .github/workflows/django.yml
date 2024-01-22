@@ -26,11 +26,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Run Docker Container
-      run: docker-compose -f ./docker-compose.yml up -d --build
-    
-    -name: Run migratiosns
-      run: docker exec -i transcendence-server sh -c "python manage.py makemigrations && python manage.py migrate"
-    
-    -name: Run Script in Docker Container
-      run: docker exec -i transcendence-server sh -c "./test.sh"
+    - name: Run Script in Docker Container
+      run: |
+        docker-compose -f ./docker-compose.yml up -d --build
+        docker exec -i transcendence-server sh -c "python manage.py makemigrations && python manage.py migrate"
+        docker exec -i transcendence-server sh -c "./test.sh"
