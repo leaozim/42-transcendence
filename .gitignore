@@ -5,9 +5,9 @@
 */__pycache__/*
 venv
 __pycache__
-# .coverage
+.coverage
 .scannerwork/
-# .coveragerc
+.coveragerc
 .env
 .DS_Store
 trans_env
