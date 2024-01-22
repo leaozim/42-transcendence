@@ -9,7 +9,7 @@ ENV PATH="/venv/bin:$PATH"
 RUN pip install pip --upgrade; \
     pip install -r requirements.txt; \
     rm requirements.txt; \
-    chmod -R 777 /transcendence/coverage \
+    chmod -R 777 /transcendence/coverage ; \
     adduser -D app
 
 COPY --chown=app:app . .
