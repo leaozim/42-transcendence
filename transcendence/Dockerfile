@@ -18,6 +18,8 @@ CMD ["daphne", "src_core.asgi:application", "-u", "transcendence/daphne.sock"]
 
 RUN chmod +x ./entrypoint.sh
 
+RUN chmod +x ./test.sh
+
 EXPOSE 8000
 
 USER app
