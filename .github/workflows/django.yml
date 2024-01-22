@@ -17,10 +17,20 @@ jobs:
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
       POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
       POSTGRES_NAME: ${{ secrets.POSTGRES_NAME }}
+      AUTH_URL_INTRA: ${{ secrets.AUTH_URL_INTRA }}
+      REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
+      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      CLIENT_ID: ${{ secrets.CLIENT_ID }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: test
-      run: make test
+    - name: Run Docker Container
+      run: |
+        docker-compose -f ./docker-compose.yml up -d --build
+        docker exec -i transcendence-server sh -c "python manage.py makemigrations && python manage.py migrate"
+    
+    - name: Run Script in Docker Container
+      run: |
+        docker exec -i transcendence-server sh -c "./test.sh"

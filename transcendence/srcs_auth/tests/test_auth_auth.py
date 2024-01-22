@@ -3,6 +3,8 @@ from srcs_auth.auth import IntraAuthenticationBackend, verify_jwt_token
 from srcs_user.tests.factories import UserFactory
 from mock import patch, Mock
 import jwt
+from srcs_auth.jwt_token import generate_jwt_token
+from srcs_user.tests.factories import UserFactory
 
 class TestAuthAuth(TestCase):
     def setUp(self):
@@ -23,7 +25,10 @@ class TestAuthAuth(TestCase):
         self.assertIsNotNone(user)
 
     def test_authenticate_on_failure(self):
-        self.assertIsNone(self.intra.authenticate('cavalinho'))
+        payload = {'id': 81172}
+
+        token = generate_jwt_token(payload)
+        self.assertIsNone(self.intra.authenticate(request=None, jwt_token=token, user_intra='cavalinho')) 
 
     def test_authenticate_on_failure_due_invalid_token(self):
         self.assertRaises(Exception, self.intra.authenticate, 'cavalinho', 'cavalinho')

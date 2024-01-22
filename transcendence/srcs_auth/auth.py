@@ -1,9 +1,13 @@
 from django.contrib.auth.backends import BaseBackend
 from srcs_user.models import User
 from srcs_auth.jwt_token import verify_jwt_token
+import logging
 
 class IntraAuthenticationBackend(BaseBackend):
     def authenticate(self, request, jwt_token, user_intra):
+        if not isinstance(user_intra, dict):
+            return None
+        
         if jwt_token:
             user_data = verify_jwt_token(jwt_token)
             try:
