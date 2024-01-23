@@ -1,3 +1,4 @@
+echo $PWD
 coverage erase
 coverage run --source='.' manage.py test
 coverage_report=$(coverage report -m --omit=*/__init__.py,*urls.py,*factories.py,*/tests/*,*/migrations/*,*/models.py,*apps.py,*admin.py,srcs_core/*,*/forms.py,*/views.py)
