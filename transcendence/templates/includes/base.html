@@ -1,5 +1,7 @@
 {% load static %}
 
+{% load django_browser_reload %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,5 +19,6 @@
   <main>
     {% block content %}{% endblock %}
   </main>
+  {% django_browser_reload_script %}
 </body>
 </html>

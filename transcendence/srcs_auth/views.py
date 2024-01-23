@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.sessions.models import Session
 from django.views import View
 from django.views.generic.edit import CreateView
+from django.contrib.auth.views import LoginView
 from django.http import HttpRequest, JsonResponse
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -14,7 +15,7 @@ from datetime import timedelta
 
 from srcs_auth.decorators import two_factor_required
 from srcs_auth.jwt_token import verify_jwt_token, generate_jwt_token, JWTVerificationFailed
-from srcs_auth.forms import UserCreationForm
+from srcs_auth.forms import UserCreationForm, UserLoginForm
 from srcs_auth.auth import IntraAuthenticationBackend
 from srcs_auth.services import TOTPService, exchange_code
 
@@ -23,6 +24,11 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('login')
     template_name = 'account/signup.html'
 
+class CustomLoginView(LoginView):
+    template_name = 'registration/login.html'
+    authentication_form = UserLoginForm 
+    redirect_authenticated_user = True
+    
 @two_factor_required
 def get_authenticated_user(request):
     if request.user.is_authenticated:

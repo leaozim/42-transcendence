@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'django_otp',
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
+    "django_browser_reload",
 
 ]
 
@@ -69,10 +70,12 @@ MIDDLEWARE = [
     'srcs_auth.middleware.CustomAuthenticationMiddleware',
     'django_otp.middleware.OTPMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 SESSION_COOKIE_NAME = 'sessionid'
@@ -158,7 +161,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-LOGIN_REDIRECT_URL = '/oauth2'
+LOGIN_REDIRECT_URL = '/auth/user'
 
 LOGOUT_REDIRECT_URL = '/'
 

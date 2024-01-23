@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from srcs_user.models import User
 
 
@@ -20,3 +20,11 @@ class UserChangeForm(UserChangeForm):
     class Meta(UserChangeForm):
         model = User
         fields = ('username', 'email')
+
+
+class UserLoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(UserLoginForm, self).__init__(*args, **kwargs)
+        
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'

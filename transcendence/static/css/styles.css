@@ -7,18 +7,30 @@ body {
   width: 450px;
   max-width: 100%;
 }
-.title {
+.title-center {
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
   font-size: 24px;
   font-weight: 700;
   color: #00000E;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  background-image: url('../images/bg_title_pink.png');
+  margin: 0px;
+}
+.bg-common {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-position: center center;
   background-repeat: no-repeat;
+  width: 100%;
   margin-top: 46px;
+  height: 55px; 
   margin-bottom: 25px;
+}
+.bg-blue {
+  background-image: url('../images/bg_title_blue.png');
+}
+.bg-pink {
+  background-image: url('../images/bg_title_pink.png');
 }
 .form-label {
   color: #52C0D7;
