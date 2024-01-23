@@ -1,56 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste TOTP</title>
-</head>
-<body>
+{% extends 'includes/base.html' %}
 
-<form id="testForm" onsubmit="sendTOTPRequest(); return false;">
-    <label for="token">Token TOTP:</label>
-    <input type="text" id="token" name="token" required>
-    <input type="submit" value="Enviar Solicitação">
-</form>
+{% block content %}
+    <div class="container popup-container">
 
-<div id="result"></div>
+        <form id="testForm" onsubmit="sendTOTPRequest(); return false;">
+            <div class="bg-common bg-blue">
+                <h2 class="title-center">Two Factor</h2>
+            </div>
 
-<script>
-function sendTOTPRequest() {
+            <div class="mb-3">
+                <label for="token" class="form-label">Security Code:</label>
+                <br>
+                <input type="text", class='form-control', id="token" name="token", maxlength="6" required>
+            </div>
+            <input type="submit" class="btn btn-primary" value="verify code">
+                
+            <p class="info mb-3">To verify your identity enter the 6-digit code from your authenticator app.</p>
 
-    let totpToken = document.getElementById("token").value;
+        </form>
 
-    fetch("http://localhost:8000/totp/login/" + totpToken + "/", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCookie("csrftoken"),
-        },
-    })
-    .then(response => {
-        if (response.ok) {
+        <div id="result"></div>
+    </div>
 
-            return response.json();
+
+    <script>
+        function sendTOTPRequest() {
+            let totpToken = document.getElementById("token").value;
+
+            fetch("http://localhost:8000/totp/login/" + totpToken + "/", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                console.error(response)
+                throw new Error("Erro na solicitação");
+            })
+            .then(data => {
+                window.location.href = "http://localhost:8000/auth/user";
+            })
+            .catch(error => {
+                console.error("Erro:", error);
+            });
         }
-        console.error(response)
-        throw new Error("Erro na solicitação");
 
-        
-    })
-    .then(data => {
-        window.location.href = "http://localhost:8000/auth/user";
-    })
-    .catch(error => {
-        console.error("Erro:", error);
-    });
-}
-
-function getCookie(name) {
-    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    if (match) return match[2];
-}
-</script>
-
-</body>
-</html>
+        function getCookie(name) {
+            var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            if (match) return match[2];
+        }
+    </script>
+{% endblock %}
