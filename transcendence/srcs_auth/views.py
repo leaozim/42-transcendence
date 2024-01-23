@@ -108,7 +108,7 @@ class TOTPDeleteView(LoginRequiredMixin, View):
         user = request.user
         totp_service = TOTPService()
 
-        if totp_service.delete_totp_devices(user):
+        if totp_service.get_user_totp_device(user):
             return JsonResponse({'success': 'TOTP devices deleted successfully'}, status=200)
 
         return JsonResponse({'error': 'No TOTP devices found for the user'}, status=404)
