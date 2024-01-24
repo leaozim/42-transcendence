@@ -32,5 +32,4 @@ jobs:
     
     - name: Run Script in Docker Container
       run: |
-        cd transcendence
-        docker exec -i transcendence-server sh -c "cd /transcendence; ./test.sh"
+        docker exec --user=root -i transcendence-server sh -c "./test.sh"
