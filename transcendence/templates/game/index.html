@@ -1,13 +1,11 @@
-<!DOCTYPE html>
-{% load static %}
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <script src="{% static 'game/main.js' %}"></script>
+{% extends  "includes/base.html" %}
 
-    <title>Multiplayer Demo</title>
-  </head>
-  <body>
-    <multiplayer-channels-demo></multiplayer-channels-demo>
-  </body>
-</html>
+{% load static %}
+
+{% block script %} 
+  <script type="module" src="{% static 'game/main.js' %}" defer ></script>
+{% endblock script %}
+
+{% block content %} 
+
+{% endblock content %}

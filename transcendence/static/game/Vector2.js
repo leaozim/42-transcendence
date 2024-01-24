@@ -1,4 +1,4 @@
-class Vector2 {
+export default class Vector2 {
     constructor(x, y) {
         this.x = x;
         this.y = y
@@ -11,12 +11,6 @@ class Vector2 {
     toString() {
         return `Vector2(${this.x}, ${this.y})`
     }
-}
+} 
 
-// velocidade_atual = new Vector2(1, 1)
 
-// aceleracao = new Vector2(5, 4)
-
-// nova_velocidade = velocidade_atual.add(aceleracao)
-
-// console.log(nova_velocidade)

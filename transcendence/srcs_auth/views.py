@@ -38,7 +38,7 @@ def intra_login_redirect(request: HttpRequest):
     if user:
         login(request, user, 'srcs_auth.auth.IntraAuthenticationBackend')
     
-    response = redirect("/auth/user") #alterar o retirecionamento para o two-factor
+    response = redirect("/auth/user")
     response.set_cookie('jwt_token', jwt_token, httponly=True, samesite='Lax')
     return response
 
