@@ -4,20 +4,22 @@
 {% block content %}
 {% csrf_token %}
 
+
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'index/css/styles.css' %}">
 {% endblock stylesheet %}
 
-{% block scripts %}
-<script> const LOGIN_URL = "{% url 'srcs_auth:intra_login' %}";</script>
-<script src="{% static 'index/js/app.js' %}" defer></script>
-{% endblock scripts %}
-
 <div class="background-image">
-  <img src="../static/index/home_page 1.jpg" width="1920" height="572">
+  <img src="{% static 'images/home_page.jpg' %}" width="1920" height="572">
 </div>
 
 <div class="container">
-  <button class="btn btn-primary">Login with 42-intra</button>
+  <button class="btn btn-primary">login</button>
 </div>
-{% endblock %}
+
+{% endblock content %}
+
+{% block scripts %}
+<script>const LOGIN_URL = "{% url 'srcs_auth:intra_login' %}";</script>
+<script src="{% static 'index/js/app.js' %}"></script>
+{% endblock scripts %}
