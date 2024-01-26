@@ -10,6 +10,9 @@ class Chat(models.Model):
         db_column='users_chats')
     blocked_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True)
 
+    def get_other_user(self, current_user):
+        return self.users_on_chat.exclude(id=current_user.id).first()
+    
     class Meta:
         db_table = 'chat'
 

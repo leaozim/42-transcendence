@@ -5,14 +5,11 @@ from srcs_auth.decorators import two_factor_required
 from django.contrib.auth.decorators import login_required
 from srcs_chat import services
 from srcs_user.models import User
+from srcs_message.models import Message
+
 from django.http import JsonResponse
 from django.http import Http404
 
-
-@login_required
-@two_factor_required
-def index(request):
-    return render(request, "chat/index.html")
 
 @login_required
 @two_factor_required
@@ -25,22 +22,20 @@ def room(request, room_name):
     return render(request, "chat/room.html", context={"messages": sorted_messages, "room_name": room_name})
 
 
-def listar_chats(request):
-    user_id = request.user.id
-    chats = services.find_open_chats(user_id)
-    return render(request, 'listar_chats.html', {'chats': chats})
+def chats_list(request):
+    user_chats = Chat.objects.filter(users_on_chat=request.user)
 
+    user_chats = request.user.users_chats.all()
+    users_in_chats = User.objects.filter(users_chats__in=user_chats).distinct()
 
-def list_users(request):
-    users = User.objects.all()
-    return render(request, 'chat/list_users.html', {'users': users})
+    return render(request, 'chat/chats_list.html', {'users_in_chats': users_in_chats})
 
 
 def create_or_open_chat(request, user_id):
     user_id_logged_in = request.user.id 
-
+    
     chat = Chat.objects.filter(users_on_chat=user_id_logged_in).filter(users_on_chat=user_id).first()
-    if not chat:
-        services.open_chat(user_id_logged_in, user_id)
+    if not chat: 
+        chat = services.open_chat(user_id_logged_in, user_id)
         
     return JsonResponse({'room_name': chat.id})
