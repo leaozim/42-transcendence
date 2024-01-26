@@ -75,7 +75,7 @@ class TOTPService:
         return True
 
     def get_user_totp_device(self, user, confirmed=None):
-        devices = TOTPDevice.objects.devices_for_user(user, confirmed=confirmed)
+        devices = self.get_user_totp_devices(user, confirmed=confirmed)
         for device in devices:
             if isinstance(device, TOTPDevice):
                 return device
@@ -101,3 +101,7 @@ class TOTPService:
         qr_img.save(buffer)
         qr_bytes = buffer.getvalue()
         return base64.b64encode(qr_bytes).decode('utf-8')
+    
+    def get_user_totp_devices(self, user, confirmed=None):
+        devices = TOTPDevice.objects.devices_for_user(user, confirmed=confirmed)
+        return devices

@@ -58,7 +58,7 @@
                             {% if current_user and message.user.username == current_user.username %}
                                 <div class="sent-message">
                                     <img src="{{ message.user.avatar }}" alt="{{ message.user.username }}" class="user-photo">
-                                    <p>{{ message.content }}</p>
+                                    <p >{{ message.content }}</p>
                                 </div>
                             {% else %}
                             <div class="received-message">
@@ -91,29 +91,48 @@
         base_url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/chat/' + "{{ room_name }}" + '/';
 
         chatSocket = new WebSocket(base_url);
-    
-        function addReceivedMessage(sender, message) {
-            const chatLog = document.querySelector('#chat-log');
-            const messageElement = document.createElement('p');
-            getLoggedInUsername().then(loggedInUsername => {
 
+        chatSocket.onmessage = function(event) {
+            let parsed = JSON.parse(event.data);
+            addReceivedMessage(parsed.username, parsed.message, parsed.user_avatar);
+        }
+
+        async function addReceivedMessage(sender, message, user_avatar) {
+            const chatLog = document.querySelector('#chat-log');
         
+            const messageElement = document.createElement('div');
+            const avatarElement = document.createElement('img');
+            if (!user_avatar) {
+                avatarElement.src ='https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png' ; // Replace with the path to your default image
+            } else {
+                avatarElement.src = user_avatar;
+            }
+            avatarElement.alt = 'Avatar';
+            avatarElement.className = 'user-photo';
+        
+            await getLoggedInUsername().then(loggedInUsername => {
                 if (sender === loggedInUsername) {
                     messageElement.className = 'sent-message';
                 } else {
                     messageElement.className = 'received-message';
                 }
         
-                messageElement.textContent = sender + ": " + message;
+                messageElement.appendChild(avatarElement);
+
+                const textElement = document.createElement('p');
+                textElement.textContent = message;
+                textElement.className = 'message-text';
+        
+                messageElement.appendChild(textElement);
+        
                 chatLog.appendChild(messageElement);
+        
                 chatLog.scrollTop = chatLog.scrollHeight;
             });
         }
+        
 
-        chatSocket.onmessage = function(event) {
-            let parsed = JSON.parse(event.data);
-            addReceivedMessage(parsed.username, parsed.message);
-        }
+
         
         function sendMessage() {
             const messageInputDom = document.querySelector('#chat-message-input');

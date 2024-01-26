@@ -39,6 +39,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'message': message,
             'user_id': user.id, 
             'username': user.username,
+            'avatar': user.avatar
          }
 		)
 
@@ -46,7 +47,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = event["message"]
         username = event["username"]
         user_id = event["user_id"]
-        await self.send(text_data=json.dumps({"message": message, "username": username, "user_id": user_id}))
+        user_avatar = event["avatar"]
+        await self.send(text_data=json.dumps({"message": message, "username": username, "user_id": user_id, "user_avatar": user_avatar}))
 
     async def get_user_id_from_cookie(self):
         cookie_header = next((value for name, value in self.scope['headers'] if name == b'cookie'), None)

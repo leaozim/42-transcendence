@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     'django_otp',
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
-    "django_browser_reload",
 
 ]
 
@@ -70,7 +69,6 @@ MIDDLEWARE = [
     'srcs_auth.middleware.CustomAuthenticationMiddleware',
     'django_otp.middleware.OTPMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
