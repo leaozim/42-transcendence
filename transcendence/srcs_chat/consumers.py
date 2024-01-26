@@ -1,10 +1,9 @@
 import json
 
-from channels.generic.websocket import WebsocketConsumer
 from srcs_user.models import User
 from srcs_message.services import add_message
 from srcs_chat.models import Chat
-from asgiref.sync import async_to_sync, sync_to_async
+from asgiref.sync import sync_to_async
 from srcs_auth.jwt_token import verify_jwt_token, JWTVerificationFailed
 from channels.generic.websocket import AsyncWebsocketConsumer
 from srcs_user.services import find_one_intra
