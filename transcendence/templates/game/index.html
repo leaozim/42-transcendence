@@ -1,0 +1,37 @@
+<!-- <!DOCTYPE html>
+<html>
+    <head>
+        <title>Phaser Game</title>
+        <script type="text/javascript" src="lib/phaser.min.js"></script>
+        <script type="text/javascript" src="scripts/Vector2.js"></script>
+        <script type="text/javascript" src="scripts/constants.js"></script>
+        <script type="text/javascript" src="scripts/Ball.js"></script>
+        <script type="text/javascript" src="Scene1.js"></script>
+        <script type="text/javascript" src="Scene2.js"></script>
+        <script type="text/javascript" src="game.js"></script>
+    </head>
+    <body>
+    </body>
+</html> -->
+
+{% extends  "includes/base.html" %}
+
+{% load static %}
+
+{% block script %} 
+
+    <script type="text/javascript" src="{% static 'game/lib/phaser.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'game/scripts/Vector2.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/scripts/constants.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/scripts/Ball.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/scripts/Paddle.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/scripts/Player.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/Scene1.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/Scene2.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/game.js' %}" defer ></script>
+
+{% endblock script %}
+
+{% block content %} 
+
+{% endblock content %}
