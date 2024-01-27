@@ -28,7 +28,7 @@ def chats_list(request):
     user_chats = request.user.users_chats.all()
     users_in_chats = User.objects.filter(users_chats__in=user_chats).distinct()
 
-    return render(request, 'chat/chats_list.html', {'users_in_chats': users_in_chats})
+    return render(request, 'chat/chats_list.html', {'users_in_chats': User.objects.all()})
 
 
 def create_or_open_chat(request, user_id):
