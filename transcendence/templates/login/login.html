@@ -3,10 +3,23 @@
 
 {% block content %}
 
-<h1 class="title-center bg-common bg-blue">
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'login/styles.css' %}">
+{% endblock stylesheet %}
+
+<h1 class="title-center bg-common bg-blue img-fluid">
   Transcendence
 </h1>
 
-<button class="btn-primary">profile</button>
+<button id="profile-button" class="btn-primary" type="button" data-toogle="modal" data-target="">
+  profile
+</button>
+
+<!--- Profile page --->
+{% include 'profile/modal.html' %}
 
 {% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'login/app.js' %}"></script>
+{% endblock scripts %}
