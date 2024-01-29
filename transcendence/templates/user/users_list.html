@@ -11,7 +11,9 @@
         {% for user in users %}
             {% if user != request.user %}
                 <li>
-                    <a href="#" onclick="onUserClick('{{ user.id }}', '{{ user.username }}')">{{ user.username }}</a>
+                    <span>{{ user.username }}</span>
+                    <button onclick="onUserClick('{{ user.id }}', '{{ user.username }}')">Chat</button>   
+                    <button onclick="onCreateGame(`{{ user.id }}`)">Create Game</button>             
                 </li>
             {% endif %}
         {% endfor %}
@@ -31,6 +33,32 @@
                     window.location.pathname = '/chat/' + data.room_name + '/';
                 })
                 .catch(error => console.error('Erro ao criar/abrir sala:', error));
+        }
+
+
+
+        function onCreateGame(rightPlayerId) {
+            if (!rightPlayerId || isNaN(rightPlayerId)) {
+                console.error('Invalid user ID for the right player:', rightPlayerId);
+                return;
+            }
+        
+            fetch("http://localhost:8000/game/create_game/" + rightPlayerId)
+            .then(response => response.json())
+                .then(data => {
+                    console.log("aaaaaaaaaaaaaaaaaaaa", data);
+                    window.location.pathname = '/game/' + data.room_name + '/';
+
+                })
+                .catch(error => {
+                    console.error('Error creating game:', error);
+                });
+        }
+
+
+        function getCookie(name) {
+            var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            if (match) return match[2];
         }
     </script>
 </body>>
