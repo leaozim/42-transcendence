@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User List</title>
-</head>
-<body>
+{% extends 'includes/base.html' %}
+
+{% block title %}
+    User List
+{% endblock %}
+
+{% block content %}
     <h1>User List</h1>
     <ul>
         {% for user in users %}
@@ -24,7 +23,6 @@
                 console.error('ID do usuário inválido:', userId);
                 return;
             }
-            //mudar para ir para o perfil do usuario
             fetch( "http://localhost:8000/chat/create_or_open_chat/" + userId)
             .then(response => response.json())
                 .then(data => {
@@ -33,4 +31,4 @@
                 .catch(error => console.error('Erro ao criar/abrir sala:', error));
         }
     </script>
-</body>>
+{% endblock %}
