@@ -4,7 +4,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 class MultiplayerConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
-        self.room_group_name = f"game_1"
+        self.room_group_name = f"game_{self.room_id}"
 
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -29,10 +29,10 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
 
         x = ball_data.get('x', 0)
         y = ball_data.get('y', 0)
-        username = ball_data.get('username', 0)
-        url = ball_data.get('url', 0)
+        left_player = ball_data.get('left_player_id', 0)
+        right_player = ball_data.get('right_player_id', 0)
 
-        print(f'X: {x}\tY: {y}\tusername: {username}')
+        print(f'X: {x}\tY: {y}\tleftPlayer: {left_player}\trightPlayer: {right_player}')
 
         await self.channel_layer.group_send(
 		    self.room_group_name, {

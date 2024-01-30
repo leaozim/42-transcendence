@@ -19,5 +19,5 @@ def room(request, room_id):
     game = Game.objects.filter(pk=int(room_id))
     if not game:   
         raise Http404
-    return render(request, "game/index.html", context={"room_id": room_id})
-
+    game = game.first()
+    return render(request, "game/index.html", context={"room_id": room_id, "leftPlayer": game.leftPlayer.id, "rightPlayer": game.rightPlayer.id})
