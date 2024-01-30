@@ -4,7 +4,11 @@ from django.urls import reverse_lazy
 
 
 def IndexView(request: HttpRequest):
-    context = {"segment": "index"}
-    template = loader.get_template("index.html")
 
-    return HttpResponse(template.render(context, request))
+    if request.user.is_authenticated:
+
+    else :
+        context = {"segment": "index"}
+        template = loader.get_template("index.html")
+
+        return HttpResponse(template.render(context, request))
