@@ -12,7 +12,7 @@
             {% if user != request.user %}
                 <li>
                     <span>{{ user.username }}</span>
-                    <button onclick="onUserClick('{{ user.id }}', '{{ user.username }}')">Chat</button>   
+                    <button onclick="onUserClick(`{{ user.id }}`, '{{ user.username }}')">Chat</button>   
                     <button onclick="onCreateGame(`{{ user.id }}`)">Create Game</button>             
                 </li>
             {% endif %}

@@ -89,7 +89,6 @@
     <script>
 
         base_url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/chat/' + "{{ room_name }}" + '/';
-
         chatSocket = new WebSocket(base_url);
 
         chatSocket.onmessage = function(event) {
