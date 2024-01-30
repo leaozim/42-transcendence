@@ -17,7 +17,13 @@ class Scene2 extends Phaser.Scene {
         // this.scoreTextRight = this.add.text(580, 16, `Player Right: ${this.player_right.getScore()}`, { fontSize: '18px', fill: '#fff' });
     }
 
-    update() {
+    async getUser() {
+      const response = await fetch('http://localhost:8000/auth/user/');
+      const data = await response.json();
+      return data.username;
+    }
+
+    async update() {
         this.ball.move();
         this.left_paddle.move()
         this.left_paddle.hitHorizontalBorders()
@@ -52,9 +58,8 @@ class Scene2 extends Phaser.Scene {
           this.left_paddle.resetPaddle(PLAYER_LEFT)
           this.player_right.updateScoreText()
       }
-
       this.pongSocket.send(JSON.stringify({
-        ball: { x: this.ball.x, y: this.ball.y },
+        ball: { x: this.ball.x, y: this.ball.y, username: await this.getUser() },
       }));
   }
 

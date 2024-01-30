@@ -29,8 +29,10 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
 
         x = ball_data.get('x', 0)
         y = ball_data.get('y', 0)
+        username = ball_data.get('username', 0)
+        url = ball_data.get('url', 0)
 
-        print(f'X: {x}\tY: {y}')
+        print(f'X: {x}\tY: {y}\tusername: {username}')
 
         await self.channel_layer.group_send(
 		    self.room_group_name, {
