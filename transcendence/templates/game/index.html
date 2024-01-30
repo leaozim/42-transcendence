@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block script %} 
-    <script type="text/javascript">const room_name = "{{ room_name|escapejs }}";</script>
+    <script type="text/javascript">const room_id = "{{ room_id|escapejs }}";</script>
     <script type="text/javascript" src="{% static 'game/lib/phaser.min.js' %}" ></script>
     <script type="text/javascript" src="{% static 'game/scripts/Vector2.js' %}" defer ></script>
     <script type="text/javascript" src="{% static 'game/scripts/constants.js' %}" defer ></script>

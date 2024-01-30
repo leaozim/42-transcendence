@@ -1,8 +1,7 @@
 class Scene2 extends Phaser.Scene {
     constructor() {
       super("playGame");
-      const base_url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/' + room_name + '/';
-      console.log(base_url)
+      const base_url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/' + room_id + '/';
       this.pongSocket = new WebSocket(base_url);
     }
   

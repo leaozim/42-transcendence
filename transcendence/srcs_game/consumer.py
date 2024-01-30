@@ -3,7 +3,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 class MultiplayerConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
+        self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
         self.room_group_name = f"game_1"
 
         await self.channel_layer.group_add(

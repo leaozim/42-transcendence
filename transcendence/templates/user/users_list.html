@@ -46,8 +46,7 @@
             fetch("http://localhost:8000/game/create_game/" + rightPlayerId)
             .then(response => response.json())
                 .then(data => {
-                    console.log("aaaaaaaaaaaaaaaaaaaa", data);
-                    window.location.pathname = '/game/' + data.room_name + '/';
+                    window.location.pathname = '/game/' + data.room_id + '/';
 
                 })
                 .catch(error => {

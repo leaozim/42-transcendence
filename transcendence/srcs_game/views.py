@@ -13,11 +13,11 @@ def create_game_view(request, right_player_id):
     left_player = request.user 
     
     game = create_game(left_player, right_player)
-    return JsonResponse({'room_name': game.id})
+    return JsonResponse({'room_id': game.id})
 
-def room(request, room_name):
-    game = Game.objects.filter(pk=int(room_name))
+def room(request, room_id):
+    game = Game.objects.filter(pk=int(room_id))
     if not game:   
         raise Http404
-    return render(request, "game/index.html", context={"room_name": room_name})
+    return render(request, "game/index.html", context={"room_id": room_id})
 
