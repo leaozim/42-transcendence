@@ -1,0 +1,10 @@
+{% extends 'includes/base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <p>{{ user.username }} You are logged in</p>
+	<img src="{{ user.avatar }}" alt="image" class="img-fluid" />
+
+</div>
+{% endblock %}
