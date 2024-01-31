@@ -1,10 +1,27 @@
-{% extends 'includes/base.html' %}
-
+{% extends "includes/base.html" %}
+{% load static %}
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'login/styles.css' %}">
+{% endblock stylesheet %}
 {% block content %}
 
 <div class="container">
     <p>{{ user.username }} You are logged in</p>
 	<img src="{{ user.avatar }}" alt="image" class="img-fluid" />
+	<h1 class="title-center bg-common bg-blue img-fluid">
+		Transcendence
+	  </h1>
+
+	  <button id="profile-button" class="btn-primary" type="button" data-toogle="modal" data-target="">
+		profile
+	  </button>
+
+	  <!-- Profile page -->
+	  {% include "profile/modal.html" %}
+
+	  {% block scripts %}
+	  <script src="{% static 'login/app.js' %}"></script>
+	  {% endblock scripts %}
 
 </div>
-{% endblock %}
+{% endblock content %}
