@@ -1,7 +1,7 @@
 {% extends 'includes/base.html' %}
 
 {% block title %}
-    User List
+User List - Transcendence
 {% endblock %}
 
 {% block content %}
@@ -10,25 +10,27 @@
         {% for user in users %}
             {% if user != request.user %}
                 <li>
-                    <a href="#" onclick="onUserClick('{{ user.id }}', '{{ user.username }}')">{{ user.username }}</a>
+                    <span>{{ user.username }}</span>
+                    <button onclick="openChat(`{{ user.id }}`, '{{ user.username }}')">Chat</button>   
                 </li>
             {% endif %}
         {% endfor %}
     </ul>
 
     <script>
-        function onUserClick(userId, username) {
-
+        function openChat(userId, username) {
             if (!userId || isNaN(userId)) {
                 console.error('ID do usuário inválido:', userId);
                 return;
             }
-            fetch( "http://localhost:8000/chat/create_or_open_chat/" + userId)
-            .then(response => response.json())
+
+            fetch("/chat/create_or_open_chat/" + userId)
+                .then(response => response.json())
                 .then(data => {
-                    window.location.pathname = '/chat/' + data.room_name + '/';
+                    window.location.pathname = '/chat/' + data.room_id + '/';
                 })
                 .catch(error => console.error('Erro ao criar/abrir sala:', error));
         }
+
     </script>
 {% endblock %}
