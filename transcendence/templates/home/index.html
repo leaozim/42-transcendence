@@ -1,0 +1,35 @@
+{% extends "includes/base.html" %}
+{% load static %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'login/styles.css' %}">
+{% endblock stylesheet %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="main-title">
+                    <img src="{% static "images/bg_big_title_blue.png" %}" alt="bg title" class="img-fluid" width="684" height="167" />
+                    <h1 class="title-center bg-common">Transcendence</h1>
+                </div>
+                <div class="frame-image">
+                    <img src="{% static "images/avatar_frame.png" %}" alt="avatar" class="img-fluid" width="480" height="480" />
+                    <img src="{{ user.avatar }}"
+                         alt="image"
+                         width="128"
+                         height="128"
+                         class="img-avatar img-fluid rounded-circle" />
+                </div>
+                <button id="profile-button"
+                        class="btn-round"
+                        type="button"
+                        data-toogle="modal"
+                        data-target=""><i class="bi bi-person"></i></button>
+                <!-- Profile page -->
+                {% include "profile/modal.html" %}
+                {% block scripts %}
+                    <script src="{% static 'login/app.js' %}"></script>
+                {% endblock scripts %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

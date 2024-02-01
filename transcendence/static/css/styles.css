@@ -101,3 +101,39 @@ body {
   background: #1e1e1e !important;
   color: #ffffff !important;
 }
+.main-title {
+  position: relative;
+  width: 684px;
+  max-width: 100%;
+  margin: 70px auto;
+}
+.main-title h1 {
+  font-size: 36px;
+  position: absolute;
+  top: 23%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.frame-image {
+  position: relative;
+  width: 480px;
+  height: 480px;
+  margin: 0 auto;
+}
+.img-avatar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.btn-round {
+  font-size: 32px;
+  background-color: #D613F0;
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

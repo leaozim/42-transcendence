@@ -7,9 +7,9 @@ from django.views.generic.base import TemplateView
 
 
 urlpatterns = [
-    path('', views.IndexView, name='home'),
+    path('', views.IndexView.as_view(), name='home'),
     path('accounts/', include('django.contrib.auth.urls')),
-    
+
     path('admin/', admin.site.urls),
     path("__reload__/", include("django_browser_reload.urls")),
 
