@@ -1,11 +1,10 @@
-import requests
 import os
 import qrcode
 import base64
-
+import requests
 from io import BytesIO
-from django_otp.plugins.otp_totp.models import TOTPDevice
 from urllib.parse import parse_qs, urlparse
+from django_otp.plugins.otp_totp.models import TOTPDevice
 
 def get_access_token(code: str):
     data = {
@@ -34,7 +33,6 @@ def exchange_code(code: str):
     access_token = get_access_token(code)
     user_info = get_user_info(access_token)
     return user_info
-
 
 class TOTPService:
     def create_totp_code(self, user):
@@ -74,12 +72,6 @@ class TOTPService:
         user.save()
         return True
 
-    def get_user_totp_device(self, user, confirmed=None):
-        devices = TOTPDevice.objects.devices_for_user(user, confirmed=confirmed)
-        for device in devices:
-            if isinstance(device, TOTPDevice):
-                return device
-
     def parse_totp_secret(self, config_url):
         parsed_url = urlparse(config_url)
         query_params = parse_qs(parsed_url.query)
@@ -101,3 +93,13 @@ class TOTPService:
         qr_img.save(buffer)
         qr_bytes = buffer.getvalue()
         return base64.b64encode(qr_bytes).decode('utf-8')
+    
+    def get_user_totp_devices(self, user, confirmed=None):
+        devices = TOTPDevice.objects.devices_for_user(user, confirmed=confirmed)
+        return devices
+    
+    def get_user_totp_device(self, user, confirmed=None):
+        devices = TOTPDevice.objects.devices_for_user(user, confirmed=confirmed)
+        for device in devices:
+            if isinstance(device, TOTPDevice):
+                return device
