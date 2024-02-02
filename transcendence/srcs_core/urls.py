@@ -1,13 +1,8 @@
-# Local folder
-from . import views
-
+# Third party
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic.base import TemplateView
-
 
 urlpatterns = [
-    path('', views.IndexView.as_view(), name='home'),
     path('accounts/', include('django.contrib.auth.urls')),
 
     path('admin/', admin.site.urls),
@@ -15,5 +10,6 @@ urlpatterns = [
 
     path('', include(('srcs_user.urls', 'srcs_user'))),
     path('', include(('srcs_auth.urls', 'srcs_auth'))),
+    path('', include('srcs_home.urls', 'srcs_home')),
     path("chat/", include("srcs_chat.urls")),
 ]
