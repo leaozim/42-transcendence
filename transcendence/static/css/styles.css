@@ -118,7 +118,7 @@ body {
   position: relative;
   width: 480px;
   height: 480px;
-  margin: 210px auto 0;
+  margin: 210px auto 210px;
 }
 .img-avatar {
   position: absolute;
@@ -148,15 +148,30 @@ body {
   border: solid 1px #52c0d7;
 }
 
-#instructions {
+#instructions-card {
   top: 240px;
   left: 50%;
   transform: translateX(-50%);
 }
 
-#profile {
+#profile-card {
   top: 400px;
   left: 196px;
+}
+
+#chat-card {
+  top: 413px;
+  right: 215px;
+}
+
+#game-card {
+  top: 702px;
+  left: 120px;
+}
+
+#tournament-card {
+  top: 765px;
+  right: 155px;
 }
 
 .text-card h2 {
