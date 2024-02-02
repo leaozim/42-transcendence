@@ -19,11 +19,34 @@
                          height="128"
                          class="img-avatar img-fluid rounded-circle" />
                 </div>
-                <button id="profile-button"
-                        class="btn-round"
-                        type="button"
-                        data-toogle="modal"
-                        data-target=""><i class="bi bi-person"></i></button>
+                <div id="instructions" class="text-card">
+                    <h2>instructions</h2>
+                    <p>
+                        Use mouse to move around main screen.
+                        <br>
+                        Click on icon to enter specific section.
+                        <br>
+                        Have fun!
+                    </p>
+                </div>
+                <div id="profile" class="text-card">
+                    <h2>profile</h2>
+                    <p>
+                        Configure your authentication.
+                        <br>
+                        View your statistics.
+                        <br>
+                        Create games or chat channels.
+                        <br>
+                    </p>
+                    <button id="profile-button"
+                            class="btn-round"
+                            type="button"
+                            data-toogle="modal"
+                            data-target="">
+                        <i class="bi bi-person"></i>
+                    </button>
+                </div>
                 <!-- Profile page -->
                 {% include "profile/modal.html" %}
                 {% block scripts %}

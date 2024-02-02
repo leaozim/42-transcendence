@@ -105,7 +105,7 @@ body {
   position: relative;
   width: 684px;
   max-width: 100%;
-  margin: 70px auto;
+  margin: 40px auto;
 }
 .main-title h1 {
   font-size: 36px;
@@ -118,7 +118,7 @@ body {
   position: relative;
   width: 480px;
   height: 480px;
-  margin: 0 auto;
+  margin: 210px auto 0;
 }
 .img-avatar {
   position: absolute;
@@ -127,13 +127,44 @@ body {
   transform: translate(-50%, -50%);
 }
 .btn-round {
+  display: flex;
   font-size: 32px;
-  background-color: #D613F0;
+  background-color: #d613f0;
   width: 60px;
   height: 60px;
   border: none;
   border-radius: 50%;
-  display: flex;
   justify-content: center;
   align-items: center;
+  margin: 20px auto 0;
+}
+
+.text-card {
+  position: absolute;
+  color: #52c0d7;
+  text-align: center;
+  padding: 16px 52px;
+  border-radius: 20px;
+  border: solid 1px #52c0d7;
+}
+
+#instructions {
+  top: 240px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#profile {
+  top: 400px;
+  left: 196px;
+}
+
+.text-card h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.text-card p {
+  margin-bottom: 0;
+  line-height: 1.2;
 }
