@@ -1,9 +1,11 @@
 class Paddle extends Phaser.GameObjects.Image  {
-    constructor(scene, x, y, texture) {
+    constructor(scene, x, y, texture, i_move) {
         super(scene, x, y, texture);
         this.velocity = new Vector2(0, 0);
         scene.add.existing(this);
-        this.setupInputHandler();
+        if (i_move) {
+            this.setupInputHandler();
+        }
 
 
     }

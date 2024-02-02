@@ -32,7 +32,7 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
         left_player = ball_data.get('left_player_id', 0)
         right_player = ball_data.get('right_player_id', 0)
 
-        print(f'X: {x}\tY: {y}\tleftPlayer: {left_player}\trightPlayer: {right_player}')
+        # print(f'X: {x}\tY: {y}\tleftPlayer: {left_player}\trightPlayer: {right_player}')
 
         await self.channel_layer.group_send(
 		    self.room_group_name, {

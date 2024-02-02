@@ -1,18 +1,28 @@
 class Scene2 extends Phaser.Scene {
     constructor() {
       super("playGame");
+      console.log('criando game')
       const base_url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/' + room_id + '/';
       this.pongSocket = new WebSocket(base_url);
     }
-  
-    create() {
-        this.left_paddle = new Paddle(this, LEFT_PADDLE_START_POSITION.x, LEFT_PADDLE_START_POSITION.y, "paddle");
-        this.player_left = new Player(this, this.left_paddle, PLAYER_LEFT)
-        this.right_paddle = new Paddle(this, RIGHT_PADDLE_START_POSITION.x, RIGHT_PADDLE_START_POSITION.y, "paddle");
-        this.player_right = new Player(this, this.right_paddle, PLAYER_RIGHT)
 
-        this.paddle_height = this.left_paddle.height;
-        this.ball = new Ball(this, CENTER_OF_SCREEN.x, CENTER_OF_SCREEN.y, "ball");
+    async getThisUser() {
+      const response = await fetch('http://localhost:8000/auth/user_id/');
+      const data = await response.json();
+      return data.user_id
+    }
+  
+    async create() {
+      console.log('teste')
+      this.i_am = await this.getThisUser()
+      console.log(this.i_am)
+      this.left_paddle = new Paddle(this, LEFT_PADDLE_START_POSITION.x, LEFT_PADDLE_START_POSITION.y, "paddle", (this.i_am==leftPlayer));
+      this.player_left = new Player(this, this.left_paddle, PLAYER_LEFT, leftPlayer)
+      this.right_paddle = new Paddle(this, RIGHT_PADDLE_START_POSITION.x, RIGHT_PADDLE_START_POSITION.y, "paddle", (this.i_am==rightPlayer));
+      this.player_right = new Player(this, this.right_paddle, PLAYER_RIGHT, rightPlayer)
+
+      this.paddle_height = this.left_paddle.height;
+      this.ball = new Ball(this, CENTER_OF_SCREEN.x, CENTER_OF_SCREEN.y, "ball");
         // this.scoreTextLeft = this.add.text(400, 16, `Player Left: ${this.player_left.getScore()}`, { fontSize: '18px', fill: '#fff' });
         // this.scoreTextRight = this.add.text(580, 16, `Player Right: ${this.player_right.getScore()}`, { fontSize: '18px', fill: '#fff' });
     }

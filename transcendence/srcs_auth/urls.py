@@ -7,6 +7,7 @@ urlpatterns = [
     path('signup/', views.SignUpView.as_view(), name='signup'),
     path('login/', views.CustomLoginView.as_view(), name='login-django'),
     path('auth/user/', views.get_authenticated_user, name='get_authenticated_user'),
+    path('auth/user_id/', views.get_authenticated_user_id, name='get_authenticated_user_id'),
     path('oauth2/login/', views.intra_login, name='intra_login'),
     path('oauth2/login/redirect/', views.intra_login_redirect, name='intra_login_redirect'),
     path('oauth2/logout/', views.logout_user, name='logout_user'),

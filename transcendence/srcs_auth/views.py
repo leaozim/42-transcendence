@@ -115,3 +115,8 @@ class TOTPDeleteView(LoginRequiredMixin, View):
     
 def validate_token_2f(request):
     return render(request, 'registration/validate_token_2f.html')
+
+def get_authenticated_user_id(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'user_id': request.user.id})
+    return JsonResponse({'error': 'Usuário não autenticado'}, status=401)
