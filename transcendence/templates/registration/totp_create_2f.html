@@ -1,5 +1,7 @@
 {% extends 'includes/base.html' %}
 
+{% load static %}
+
 {% block content %}
 <div class="container popup-container">
   <div class="bg-common bg-pink">
@@ -22,10 +24,10 @@
     </div>
     <div class="row">
       <div class="col-md-6">
-        <button onclick="goBack()" class="btn btn-primary-back">back</button>
+        <button id="back-button" class="btn btn-primary-back">back</button>
       </div>
       <div class="col-md-6">
-        <button onclick="goToAuthentication()" class="btn btn-primary">ok</button>
+        <button id="ok-button" class="btn btn-primary">ok</button>
       </div>
     </div>
 
@@ -34,14 +36,10 @@
 
 </div>
 
-<script>
-  function goBack() {
-    history.back();
-  }
+{% endblock content %}
 
-  function goToAuthentication() {
-    window.location.pathname = '/validate_token_2f/';
+{% block scripts %}
+<script> const VALIDATE_TOKEN_URL = "{% url 'srcs_auth:validate_token_2f' %}"</script>
+<script src="{% static 'registration/totp_create_2f.js' %}"></script>
 
-  }
-</script>
-{% endblock %}
+{% endblock scripts %}

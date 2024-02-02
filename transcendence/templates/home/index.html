@@ -85,12 +85,13 @@
       </div>
       <!-- Profile page -->
       {% include "profile/modal.html" %}
-      {% block scripts %}
-      <script src="{% static 'login/app.js' %}"></script>
-      {% endblock scripts %}
     </div>
   </div>
 </div>
 </div>
 </div>
 {% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'profile/app.js' %}"></script>
+{% endblock scripts %}

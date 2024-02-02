@@ -1,9 +1,11 @@
 {% extends 'includes/base.html' %}
 
+{% load static %}
+
 {% block content %}
 <div class="container popup-container">
 
-  <form id="testForm" onsubmit="sendTOTPRequest(); return false;">
+  <form id="testForm">
     <div class="bg-common bg-blue">
       <h2 class="title-center">Two Factor</h2>
     </div>
@@ -22,37 +24,9 @@
   <div id="result"></div>
 </div>
 
+{% endblock content %}
 
-<script>
-  function sendTOTPRequest() {
-    let totpToken = document.getElementById("token").value;
-
-    fetch("http://localhost:8000/totp/login/" + totpToken + "/", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCookie("csrftoken"),
-      },
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        console.error(response)
-        throw new Error("Erro na solicitação");
-      })
-      .then(data => {
-        window.location.href = "http://localhost:8000/auth/user";
-      })
-      .catch(error => {
-        console.error("Erro:", error);
-      });
-  }
-
-  function getCookie(name) {
-    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    if (match) return match[2];
-  }
-</script>
-{% endblock %}
+{% block scripts %}
+<script> const TOTP_LOGIN_URL = "http://localhost:8000/totp/login/" </script>
+<script src="{% static 'registration/validate_token_2f.js' %}"></script>
+{% endblock scripts %}
