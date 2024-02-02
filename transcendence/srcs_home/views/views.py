@@ -14,7 +14,6 @@ class IndexView(View):
             context = {
                 "user": user
             }
-            print(user)
             return render(request, template_name, context)
         else:
             context = {"segment": "index"}
