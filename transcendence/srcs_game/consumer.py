@@ -22,17 +22,17 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
 
-        ball_data = text_data_json.get('ball', {})
-        
-        # Adicionar lógica para processar inputs
-        # Trazer lógica de loop do jogo para cá
+        player_data = text_data_json.get('player', {})
+        is_left_player = player_data.get('left', 0) == 1
 
-        x = ball_data.get('x', 0)
-        y = ball_data.get('y', 0)
-        left_player = ball_data.get('left_player_id', 0)
-        right_player = ball_data.get('right_player_id', 0)
-
-        # print(f'X: {x}\tY: {y}\tleftPlayer: {left_player}\trightPlayer: {right_player}')
+        if is_left_player:
+            print("Recebido do jogador esquerdo:")
+            print(f"Paddle X: {player_data.get('paddle', {}).get('x')}")
+            print(f"Paddle Y: {player_data.get('paddle', {}).get('y')}")
+        else:
+            print("Recebido do jogador direito:")
+            print(f"Paddle X: {player_data.get('paddle', {}).get('x')}")
+            print(f"Paddle Y: {player_data.get('paddle', {}).get('y')}")
 
         await self.channel_layer.group_send(
 		    self.room_group_name, {

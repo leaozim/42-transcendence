@@ -20,6 +20,7 @@ class Scene2 extends Phaser.Scene {
       this.player_left = new Player(this, this.left_paddle, PLAYER_LEFT, leftPlayer)
       this.right_paddle = new Paddle(this, RIGHT_PADDLE_START_POSITION.x, RIGHT_PADDLE_START_POSITION.y, "paddle", (this.i_am==rightPlayer));
       this.player_right = new Player(this, this.right_paddle, PLAYER_RIGHT, rightPlayer)
+      this.me = (this.i_am==leftPlayer) ? this.player_left : this.player_right
 
       this.paddle_height = this.left_paddle.height;
       this.ball = new Ball(this, CENTER_OF_SCREEN.x, CENTER_OF_SCREEN.y, "ball");
@@ -28,6 +29,31 @@ class Scene2 extends Phaser.Scene {
     }
 
     async update() {
+      this.pongSocket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        if (data.player) {
+            const isLeftPlayer = data.player.left === 1;
+
+            if (isLeftPlayer) {
+                console.log("Recebido do jogador esquerdo:");
+            } else {
+                console.log("Recebido do jogador direito:");
+            }
+
+            console.log(`Paddle X: ${data.player.paddle.x}`);
+            console.log(`Paddle Y: ${data.player.paddle.y}`);
+
+            // Atualize a posição do paddle conforme necessário
+            if (isLeftPlayer) {
+                this.right_paddle.x = data.player.paddle.x;
+                this.right_paddle.y = data.player.paddle.y;
+            } else {
+                this.left_paddle.x = data.player.paddle.x;
+                this.left_paddle.y = data.player.paddle.y;
+            }
+        }
+    };
         this.ball.move();
         this.left_paddle.move()
         this.left_paddle.hitHorizontalBorders()
@@ -63,9 +89,20 @@ class Scene2 extends Phaser.Scene {
           this.player_right.updateScoreText()
       }
       // let players = await this.getPlayers()
-      this.pongSocket.send(JSON.stringify({
-        ball: { x: this.ball.x, y: this.ball.y, left_player_id: leftPlayer, right_player_id: rightPlayer },
-      }));
+      if (this.i_am==leftPlayer){
+        this.pongSocket.send(JSON.stringify({
+          player: {
+            left: 1,
+            paddle: { x: this.left_paddle.x, y: this.left_paddle.y }
+          },
+      }))}
+      else {
+        this.pongSocket.send(JSON.stringify({
+          player: {
+            left: 0,
+            paddle: { x: this.right_paddle.x, y: this.right_paddle.y }
+          },
+      }));}
   }
 
 
