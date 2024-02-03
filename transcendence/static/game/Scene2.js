@@ -2,8 +2,12 @@ class Scene2 extends Phaser.Scene {
     constructor() {
       super("playGame");
       console.log('criando game')
-      const base_url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/' + room_id + '/';
-      this.pongSocket = new WebSocket(base_url);
+      const sendPlayer1Url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/' + room_id + '/player1/';
+      const sendPlayer2Url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/' + room_id + '/player2/';
+      const receiveSocketUrl = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/' + room_id + '/broadcast/';
+      this.sendPlayer1Socket = new WebSocket(sendPlayer1Url);
+      this.sendPlayer2Socket = new WebSocket(sendPlayer2Url);
+      this.receiveSocket = new WebSocket(receiveSocketUrl);
     }
 
     async getThisUser() {
@@ -29,31 +33,31 @@ class Scene2 extends Phaser.Scene {
     }
 
     async update() {
-      this.pongSocket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
+    //   this.receiveSocket.onmessage = (event) => {
+    //     const data = JSON.parse(event.data);
 
-        if (data.player) {
-            const isLeftPlayer = data.player.left === 1;
+    //     if (data.player) {
+    //         const isLeftPlayer = data.player.left === 1;
 
-            if (isLeftPlayer) {
-                console.log("Recebido do jogador esquerdo:");
-            } else {
-                console.log("Recebido do jogador direito:");
-            }
+    //         if (isLeftPlayer) {
+    //             console.log("Recebido do jogador esquerdo:");
+    //         } else {
+    //             console.log("Recebido do jogador direito:");
+    //         }
 
-            console.log(`Paddle X: ${data.player.paddle.x}`);
-            console.log(`Paddle Y: ${data.player.paddle.y}`);
+    //         console.log(`Paddle X: ${data.player.paddle.x}`);
+    //         console.log(`Paddle Y: ${data.player.paddle.y}`);
 
-            // Atualize a posição do paddle conforme necessário
-            if (isLeftPlayer) {
-                this.right_paddle.x = data.player.paddle.x;
-                this.right_paddle.y = data.player.paddle.y;
-            } else {
-                this.left_paddle.x = data.player.paddle.x;
-                this.left_paddle.y = data.player.paddle.y;
-            }
-        }
-    };
+    //         // Atualize a posição do paddle conforme necessário
+    //         if (isLeftPlayer) {
+    //             this.right_paddle.x = data.player.paddle.x;
+    //             this.right_paddle.y = data.player.paddle.y;
+    //         } else {
+    //             this.left_paddle.x = data.player.paddle.x;
+    //             this.left_paddle.y = data.player.paddle.y;
+    //         }
+    //     }
+    // };
         this.ball.move();
         this.left_paddle.move()
         this.left_paddle.hitHorizontalBorders()
@@ -89,20 +93,20 @@ class Scene2 extends Phaser.Scene {
           this.player_right.updateScoreText()
       }
       // let players = await this.getPlayers()
-      if (this.i_am==leftPlayer){
-        this.pongSocket.send(JSON.stringify({
-          player: {
-            left: 1,
-            paddle: { x: this.left_paddle.x, y: this.left_paddle.y }
-          },
-      }))}
-      else {
-        this.pongSocket.send(JSON.stringify({
-          player: {
-            left: 0,
-            paddle: { x: this.right_paddle.x, y: this.right_paddle.y }
-          },
-      }));}
+      // if (this.i_am==leftPlayer){
+      //   this.sendPlayer1Socket.send(JSON.stringify({
+      //     player: {
+      //       left: 1,
+      //       paddle: { x: this.left_paddle.x, y: this.left_paddle.y }
+      //     },
+      // }))}
+      // else {
+      //   this.sendPlayer1Socket.send(JSON.stringify({
+      //     player: {
+      //       left: 0,
+      //       paddle: { x: this.right_paddle.x, y: this.right_paddle.y }
+      //     },
+      // }));}
   }
 
 
