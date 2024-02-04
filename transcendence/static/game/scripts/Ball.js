@@ -1,6 +1,6 @@
 class Ball extends Phaser.GameObjects.Image {
     constructor(scene, x, y, texture ) {
-        super(scene, x, y, texture);
+        // super(scene, x, y, texture);
 
         this.initialSpeed = 2
         this.speed = this.initialSpeed;
@@ -15,7 +15,7 @@ class Ball extends Phaser.GameObjects.Image {
 
         // Adicione lógica específica da bola aqui, se necessário
         // this.setTexture(texture); caso o super não funcione. Mas só tente isso como último recurso
-        scene.add.existing(this);
+        // scene.add.existing(this);
    
     }
 

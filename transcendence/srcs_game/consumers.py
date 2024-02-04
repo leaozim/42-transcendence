@@ -1,5 +1,8 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from static.game.scripts.Ball import Ball
+
+ball = Ball()
 
 class BroadcastConsumer(AsyncWebsocketConsumer):
     async def connect(self):
