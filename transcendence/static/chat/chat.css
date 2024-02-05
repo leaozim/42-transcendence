@@ -1,0 +1,118 @@
+#chat-container {
+    display: flex; 
+    flex-direction: column;
+    max-width: 63%;
+    height: 550px;
+    background-color: #1E1E1E;
+    border-radius: 15px;
+    margin: auto;
+    overflow: hidden; 
+} 
+#message-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    overflow-y: auto;
+    border: 1px solid  #6F077C;
+    border-bottom: none;
+    scrollbar-width:initial;
+    scrollbar-color: #6F077C #1E1E1E; 
+
+}
+#message-container::-webkit-scrollbar {
+    width: 5px;
+    transition: width 0.5s;
+}
+#message-container::-webkit-scrollbar-thumb {
+    background-color: #6F077C;
+}
+
+#message-container::-webkit-scrollbar-track {
+    background-color: #1E1E1E;
+} 
+#chat-log {
+    display: flex; 
+    flex-direction: column; 
+    padding: 15px;
+}
+.sent-message {
+
+    display: flex;
+    justify-content: flex-end; 
+    color: #000;
+    margin-bottom: 5px;
+
+}
+.sent-message > p {
+    
+    max-width: 80%;
+    padding: 5px 20px;
+    background-color: #52C0D7;
+    border-radius: 15px;
+    display: inline-block;
+    margin: 0;
+    word-wrap: break-word; 
+}
+.sent-message > p.special-style {
+    border-radius: 25px 0px 25px 25px;
+}
+.received-message {
+    display: flex;
+    justify-content: flex-start;
+    color: #000;
+    margin-bottom: 5px;
+}
+.received-message > p {
+    max-width: 80%;
+    padding: 5px 20px;
+    background-color: #606060;
+    border-radius: 15px;
+    display: inline-block;
+    margin: 0;
+    word-wrap: break-word; 
+}
+.received-message > p.special-style {
+    border-radius: 0px 25px 25px 25px;
+}
+.user-photo {
+    border-radius: 50%;
+    width: 30px;
+    height: 30px; 
+    object-fit: cover; 
+    margin-right: 8px; 
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    background-color: #6F077C;
+    border-radius: 15px 15px 0 0; 
+    padding: 5px 20px;
+}
+.message-input-container {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    background-color: #1E1E1E;
+    border: 1px solid  #6F077C;
+    border-top: none;
+    border-radius: 0px 0px 15px 15px; 
+
+}
+#chat-message-input {
+    width: 80%;
+    height: 50px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    resize: none; 
+    background-color: #606060;
+    border-radius: 25px 25px 25px 25px; 
+    padding: 10px 10px;
+    border: none;
+    outline: none;
+}
+#chat-message-input::placeholder {
+    color: rgb(40, 36, 40);
+}

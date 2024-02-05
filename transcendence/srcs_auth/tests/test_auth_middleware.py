@@ -52,7 +52,7 @@ class CustomAuthenticationMiddlewareTests(TestCase):
 
         self.assertIsNotNone(response)
         self.assertIsInstance(response, HttpResponseRedirect)
-        self.assertEqual(response.url, reverse('home'))
+        self.assertEqual(response.url, reverse('srcs_home:home'))
 
 
         

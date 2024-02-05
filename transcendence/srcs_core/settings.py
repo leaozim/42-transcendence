@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     'django_otp',
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
-    "django_browser_reload",
+    "django_browser_reload", #retirar depois, pq da conflito com o channels
+
 
 ]
 
@@ -69,8 +70,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'srcs_auth.middleware.CustomAuthenticationMiddleware',
     'django_otp.middleware.OTPMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
+    'django.middleware.security.SecurityMiddleware', 
+    
+    "django_browser_reload.middleware.BrowserReloadMiddleware",#retirar depois, pq da conflito com o channels
+
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -180,8 +183,6 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            # "hosts": [("127.0.0.1", 6379)],
-
             "hosts": [("redis", 6379)],
         },
     },

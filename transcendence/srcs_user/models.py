@@ -8,7 +8,7 @@ class User(AbstractUser, PermissionsMixin):
     description = models.TextField(blank=True)
     token_2F = models.CharField(max_length=255, blank=True, db_column='token_2f')
     is_2f_active = models.BooleanField(default=False, db_column='is_2f_active')
-    avatar = models.CharField(max_length=255, blank=True)
+    avatar = models.CharField(max_length=255, blank=True, default='https://res.cloudinary.com/dw9xon1xs/image/upload/v1699535128/nico_nk9vdi.jpg')
     mmr = models.FloatField(default=0)
     
     @property

@@ -72,6 +72,12 @@ class TOTPService:
         user.save()
         return True
 
+    def get_user_totp_device(self, user, confirmed=None):
+        devices = self.get_user_totp_devices(user, confirmed=confirmed)
+        for device in devices:
+            if isinstance(device, TOTPDevice):
+                return device
+
     def parse_totp_secret(self, config_url):
         parsed_url = urlparse(config_url)
         query_params = parse_qs(parsed_url.query)
@@ -97,9 +103,3 @@ class TOTPService:
     def get_user_totp_devices(self, user, confirmed=None):
         devices = TOTPDevice.objects.devices_for_user(user, confirmed=confirmed)
         return devices
-    
-    def get_user_totp_device(self, user, confirmed=None):
-        devices = TOTPDevice.objects.devices_for_user(user, confirmed=confirmed)
-        for device in devices:
-            if isinstance(device, TOTPDevice):
-                return device

@@ -131,13 +131,8 @@ class TOTPDeleteView(LoginRequiredMixin, View):
         user = request.user
         totp_service = TOTPService()
 
-        if totp_service.get_user_totp_device(user):
-            return JsonResponse(
-                {"success": "TOTP devices deleted successfully"}, status=200
-            )
-
-        return JsonResponse({"error": "No TOTP devices found for the user"}, status=404)
-
+        if totp_service.delete_totp_devices(user):
+            return JsonResponse({'success': 'TOTP devices deleted successfully'}, status=200)
 
 def validate_token_2f(request):
     return render(request, "registration/validate_token_2f.html")

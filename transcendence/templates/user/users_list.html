@@ -1,0 +1,36 @@
+{% extends 'includes/base.html' %}
+
+{% block title %}
+User List - Transcendence
+{% endblock %}
+
+{% block content %}
+    <h1>User List</h1>
+    <ul>
+        {% for user in users %}
+            {% if user != request.user %}
+                <li>
+                    <span>{{ user.username }}</span>
+                    <button onclick="openChat(`{{ user.id }}`, '{{ user.username }}')">Chat</button>   
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <script>
+        function openChat(userId, username) {
+            if (!userId || isNaN(userId)) {
+                console.error('ID do usuário inválido:', userId);
+                return;
+            }
+
+            fetch("/chat/create_or_open_chat/" + userId)
+                .then(response => response.json())
+                .then(data => {
+                    window.location.pathname = '/chat/' + data.room_id + '/';
+                })
+                .catch(error => console.error('Erro ao criar/abrir sala:', error));
+        }
+
+    </script>
+{% endblock %}
