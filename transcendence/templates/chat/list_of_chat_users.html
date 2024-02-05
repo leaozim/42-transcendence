@@ -1,34 +1,33 @@
-{% extends 'includes/base.html' %}
-
-{% block title %}
-    Chat List
-{% endblock %}
-
-{% block content %}
-    <h1>Chat List</h1>
-    <ul>
-        {% for user in users_in_chats %}
-            {% if user != request.user %}
+<div id="chat-modal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-content chat">
+        <h1>Chat List</h1>
+        <ul>
+            {% for user in users_in_chats %}
+                {% if user != request.user %}
                 <li>
-                    <a href="#" onclick="onUserClick('{{ user.id }}', '{{ user.username }}')">{{ user.username }}</a>
-                </li>
-            {% endif %}
-        {% endfor %}
-    </ul>
+                    <span>{{ user.username }}</span>
 
-    <script>
-        function onUserClick(userId, username) {
-            if (!userId || isNaN(userId)) {
-                console.error('ID do usuário inválido:', userId);
-                return;
-            }
-      
-            fetch("http://localhost:8000/chat/create_or_open_chat/" + userId)
-                .then(response => response.json())
-                .then(data => {
-                    window.location.pathname = '/chat/' + data.room_id + '/';
-                })
-                .catch(error => console.error('Erro ao criar/abrir sala:', error));
+                    <button onclick="openChat(`{{ user.id }}`, '{{ user.username }}')">Chat</button>   
+
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<script>
+    function openChat(userId, username) {
+        if (!userId || isNaN(userId)) {
+            console.error('ID do usuário inválido:', userId);
+            return;
         }
-    </script>
-{% endblock %}
+
+        fetch("/chat/create_or_open_chat/" + userId)
+            .then(response => response.json())
+            .then(data => {
+                window.location.pathname = '/chat/' + data.room_id + '/';
+            })
+            .catch(error => console.error('Erro ao criar/abrir sala:', error));
+    }
+</script>

@@ -51,7 +51,7 @@
                     <h2>chat</h2>
                     <p>
                         Create chat channels,
-                        <br |>
+                        <br>
                         see your ongoing chats
                         <br>
                         or just chat.
@@ -103,10 +103,12 @@
                     </button>
                 </div>
                 <!-- Profile page -->
+                {% include "chat/list_of_chat_users.html" %}
                 {% include "profile/modal.html" %}
-                {% block scripts %}
-                    <script src="{% static 'login/app.js' %}"></script>
-                {% endblock scripts %}
+
+                
+                <script src="{% static 'login/app.js' %}"></script>
+                <script src="{% static 'chat/app.js' %}"></script>
             </div>
         </div>
     </div>
