@@ -1,11 +1,10 @@
-import requests
 import os
 import qrcode
 import base64
-
+import requests
 from io import BytesIO
-from django_otp.plugins.otp_totp.models import TOTPDevice
 from urllib.parse import parse_qs, urlparse
+from django_otp.plugins.otp_totp.models import TOTPDevice
 
 def get_access_token(code: str):
     data = {
@@ -34,7 +33,6 @@ def exchange_code(code: str):
     access_token = get_access_token(code)
     user_info = get_user_info(access_token)
     return user_info
-
 
 class TOTPService:
     def create_totp_code(self, user):

@@ -1,7 +1,7 @@
 body {
   background-color: #000012;
-  color: #FFFFFF;
-  font-family: 'Exo 2', sans-serif;
+  color: #ffffff;
+  font-family: "Exo 2", sans-serif;
 }
 .popup-container {
   width: 450px;
@@ -12,9 +12,10 @@ body {
   letter-spacing: 1.2px;
   font-size: 24px;
   font-weight: 700;
-  color: #00000E;
+  color: #00000e;
   margin: 0px;
 }
+
 .bg-common {
   display: flex;
   align-items: center;
@@ -23,31 +24,31 @@ body {
   background-repeat: no-repeat;
   width: 100%;
   margin-top: 46px;
-  height: 55px; 
+  height: 55px;
   margin-bottom: 25px;
 }
 .bg-blue {
-  background-image: url('../images/bg_title_blue.png');
+  background-image: url("../images/bg_title_blue.png");
 }
 .bg-pink {
-  background-image: url('../images/bg_title_pink.png');
+  background-image: url("../images/bg_title_pink.png");
 }
 .form-label {
-  color: #52C0D7;
+  color: #52c0d7;
   text-transform: lowercase;
 }
 .form-control {
   color: #fff;
   border-radius: 15px;
-  border: 1px solid #52C0D7;
-  background-color: #1E1E1E;
+  border: 1px solid #52c0d7;
+  background-color: #1e1e1e;
 }
 .description {
-  color: #52C0D7;
+  color: #52c0d7;
   font-size: 20px;
   text-align: center;
   margin: auto;
-  display: block; 
+  display: block;
 }
 .info {
   text-transform: lowercase;
@@ -64,39 +65,121 @@ body {
   align-items: center;
   text-align: center;
   border-radius: 10px;
-  width: 200px; 
+  width: 200px;
   height: 200px;
 }
 .two-factor-code {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1E1E1E;
+  color: #1e1e1e;
   border-radius: 10px;
-  background-color: #1E1E1E;
-
+  background-color: #1e1e1e;
 }
 .two-factor-code > p {
   text-align: center;
   color: #fff;
   margin: 8px;
 }
+
 .btn-primary {
   width: 100%;
   padding-top: 12px;
   padding-bottom: 18px;
-  color: #00000E;
+  color: #00000e;
   border-radius: 15px;
-  border: 1px solid #3FA9F5;
-  background: #3FA9F5;
+  border: 1px solid #3fa9f5;
+  background: #3fa9f5;
 }
+
 .btn-primary-back {
   width: 100%;
   padding-top: 12px;
   padding-bottom: 18px;
   border-radius: 15px;
-  border: 1px solid #3FA9F5;
-  background: #1E1E1E !important;
+  border: 1px solid #3fa9f5;
+  background: #1e1e1e !important;
   color: #ffffff !important;
 }
+.main-title {
+  position: relative;
+  width: 684px;
+  max-width: 100%;
+  margin: 40px auto;
+}
+.main-title h1 {
+  font-size: 36px;
+  position: absolute;
+  top: 23%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.frame-image {
+  position: relative;
+  width: 480px;
+  height: 480px;
+  margin: 210px auto 210px;
+}
+.img-avatar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.btn-round {
+  display: flex;
+  font-size: 32px;
+  background-color: #d613f0;
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto 0;
+}
 
+.text-card {
+  position: absolute;
+  color: #52c0d7;
+  text-align: center;
+  padding: 16px 52px;
+  border-radius: 20px;
+  border: solid 1px #52c0d7;
+}
+
+#instructions-card {
+  top: 240px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#profile-card {
+  top: 400px;
+  left: 196px;
+}
+
+#chat-card {
+  top: 413px;
+  right: 215px;
+}
+
+#game-card {
+  top: 702px;
+  left: 120px;
+}
+
+#tournament-card {
+  top: 765px;
+  right: 155px;
+}
+
+.text-card h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.text-card p {
+  margin-bottom: 0;
+  line-height: 1.2;
+}

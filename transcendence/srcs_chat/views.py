@@ -43,7 +43,6 @@ def chats_list(request):
 
     return render(request, 'chat/list_of_chat_users.html', {'users_in_chats': users_with_messages})
 
-
 def create_or_open_chat(request, user_id):
     user_id_logged_in = request.user.id 
     
@@ -52,3 +51,9 @@ def create_or_open_chat(request, user_id):
         chat = services.open_chat(user_id_logged_in, user_id)
         
     return JsonResponse({'room_id': chat.id})
+
+def get_authenticated_user(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'username': request.user.username})
+    
+    return JsonResponse({'error': 'Usuário não autenticado'}, status=401)

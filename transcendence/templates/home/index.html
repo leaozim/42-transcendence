@@ -1,0 +1,113 @@
+{% extends "includes/base.html" %}
+{% load static %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'login/styles.css' %}">
+{% endblock stylesheet %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="main-title">
+                    <img src="{% static "images/bg_big_title_blue.png" %}" alt="bg title" class="img-fluid" width="684" height="167" />
+                    <h1 class="title-center bg-common">Transcendence</h1>
+                </div>
+                <div class="frame-image">
+                    <img src="{% static "images/avatar_frame.png" %}" alt="avatar" class="img-fluid" width="480" height="480" />
+                    <img src="{{ user.avatar }}"
+                         alt="image"
+                         width="128"
+                         height="128"
+                         class="img-avatar img-fluid rounded-circle" />
+                </div>
+                <div id="instructions-card" class="text-card">
+                    <h2>instructions</h2>
+                    <p>
+                        Use mouse to move around main screen.
+                        <br>
+                        Click on icon to enter specific section.
+                        <br>
+                        Have fun!
+                    </p>
+                </div>
+                <div id="profile-card" class="text-card">
+                    <h2>profile</h2>
+                    <p>
+                        Configure your authentication.
+                        <br>
+                        View your statistics.
+                        <br>
+                        Create games or chat channels.
+                        <br>
+                    </p>
+                    <button id="profile-button"
+                            class="btn-round"
+                            type="button"
+                            data-toogle="modal"
+                            data-target="">
+                        <i class="bi bi-person"></i>
+                    </button>
+                </div>
+                <div id="chat-card" class="text-card">
+                    <h2>chat</h2>
+                    <p>
+                        Create chat channels,
+                        <br |>
+                        see your ongoing chats
+                        <br>
+                        or just chat.
+                    </p>
+                    <button id="chat-button"
+                            class="btn-round"
+                            type="button"
+                            data-toogle="modal"
+                            data-target="">
+                        <i class="bi bi-chat-left"></i>
+                    </button>
+                </div>
+                <div id="game-card" class="text-card">
+                    <h2>game</h2>
+                    <p>
+                        Use the arrow keys to move your paddle up or
+                        <br>
+                        down to hit the ball on your side.
+                        <br>
+                        If the ball exists the screen on left or right,
+                        <br>
+                        the player on the opposite side wins a point.
+                        <br>
+                        First player to reach 5 points win.
+                    </p>
+                    <button id="game-button"
+                            class="btn-round"
+                            type="button"
+                            data-toogle="modal"
+                            data-target="">
+                        <i class="bi bi-controller"></i>
+                    </button>
+                </div>
+                <div id="tournament-card" class="text-card">
+                    <h2>tournament</h2>
+                    <p>
+                        Gather your friends
+                        <br>
+                        and create your own
+                        <br>
+                        tournament.
+                    </p>
+                    <button id="tournament-button"
+                            class="btn-round"
+                            type="button"
+                            data-toogle="modal"
+                            data-target="">
+                        <i class="bi bi-trophy"></i>
+                    </button>
+                </div>
+                <!-- Profile page -->
+                {% include "profile/modal.html" %}
+                {% block scripts %}
+                    <script src="{% static 'login/app.js' %}"></script>
+                {% endblock scripts %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
