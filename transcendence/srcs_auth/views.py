@@ -36,7 +36,7 @@ class CustomLoginView(LoginView):
 @two_factor_required
 def get_authenticated_user(request):
     if request.user.is_authenticated:
-        return redirect("home")
+        return redirect("srcs_home:home")
         # return HttpResponse(render(request=request, template_name="login/login.html"))
 
     return JsonResponse({"error": "Usuário não autenticado"}, status=401)
@@ -67,7 +67,7 @@ def intra_login_redirect(request: HttpRequest):
 
 
 def logout_user(request):
-    response = redirect("home")
+    response = redirect("srcs_home:home")
     response.delete_cookie("jwt_token")
     response.delete_cookie("two_factor")
     request.session.flush()
