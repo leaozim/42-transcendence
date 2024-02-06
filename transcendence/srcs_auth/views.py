@@ -36,7 +36,7 @@ class CustomLoginView(LoginView):
 @two_factor_required
 def get_authenticated_user(request):
     if request.user.is_authenticated:
-        return redirect("srcs_home:home")
+        return redirect("home")
         # return HttpResponse(render(request=request, template_name="login/login.html"))
 
     return JsonResponse({"error": "Usuário não autenticado"}, status=401)
