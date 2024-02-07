@@ -1,33 +1,191 @@
-<div id="chat-modal" class="modal  chat-modal" tabindex="-1" role="dialog">
-    <div class="modal-content chat">
+gm<div id="chat-modal" class="modal chat" tabindex="-1" role="dialog">
+  <div class="modal-content">
+    <div class="row">
+      <!-- Lista de Usuários -->
+      <div class="col-md-4 list-user">
         <h1>Chat List</h1>
         <ul>
-            {% for user in users_in_chats %}
-                {% if user != request.user %}
-                <li>
-                    <span>{{ user.username }}</span>
-
-                    <button onclick="openChat(`{{ user.id }}`, '{{ user.username }}')">Chat</button>   
-
-                </li>
-                {% endif %}
-            {% endfor %}
+          {% for user in users_in_chats %}
+            {% if user != request.user %}
+              <li>
+                <span>{{ user.username }}</span>
+                <button class="larissinha" onclick="openChat('{{ user.id }}', '{{ user.username }}')">Chat</button>
+              </li>
+            {% endif %}
+          {% endfor %}
         </ul>
-    </div>
-</div>
+      </div>
 
+      <!-- Chat -->
+      <div class="col-md-8 container mt-5">
+        <div id="chat-container">
+          <div id="header-container">
+            <div class="chat-header">
+            </div>
+          </div>
+
+          <div id="message-container">
+            <div id="chat-log"></div>
+          </div>
+          <div class="message-input-container">
+            <input type="text" id="chat-message-input" placeholder="message" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
-    function openChat(userId, username) {
+    const chatLog = document.querySelector('#chat-log');
+
+    async function openChat(userId, username) {
+      chatLog.innerHTML = '';
+      const dataRoom  = await getDataRoom(userId, username);
+      const dataChat = await getDataChat(dataRoom.room_id);
+      await setupWebSocket(dataChat.room_id, dataChat.current_user);
+      initializeChatLog(dataChat.current_user, dataChat.messages);
+      appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar)
+    }
+
+    function initializeChatLog(current_user, messages) {
+        let lastUser = "";
+        messages.forEach((item) => {
+            const isCurrentUser = item.user === current_user;
+            const isUserChange = lastUser !== item.user || lastUser === '';
+            chatLog.innerHTML +=`
+                <div> 
+                    ${
+                        isCurrentUser
+                        ? `
+                            <div class="sent-message">
+                                <p class="${isUserChange ? 'special-style' : ''}">${item.content}</p>
+                            </div>
+                        `
+                        : `
+                            <div class="received-message">
+                                ${
+                                    isUserChange
+                                    ? `<img src="${item.avatar}" alt="${item.user}" class="user-photo">` 
+                                    : '<div class="user-photo"></div>'
+                                }
+                                <p class="${isUserChange ? 'special-style' : ''}">${item.content}</p>
+                            </div>
+                        `
+                    }
+                </div>
+            `;
+            lastUser = item.user;
+          })
+      }
+    
+    async function getDataRoom(userId, username) {
         if (!userId || isNaN(userId)) {
             console.error('ID do usuário inválido:', userId);
-            return;
+        } else {
+          try {
+            const data = await fetch("/chat/create_or_open_chat/" + userId)
+            const response = await data.json();
+            return response;
+          } 
+          catch (error) {
+            console.error('Erro durante a requisição AJAX:', error);
+          }
         }
-
-        fetch("/chat/create_or_open_chat/" + userId)
-            .then(response => response.json())
-            .then(data => {
-                window.location.pathname = '/chat/' + data.room_id + '/';
-            })
-            .catch(error => console.error('Erro ao criar/abrir sala:', error));
     }
+
+    async function getDataChat(roomId) {
+      try {
+        const data = await fetch("/chat/" + roomId);
+        const response = await data.json();
+        return response;
+      } 
+      catch (error) {
+        console.error('Erro durante a requisição AJAX:', error);
+      }
+    }
+
+    function setupWebSocket(roomId, currentUser) {
+        const base_url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/chat/' + roomId + '/';
+        chatSocket = new WebSocket(base_url);
+        console.log(currentUser)
+        chatSocket.onmessage = (event) => {
+            const parsed = JSON.parse(event.data);
+            addReceivedMessage(currentUser, parsed.username, parsed.message, parsed.user_avatar);
+        };
+    }
+    
+    function addReceivedMessage(currentUser, sender, message, userAvatar) {
+        const messageElement = document.createElement('div')
+        const avatarElement = document.createElement('img');
+        const textElement = document.createElement('p');
+
+        if (sender === currentUser) {
+            messageElement.className = 'sent-message';
+        } else {
+            if (!userAvatar) {
+                avatarElement.src ='https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png'; 
+            } else {
+                avatarElement.src = userAvatar;
+            }
+            avatarElement.alt = 'Avatar';
+            avatarElement.className = 'user-photo';
+            messageElement.className = 'received-message';
+            messageElement.appendChild(avatarElement);
+          }
+        
+        textElement.textContent = message;
+        textElement.className = 'message-text';
+        messageElement.appendChild(textElement);
+        chatLog.appendChild(messageElement);
+        
+        chatLog.scrollTop = chatLog.scrollHeight;
+   
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelector('#chat-message-input').addEventListener('keydown', function(event) {
+          if (event.key === 'Enter') {
+              sendMessage();
+          }
+      });
+    });
+
+    function sendMessage() {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value.trim();
+
+        if (message !== '' && window.chatSocket) {
+            window.chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+        }
+        messageInputDom.value = '';
+    }
+    function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
+      const headerContainer = document.getElementById('header-container');
+      headerContainer.innerHTML = '';
+      const chatHeader = document.createElement('div');
+      chatHeader.className = 'chat-header';
+      const existingChatHeader = document.querySelector('.chat-header');
+      if (existingChatHeader) {
+          existingChatHeader.remove();
+      }
+  
+      if (otherUserUsername) {
+          const userPhoto = document.createElement('img');
+          userPhoto.src = otherUserAvatar;
+          userPhoto.alt = otherUserUsername;
+          userPhoto.className = 'user-photo';
+  
+          const usernameElement = document.createElement('h2');
+          usernameElement.textContent = otherUserUsername;
+  
+          chatHeader.appendChild(userPhoto);
+          chatHeader.appendChild(usernameElement);
+      }
+  
+      headerContainer.appendChild(chatHeader);
+  }
+
+  
 </script>

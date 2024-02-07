@@ -97,8 +97,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'srcs_core.context_processors.custom_context_processor_user',
-                'srcs_core.context_processors.custom_context_processor_chat_data'
-
+                'srcs_core.context_processors.custom_context_processor_chat_data',
             ],
         },
     },
