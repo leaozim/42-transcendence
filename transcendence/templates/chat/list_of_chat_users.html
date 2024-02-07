@@ -1,19 +1,19 @@
-gm<div id="chat-modal" class="modal chat" tabindex="-1" role="dialog">
+<div id="chat-modal" class="modal chat" tabindex="-1" role="dialog">
   <div class="modal-content">
-    <div class="row">
       <!-- Lista de Usuários -->
-      <div class="col-md-4 list-user">
-        <h1>Chat List</h1>
-        <ul>
-          {% for user in users_in_chats %}
-            {% if user != request.user %}
-              <li>
-                <span>{{ user.username }}</span>
-                <button class="larissinha" onclick="openChat('{{ user.id }}', '{{ user.username }}')">Chat</button>
-              </li>
-            {% endif %}
-          {% endfor %}
-        </ul>
+      <div class="col-md-4">
+        <h1>Chat</h1>
+        <div id="user-list-container">
+          <ul>
+            {% for user in users_in_chats %}
+              {% if user != request.user %}
+                <div class="list-users" onclick="openChat('{{ user.id }}', '{{ user.username }}')">
+                  <span class= "botton_name" > {{ user.username }}</span>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
       </div>
 
       <!-- Chat -->
@@ -173,8 +173,11 @@ gm<div id="chat-modal" class="modal chat" tabindex="-1" role="dialog">
   
       if (otherUserUsername) {
           const userPhoto = document.createElement('img');
-          userPhoto.src = otherUserAvatar;
-          userPhoto.alt = otherUserUsername;
+          if (!otherUserAvatar)
+            userPhoto.src ='https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png'; 
+          else {
+            userPhoto.src = otherUserAvatar;
+          }
           userPhoto.className = 'user-photo';
   
           const usernameElement = document.createElement('h2');
