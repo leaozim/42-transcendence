@@ -27,6 +27,6 @@
 {% endblock content %}
 
 {% block scripts %}
-<script> const TOTP_LOGIN_URL = "http://localhost:8000/totp/login/" </script>
+<script> const TOTP_LOGIN_URL = "{% url 'srcs_auth:totp-login' token=None %}".replace("None/", ""); </script>
 <script src="{% static 'registration/validate_token_2f.js' %}"></script>
 {% endblock scripts %}

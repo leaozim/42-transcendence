@@ -1,23 +1,19 @@
 import os
 
-from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views import View
-from django.views.generic.edit import CreateView
 from django.contrib.auth.views import LoginView
-from django.http import HttpRequest, JsonResponse, HttpResponse
+from django.http import HttpRequest, JsonResponse
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.template import loader
-
-from srcs_auth.decorators import two_factor_required
-from srcs_auth.jwt_token import (
-    verify_jwt_token,
-    generate_jwt_token,
-    JWTVerificationFailed,
-)
-from srcs_auth.forms import UserCreationForm, UserLoginForm
+from django.views import View
+from django.views.decorators.http import require_GET
+from django.views.generic.edit import CreateView
 from srcs_auth.auth import IntraAuthenticationBackend
+from srcs_auth.decorators import two_factor_required
+from srcs_auth.forms import UserCreationForm, UserLoginForm
+from srcs_auth.jwt_token import (JWTVerificationFailed, generate_jwt_token,
+                                 verify_jwt_token)
 from srcs_auth.services import TOTPService, exchange_code
 
 
@@ -37,7 +33,6 @@ class CustomLoginView(LoginView):
 def get_authenticated_user(request):
     if request.user.is_authenticated:
         return redirect("srcs_home:home")
-        # return HttpResponse(render(request=request, template_name="login/login.html"))
 
     return JsonResponse({"error": "Usuário não autenticado"}, status=401)
 
@@ -94,7 +89,7 @@ def refresh_token(request):
 
 
 class TOTPCreateView(LoginRequiredMixin, View):
-    def get(self, request: HttpRequest, *args, **kwargs):
+    def _create_qrcode(self, request: HttpRequest):
         user = request.user
         totp_service = TOTPService()
 
@@ -105,14 +100,24 @@ class TOTPCreateView(LoginRequiredMixin, View):
             {"qrcode": qr_code, "totp_code": totp_code},
         )
 
+    def get(self, request: HttpRequest, *args, **kwargs):
+        return self._create_qrcode(request)
+
 
 class TOTPVerifyView(LoginRequiredMixin, View):
+    @staticmethod
+    @require_GET
+    def get(request: HttpRequest, *args, **kwargs):
+        if request.user.is_2f_active:
+            return JsonResponse({}, status=200)
+        return JsonResponse({}, status=204)
+
     def post(self, request: HttpRequest, token):
         user = request.user
         totp_service = TOTPService()
 
         if totp_service.verify_totp_token(user, token):
-            response = JsonResponse({"success": True}, status=200)
+            response = JsonResponse({"success": True}, status=201)
             response.set_cookie(
                 "two_factor",
                 True,
@@ -132,7 +137,10 @@ class TOTPDeleteView(LoginRequiredMixin, View):
         totp_service = TOTPService()
 
         if totp_service.delete_totp_devices(user):
-            return JsonResponse({'success': 'TOTP devices deleted successfully'}, status=200)
+            return JsonResponse(
+                {"success": "TOTP devices deleted successfully"}, status=200
+            )
+
 
 def validate_token_2f(request):
     return render(request, "registration/validate_token_2f.html")
