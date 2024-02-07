@@ -1,32 +1,24 @@
 <div id="chat-modal" class="modal chat" tabindex="-1" role="dialog">
   <div class="modal-content">
-      <!-- Lista de Usuários -->
-      <div class="col-md-4">
-        <h1>Chat</h1>
-        <div id="user-list-container">
-          <ul>
-            {% for user in users_in_chats %}
-              {% if user != request.user %}
-                <div class="list-users" onclick="openChat('{{ user.id }}', '{{ user.username }}')">
-                  <span class= "botton_name" > {{ user.username }}</span>
-                </div>
-              {% endif %}
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
+    <div>
+      <h1>Chat</h1>
+      <div class="chats">
+        <ul id="list-users">
+          {% for user in users_in_chats %} {% if user != request.user %}
+          <li class="item-user" onclick="openChat('{{ user.id }}', '{{ user.username }}')">
+            <span class="botton_name"> {{ user.username }}</span>
+          </li>
+          {% endif %} {% endfor %}
+        </ul>
 
-      <!-- Chat -->
-      <div class="col-md-8 container mt-5">
         <div id="chat-container">
-          <div id="header-container">
-            <div class="chat-header">
-            </div>
-          </div>
-
+          <header id="header-container">
+            <div class="chat-header"></div>
+          </header>
           <div id="message-container">
             <div id="chat-log"></div>
           </div>
+
           <div class="message-input-container">
             <input type="text" id="chat-message-input" placeholder="message" />
           </div>
@@ -35,6 +27,7 @@
     </div>
   </div>
 </div>
+
 <script>
     const chatLog = document.querySelector('#chat-log');
 
@@ -54,21 +47,22 @@
             const isUserChange = lastUser !== item.user || lastUser === '';
             chatLog.innerHTML +=`
                 <div> 
-                    ${
-                        isCurrentUser
-                        ? `
+                    ${ isCurrentUser
+? `
                             <div class="sent-message">
                                 <p class="${isUserChange ? 'special-style' : ''}">${item.content}</p>
                             </div>
                         `
                         : `
                             <div class="received-message">
+                              <div class="user-photo">
                                 ${
                                     isUserChange
-                                    ? `<img src="${item.avatar}" alt="${item.user}" class="user-photo">` 
-                                    : '<div class="user-photo"></div>'
+                                    ? `<img src="${item.avatar}" alt="${item.user}" >` 
+                                    : '<div></div>'
                                 }
-                                <p class="${isUserChange ? 'special-style' : ''}">${item.content}</p>
+                              </div>
+                              <p class="${isUserChange ? 'special-style' : ''}">${item.content}</p>
                             </div>
                         `
                     }
@@ -118,23 +112,22 @@
         const messageElement = document.createElement('div')
         const avatarElement = document.createElement('img');
         const textElement = document.createElement('p');
+        const divImgElement = document.createElement('div')
 
         if (sender === currentUser) {
             messageElement.className = 'sent-message';
         } else {
-            if (!userAvatar) {
-                avatarElement.src ='https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png'; 
-            } else {
-                avatarElement.src = userAvatar;
-            }
+            userAvatar ? userAvatar : 'https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png'; 
             avatarElement.alt = 'Avatar';
-            avatarElement.className = 'user-photo';
+            divImgElement.className = 'user-photo';
             messageElement.className = 'received-message';
-            messageElement.appendChild(avatarElement);
+            divImgElement.appendChild(avatarElement)
+            messageElement.appendChild(divImgElement);
           }
         
         textElement.textContent = message;
         textElement.className = 'message-text';
+
         messageElement.appendChild(textElement);
         chatLog.appendChild(messageElement);
         
@@ -161,34 +154,26 @@
         }
         messageInputDom.value = '';
     }
+    
     function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
-      const headerContainer = document.getElementById('header-container');
-      headerContainer.innerHTML = '';
-      const chatHeader = document.createElement('div');
-      chatHeader.className = 'chat-header';
-      const existingChatHeader = document.querySelector('.chat-header');
-      if (existingChatHeader) {
-          existingChatHeader.remove();
-      }
-  
+      const chatHeader = document.createElement('header').className = 'chat-header';
+      
       if (otherUserUsername) {
           const userPhoto = document.createElement('img');
-          if (!otherUserAvatar)
-            userPhoto.src ='https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png'; 
-          else {
-            userPhoto.src = otherUserAvatar;
-          }
-          userPhoto.className = 'user-photo';
-  
-          const usernameElement = document.createElement('h2');
-          usernameElement.textContent = otherUserUsername;
-  
-          chatHeader.appendChild(userPhoto);
+          userPhoto.alt = 'Avatar';
+          userPhoto.src = otherUserAvatar ?
+                          otherUserAvatar :
+                          'https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png'; 
+
+          const usernameElement = document.createElement('h2').textContent = otherUserUsername
+          const divImgElement = document.createElement('div').className = 'user-photo'
+
+
+          divImgElement.appendChild(userPhoto);
+          chatHeader.appendChild(divImgElement);
           chatHeader.appendChild(usernameElement);
       }
   
-      headerContainer.appendChild(chatHeader);
+      document.getElementById('header-container').appendChild(chatHeader);
   }
-
-  
 </script>
