@@ -20,4 +20,13 @@ def custom_context_processor_chat_data(request):
         if chat.message_count > 0:
             users_with_messages.extend(users_in_chats.filter(users_chats=chat))
 
-    return {'users_in_chats': users_with_messages}
+    users_data = []
+    for user in users_with_messages:
+        user_data = {
+            'id': user.id,
+            'username': user.username,
+            'avatar': user.avatar,
+        }
+        users_data.append(user_data)
+        
+    return {'users_in_chats': users_data}

@@ -1,17 +1,20 @@
 <div id="chat-modal" class="modal chat" tabindex="-1" role="dialog">
   <div class="modal-content">
-      <h1>Chat</h1>
       <div class="chats">
+        <div id="list-users-container">
+
+        <h2 class="title-list-users">Chats </h2>
         <ul id="list-users">
-          {% for user in users_in_chats %} {% if user != request.user %}
+          {% for user in users_in_chats %} {% if user.username != request.user.username %}
             <li class="item-user" onclick="selectItem(this); openChat('{{ user.id }}', '{{ user.username }}')">
+              <img src="{{ user.avatar }}" class="user-photo">
               <span class="botton_name"> {{ user.username }}</span>
             </li>
 
           </li>
           {% endif %} {% endfor %}
         </ul>
-
+        </div>
         <div id="chat-container">
           <header id="header-container">
             <div class="chat-header"></div>
