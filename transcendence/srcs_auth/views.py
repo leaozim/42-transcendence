@@ -94,11 +94,7 @@ class TOTPCreateView(LoginRequiredMixin, View):
         totp_service = TOTPService()
 
         qr_code, totp_code = totp_service.create_totp_code(user)
-        return render(
-            request,
-            "registration/totp_create_2f.html",
-            {"qrcode": qr_code, "totp_code": totp_code},
-        )
+        return JsonResponse({"qrcode": qr_code, "totp_code": totp_code}, status=200)
 
     def get(self, request: HttpRequest, *args, **kwargs):
         return self._create_qrcode(request)
