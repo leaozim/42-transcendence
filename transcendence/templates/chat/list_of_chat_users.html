@@ -1,12 +1,13 @@
 <div id="chat-modal" class="modal chat" tabindex="-1" role="dialog">
   <div class="modal-content">
-    <div>
       <h1>Chat</h1>
       <div class="chats">
         <ul id="list-users">
           {% for user in users_in_chats %} {% if user != request.user %}
-          <li class="item-user" onclick="openChat('{{ user.id }}', '{{ user.username }}')">
-            <span class="botton_name"> {{ user.username }}</span>
+            <li class="item-user" onclick="selectItem(this); openChat('{{ user.id }}', '{{ user.username }}')">
+              <span class="botton_name"> {{ user.username }}</span>
+            </li>
+
           </li>
           {% endif %} {% endfor %}
         </ul>
@@ -25,7 +26,6 @@
         </div>
       </div>
     </div>
-  </div>
 </div>
 
 <script>
@@ -156,8 +156,12 @@
     }
     
     function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
-      const chatHeader = document.createElement('header').className = 'chat-header';
-      
+      const chatHeader = document.createElement('header');
+      chatHeader.className = 'chat-header';
+      const existingChatHeader = document.querySelector('.chat-header');
+      if (existingChatHeader) {
+          existingChatHeader.remove();
+      }
       if (otherUserUsername) {
           const userPhoto = document.createElement('img');
           userPhoto.alt = 'Avatar';
@@ -165,10 +169,14 @@
                           otherUserAvatar :
                           'https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png'; 
 
-          const usernameElement = document.createElement('h2').textContent = otherUserUsername
-          const divImgElement = document.createElement('div').className = 'user-photo'
 
-
+          const usernameElement = document.createElement('h2');
+          usernameElement.textContent = otherUserUsername;
+      
+          const divImgElement = document.createElement('div');
+          divImgElement.className = 'user-photo';
+                      
+          console.log(divImgElement)
           divImgElement.appendChild(userPhoto);
           chatHeader.appendChild(divImgElement);
           chatHeader.appendChild(usernameElement);
@@ -176,4 +184,16 @@
   
       document.getElementById('header-container').appendChild(chatHeader);
   }
+
+  function selectItem(item) {
+    var items = document.querySelectorAll('.item-user');
+    items.forEach(function (item) {
+        item.classList.remove('selected');
+    });
+
+    item.classList.add('selected');
+  }
+
+
+
 </script>
