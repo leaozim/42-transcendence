@@ -2,8 +2,9 @@
   <div class="modal-content">
       <div class="chats">
         <div id="list-users-container">
-
-        <h2 class="title-list-users">Chats </h2>
+        <div class="title-list-users">
+          <h2 >Chats </h2>
+        </div>
         <ul id="list-users">
           {% for user in users_in_chats %} {% if user.username != request.user.username %}
             <li class="item-user" onclick="selectItem(this); openChat('{{ user.id }}', '{{ user.username }}')">
@@ -194,7 +195,6 @@
         item.classList.remove('selected');
     });
 
-    item.classList.add('selected');
   }
 
 
