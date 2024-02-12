@@ -5,15 +5,8 @@ const profileModal = document.getElementById("profile-modal");
 const inputSlide = document.querySelector("label.switch > input");
 
 window.addEventListener("click", function (event) {
-  switch (event.target) {
-    case profileModal:
-      profileModal.style.display = "none";
-      break;
-    case twoFactorModal.modal:
-      twoFactorModal.close();
-      break;
-    default:
-      break;
+  if (event.target == profileModal) {
+    profileModal.style.display = "none";
   }
 });
 

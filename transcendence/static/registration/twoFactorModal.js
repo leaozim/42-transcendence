@@ -1,4 +1,4 @@
-function DisplayStyleEnum() {}
+export function DisplayStyleEnum() {}
 
 DisplayStyleEnum.BLOCK = "block";
 DisplayStyleEnum.NONE = "none";
@@ -75,23 +75,23 @@ TwoFactorModal.prototype.fetchQRCode = async function () {
   return response.json();
 };
 
+TwoFactorModal.prototype.close = function () {
+  this.removeQRCodeContent();
+  this.displayStyle = DisplayStyleEnum.NONE;
+};
+
 const twoFactorModal = new TwoFactorModal();
 
-export default {
-  get modal() {
-    return twoFactorModal.modal;
-  },
+window.addEventListener("click", (event) => {
+  if (event.target == twoFactorModal.modal) twoFactorModal.close();
+});
 
+export default {
   open: async function () {
     const responseContent = await twoFactorModal.fetchQRCode();
 
     twoFactorModal.totpCodeDiv = responseContent.totp_code;
     twoFactorModal.imgQRCodeDiv = responseContent.qrcode;
     twoFactorModal.displayStyle = DisplayStyleEnum.BLOCK;
-  },
-
-  close: function () {
-    twoFactorModal.removeQRCodeContent();
-    twoFactorModal.displayStyle = DisplayStyleEnum.NONE;
   },
 };
