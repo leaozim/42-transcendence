@@ -43,6 +43,12 @@ function TwoFactorModal() {
   });
 
   (function () {
+    const twoFactorModalContent = this.modal.querySelector("div.modal-content");
+    twoFactorModalContent.style.width = "450px";
+    twoFactorModalContent.style.height = "700px";
+  }).call(this);
+
+  (function () {
     const okButton = document.getElementById("ok-button");
     const backButton = document.getElementById("back-button");
     const profileModal = document.getElementById("profile-modal");
