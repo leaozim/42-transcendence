@@ -3,8 +3,9 @@ import os
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.decorators.http import require_GET
@@ -108,7 +109,7 @@ class TOTPVerifyView(LoginRequiredMixin, View):
             return JsonResponse({}, status=200)
         return JsonResponse({}, status=204)
 
-    def post(self, request: HttpRequest, token):
+    def post(self, request: HttpRequest, token: str) -> JsonResponse:
         user = request.user
         totp_service = TOTPService()
 
@@ -141,7 +142,8 @@ class TOTPDeleteView(LoginRequiredMixin, View):
 def validate_token_2f(request):
     return render(request, "registration/validate_token_2f.html")
 
+
 def get_authenticated_user_id(request):
     if request.user.is_authenticated:
-        return JsonResponse({'user_id': request.user.id})
-    return JsonResponse({'error': 'Usuário não autenticado'}, status=401)
+        return JsonResponse({"user_id": request.user.id})
+    return JsonResponse({"error": "Usuário não autenticado"}, status=401)

@@ -1,7 +1,5 @@
-export function DisplayStyleEnum() {}
-
-DisplayStyleEnum.BLOCK = "block";
-DisplayStyleEnum.NONE = "none";
+import DisplayStyleEnum from "./displayStyleEnum.js";
+import verifyModal from "./verifyTwoFactorModal.js";
 
 function TwoFactorModal() {
   this.modal = document.getElementById("two-factor-modal");
@@ -62,7 +60,8 @@ function TwoFactorModal() {
     });
 
     okButton.addEventListener("click", () => {
-      window.location.href = VALIDATE_TOKEN_URL;
+      this.close();
+      verifyModal.open();
     });
   }).call(this);
 }
@@ -89,7 +88,11 @@ TwoFactorModal.prototype.close = function () {
 const twoFactorModal = new TwoFactorModal();
 
 window.addEventListener("click", (event) => {
-  if (event.target == twoFactorModal.modal) twoFactorModal.close();
+  if (event.target == twoFactorModal.modal) {
+    twoFactorModal.close();
+  } else if (verifyModal.element && event.target == verifyModal.element) {
+    verifyModal.close();
+  }
 });
 
 export default {

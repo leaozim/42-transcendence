@@ -11,7 +11,7 @@ window.addEventListener("click", function (event) {
 });
 
 const verifyTwoFactorState = () => {
-  fetch(VERIFY_TWO_FACTOR_STATE_URL)
+  return fetch(VERIFY_TWO_FACTOR_STATE_URL)
     .then((response) => {
       if (!response.ok) {
         throw new Error("fetching VERIFY_TWO_FACTOR_STATE_URL");
@@ -24,28 +24,27 @@ const verifyTwoFactorState = () => {
     });
 };
 
-profileButton.addEventListener("click", function () {
-  inputSlide.checked = verifyTwoFactorState();
+profileButton.addEventListener("click", async function () {
+  inputSlide.checked = await verifyTwoFactorState();
   profileModal.style.display = "block";
 });
 
-inputSlide.addEventListener("change", function () {
+inputSlide.addEventListener("change", async function () {
   if (this.checked) {
     profileModal.style.display = "none";
     twoFactorModal.open();
   } else {
-    fetch(DELETE_TWO_FACTOR_URL)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Couldn't delete two factor");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        return data;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    const response = await fetch(DELETE_TWO_FACTOR_URL);
+    console.log(await response.json());
+    // fetch(DELETE_TWO_FACTOR_URL)
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       throw new Error("Couldn't delete two factor");
+    //     }
+    //     return response.json();
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
   }
 });
