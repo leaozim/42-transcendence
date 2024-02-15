@@ -38,14 +38,14 @@ class IntraUserOAuth2ManagerTests(TestCase):
 
     def test_create_superuser_existing_user(self):
         existing_user = self.manager.create_user(
-            email='admin@example.com',
             username='admin',
+            email='admin@example.com',
             password='password'
         )
 
         superuser_data = {
-            'email': 'admin@example.com',
             'username': 'admin',
+            'email': 'admin@example.com',
             'password': 'adminpassword'
         }
         

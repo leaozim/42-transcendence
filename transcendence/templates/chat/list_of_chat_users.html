@@ -1,6 +1,7 @@
 <div id="chat-modal" class="modal chat" tabindex="-1" role="dialog">
   <div class="modal-content">
       <div class="chats">
+
         <div id="list-users-container">
         <div class="title-list-users">
           <h2 >Chats </h2>
@@ -17,11 +18,14 @@
         </ul>
         </div>
         <div id="chat-container">
+                        <p id="no-chat-selected-message">No chats selected</p>
+
           <header id="header-container">
             <div class="chat-header"></div>
           </header>
           <div id="message-container">
-            <div id="chat-log"></div>
+            <div id="chat-log">
+            </div>
           </div>
 
           <div class="message-input-container">
@@ -42,6 +46,10 @@
       await setupWebSocket(dataChat.room_id, dataChat.current_user);
       initializeChatLog(dataChat.current_user, dataChat.messages);
       appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar)
+      document.getElementById('no-chat-selected-message').style.display = 'none';
+
+      document.querySelector('.message-input-container').style.display = 'flex';
+
     }
 
     function initializeChatLog(current_user, messages) {

@@ -1,3 +1,104 @@
+/* Styles for modal box */
+.chat .modal-content {
+    display: flex;
+    flex-direction: row;
+    background-color: #1E1E1E;
+    margin: 5% auto;
+    width: 100%;
+    max-width: 900px;
+    max-height: 550px;
+    padding: 0px;
+
+}
+.chat .modal-content:first-child {
+    display: flex;
+    flex-direction: column;
+    width: 60vw;
+    height: 100%;
+    border: 5px solid #6F077C;
+
+}
+
+.chats {
+    display:flex;
+    width: 100%;
+    height: 100%;    
+}
+/* Styles for the user list */
+#list-users-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 30%;
+    max-width: 300px;
+}
+
+.title-list-users {
+    color: #ffffff;
+    padding: 5px;
+    border-bottom: 2px solid  #6F077C;
+    border-right: 1px solid  #6F077C;
+    text-align: center;
+}
+
+#list-users {
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #6F077C #1E1E1E;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border-radius: 0 0 0 10px; 
+}
+
+#list-users:hover {
+    overflow-y: auto;
+}
+
+.item-user {
+    background-color: #1E1E1E;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color:#ffffff;
+    padding: 15px 10px;
+    transition: border-color 0.1s;
+    border: 1px solid transparent;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+
+}
+
+.item-user.selected {
+    border: 1px solid #6F077C;
+}
+
+.item-user:hover:not(.selected) {
+    border: 1px solid #52C0D7;
+}
+
+.item-user.selected {
+    border-color: 1px solid #6F077C;
+}
+
+.user-radio:checked + .item-user {
+    border-color: #6F077C;
+}
+
+#list-users::-webkit-scrollbar {
+    width: 2px;
+    transition: width 0.5s;
+}
+#list-users::-webkit-scrollbar-thumb {
+    background-color: #6F077C;
+}
+
+#list-users::-webkit-scrollbar-track {
+    background-color: #1E1E1E;
+}
+
+/* Styles for the chat container */
 #chat-container {
     display: flex; 
     flex-direction: column;
@@ -8,7 +109,30 @@
     height: 100%;
     max-height: 560px;
 
-} 
+}
+#no-chat-selected-message {
+    position: absolute;
+    top: 50%;
+    left: 65%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #ffffff;
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    background-color: #6F077C;
+    padding-left: 10px;
+    h2 {
+        padding: 5px 10px;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+}
+
+/* Styles for the message container */
 #message-container {
     height: 100%;
     display: flex;
@@ -16,15 +140,18 @@
     overflow-y: hidden;
     scrollbar-width:initial;
     scrollbar-color: #6F077C #1E1E1E; 
-
+    border-left: 1px solid #6F077C;
 }
+
 #message-container:hover {
     overflow-y: auto;
 }
+
 #message-container::-webkit-scrollbar {
     width: 4px;
     transition: width 0.5s;
 }
+
 #message-container::-webkit-scrollbar-thumb {
     background-color: #6F077C;
 }
@@ -32,11 +159,15 @@
 #message-container::-webkit-scrollbar-track {
     background-color: #1E1E1E;
 } 
+
+/* Styles for the chat log */
 #chat-log {
     display: flex; 
     flex-direction: column; 
     padding: 15px;
+
 }
+/* Styles for messages */
 .sent-message {
     display: flex;
     justify-content: flex-end; 
@@ -45,7 +176,6 @@
 
 }
 .sent-message > p {
-    
     max-width: 80%;
     padding: 5px 20px;
     background-color: #52C0D7;
@@ -75,11 +205,14 @@
 .received-message > p.special-style {
     border-radius: 0px 25px 25px 25px;
 }
+
+/* Styles for user photo */
 .user-photo {
     border-radius: 50%;
     width: 30px;
     height: 30px; 
     margin-right: 8px;
+
     img {
         width: 100%;
         height: 100%;
@@ -87,22 +220,16 @@
         margin-right: 8px;
     }
 }
-.chat-header {
-    display: flex;
-    align-items: center;
-    color: #ffffff;
-    background-color: #6F077C;
-    padding: 5px 20px;
-}
+
+/* Styles for message input */
 .message-input-container {
     height: 80px;
-    display: flex;
     align-items: center;
     justify-content: center; 
     background-color: #1E1E1E;
     border-radius:  0 0 15px 0px;
-    margin-bottom: 20px;
-
+    display: none;
+    border-left: 1px solid #6F077C;
 }
 #chat-message-input {
     width: 80%;
@@ -120,90 +247,3 @@
     color: rgb(40, 36, 40);
 }
 
-.chat .modal-content {
-    display: flex;
-    flex-direction: row;
-    background-color: #1E1E1E;
-    margin: 5% auto;
-    width: 100%;
-    max-width: 900px;
-    max-height: 550px;
-    padding: 0px;
-
-}
-.chat .modal-content:first-child {
-    display: flex;
-    flex-direction: column;
-    width: 60vw;
-    height: 100%;
-    border: 5px solid #6F077C;
-
-}
-#list-users {
-    overflow-y: hidden;
-    scrollbar-width: thin;
-    scrollbar-color: #6F077C #1E1E1E;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    border-right: 1px solid #6F077C;
-    border-radius: 0 0 0 10px; 
- 
-}
-#list-users:hover {
-    overflow-y: auto;
-}
-.item-user {
-    background-color: #1E1E1E;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    color:#ffffff;
-    padding: 15px 10px;
-    transition: border-color 0.1s;
-    border: 1px solid transparent;
-    width: 100%;
-}
-.item-user.selected {
-    border: 1px solid #6F077C;
-}
-.item-user:hover:not(.selected) {
-    border: 1px solid #52C0D7;
-}
-.item-user.selected {
-    border-color: 1px solid #6F077C;
-}
-.user-radio:checked + .item-user {
-    border-color: #6F077C;
-  }
-#list-users::-webkit-scrollbar {
-    width: 2px;
-    transition: width 0.5s;
-}
-#list-users::-webkit-scrollbar-thumb {
-    background-color: #6F077C;
-}
-
-#list-users::-webkit-scrollbar-track {
-    background-color: #1E1E1E;
-}
-.chats {
-    display:flex;
-    width: 100%;
-    height: 100%;    
-}
-#list-users-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 30%;
-    max-width: 300px;
-    /* padding: 5px 0px 0px 0px */
-}
-.title-list-users {
-    color: #ffffff;
-    padding: 5px;
-    border-bottom: 2px solid  #6F077C;
-    border-right: 1px solid  #6F077C;
-    text-align: center;
-}
