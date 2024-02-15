@@ -41,7 +41,7 @@
     text-align: center;
 }
 
-#list-users {
+.list-users {
     overflow-y: hidden;
     scrollbar-width: thin;
     scrollbar-color: #6F077C #1E1E1E;
@@ -51,8 +51,20 @@
     border-radius: 0 0 0 10px; 
 }
 
-#list-users:hover {
+.list-users:hover {
     overflow-y: auto;
+}
+
+.list-users::-webkit-scrollbar {
+    width: 2px;
+    transition: width 0.5s;
+}
+.list-users::-webkit-scrollbar-thumb {
+    background-color: #6F077C;
+}
+
+.list-users::-webkit-scrollbar-track {
+    background-color: #1E1E1E;
 }
 
 .item-user {
@@ -67,7 +79,6 @@
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
-
 }
 
 .item-user.selected {
@@ -84,18 +95,6 @@
 
 .user-radio:checked + .item-user {
     border-color: #6F077C;
-}
-
-#list-users::-webkit-scrollbar {
-    width: 2px;
-    transition: width 0.5s;
-}
-#list-users::-webkit-scrollbar-thumb {
-    background-color: #6F077C;
-}
-
-#list-users::-webkit-scrollbar-track {
-    background-color: #1E1E1E;
 }
 
 /* Styles for the chat container */
@@ -138,7 +137,7 @@
     display: flex;
     flex-direction: column-reverse;
     overflow-y: hidden;
-    scrollbar-width:initial;
+    scrollbar-width: thin;
     scrollbar-color: #6F077C #1E1E1E; 
     border-left: 1px solid #6F077C;
 }
@@ -148,7 +147,7 @@
 }
 
 #message-container::-webkit-scrollbar {
-    width: 4px;
+    width: 5px;
     transition: width 0.5s;
 }
 
@@ -165,7 +164,6 @@
     display: flex; 
     flex-direction: column; 
     padding: 15px;
-
 }
 /* Styles for messages */
 .sent-message {
@@ -214,7 +212,6 @@
     margin-right: 8px;
 
     img {
-        width: 100%;
         height: 100%;
         border-radius: 50%;
         margin-right: 8px;
@@ -222,13 +219,14 @@
 }
 
 /* Styles for message input */
-.message-input-container {
+
+#message-input-container {
+    display: none;
     height: 80px;
     align-items: center;
     justify-content: center; 
     background-color: #1E1E1E;
     border-radius:  0 0 15px 0px;
-    display: none;
     border-left: 1px solid #6F077C;
 }
 #chat-message-input {
