@@ -20,3 +20,4 @@ class IndexView(View):
             template = ("index.html")
 
             return render(request, template, context)
+        

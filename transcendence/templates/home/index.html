@@ -2,6 +2,7 @@
 {% load static %}
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'profile/styles.css' %}">
+<link rel="stylesheet" href="{% static 'chat/chat.css' %}">
 {% endblock stylesheet %}
 {% block content %}
 <div class="container">
@@ -85,6 +86,9 @@
       </div>
       <!-- Profile page -->
       {% include "profile/modal.html" %}
+      <!-- Chat page -->
+      {% include "chat/chatModal.html" %}
+
     </div>
   </div>
 </div>
@@ -99,4 +103,6 @@
   const VERIFY_TWO_FACTOR_STATE_URL = "{% url 'srcs_auth:totp-verify' %}";
 </script>
 <script src="{% static 'profile/app.js' %}"></script>
+<script src="{% static 'chat/app.js' %}"></script>
+<script src="{% static 'chat/chat.js' %}"></script>
 {% endblock scripts %}
