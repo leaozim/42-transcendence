@@ -115,7 +115,7 @@
 #no-chat-selected-message {
     position: absolute;
     top: 50%;
-    left: 65%;
+    left: 60%;
     transform: translate(-50%, -50%);
     text-align: center;
     color: #ffffff;
@@ -164,7 +164,7 @@
 #chat-log {
     display: flex; 
     flex-direction: column; 
-    padding: 15px;
+    padding: 0 15px;
 }
 
 /* Styles for messages */
@@ -172,7 +172,7 @@
     display: flex;
     justify-content: flex-end; 
     color: #000;
-    margin-bottom: 5px;
+    margin-top: 5px;
 
 }
 
