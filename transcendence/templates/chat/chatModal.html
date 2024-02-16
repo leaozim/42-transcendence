@@ -1,12 +1,3 @@
-{% extends 'includes/base.html' %}
-
-{% load static %}
-{% block stylesheet %}
-    <link rel="stylesheet" href="{% static 'chat/chat.css' %}">
-{% endblock stylesheet %}
-
-{% block content %}
-
 <div id="chat-modal" class="modal chat" tabindex="-1" role="dialog">
   <div class="modal-content">
       <div class="chats">
@@ -27,11 +18,11 @@
         </ul>
         </div>
         <div id="chat-container">
-          <p id="no-chat-selected-message">No chats selected</p>
           <header id="header-container">
             <div class="chat-header"></div>
           </header>
           <div id="message-container">
+            <p id="no-chat-selected-message">No chats selected!</p>
             <div id="chat-log">
             </div>
           </div>
@@ -43,8 +34,4 @@
       </div>
     </div>
 </div>
-{% endblock content %}
 
-{% block scripts %}
-  <script src="{% static 'chat/chat.js' %}"></script>
-{% endblock %}

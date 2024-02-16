@@ -2,6 +2,8 @@
 {% load static %}
 {% block stylesheet %}
     <link rel="stylesheet" href="{% static 'login/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'chat/chat.css' %}">
+
 {% endblock stylesheet %}
 {% block content %}
     <div class="container">
@@ -103,8 +105,8 @@
                     </button>
                 </div>
                 <!-- Profile page -->
-                {% include "chat/list_of_chat_users.html" %}
                 {% include "profile/modal.html" %}
+                {% include "chat/chatModal.html" %}
 
                 
                 
@@ -115,4 +117,5 @@
 {% block scripts %}
     <script src="{% static 'login/app.js' %}"></script>
     <script src="{% static 'chat/app.js' %}"></script>
+    <script src="{% static 'chat/chat.js' %}"></script>
 {% endblock scripts %}
