@@ -30,6 +30,16 @@ class Scene2 extends Phaser.Scene {
     }
 
     async update() {
+      this.receiveSocket.onmessage = (event) => {
+        console.log('receive data: ', event.data)
+        // const data = JSON.parse(event.data);
+        // if (data.ball_x !== undefined && data.ball_y !== undefined) {
+        //     this.ball.move(data.ball_x, data.ball_y);
+        // }
+    };
+    if (this.senderSocket !== null && this.senderSocket != null) {
+      this.senderSocket.send({'cavalinho'});
+    }
     //   this.receiveSocket.onmessage = (event) => {
     //     const data = JSON.parse(event.data);
 
@@ -55,40 +65,39 @@ class Scene2 extends Phaser.Scene {
     //         }
     //     }
     // };
-        this.ball.move();
-        this.left_paddle.move()
-        this.left_paddle.hitHorizontalBorders()
-        const collisionResultLeft = this.ball.checkPaddleCollision(
-          this.left_paddle.x,
-          this.left_paddle.y,
-          this.paddle_height,
-          PLAYER_LEFT
-        );
-        this.right_paddle.move()
-        this.right_paddle.hitHorizontalBorders()
+      //   this.left_paddle.move()
+      //   this.left_paddle.hitHorizontalBorders()
+      //   const collisionResultLeft = this.ball.checkPaddleCollision(
+      //     this.left_paddle.x,
+      //     this.left_paddle.y,
+      //     this.paddle_height,
+      //     PLAYER_LEFT
+      //   );
+      //   this.right_paddle.move()
+      //   this.right_paddle.hitHorizontalBorders()
 
-        const collisionResultRight = this.ball.checkPaddleCollision(
-          this.right_paddle.x,
-          this.right_paddle.y,
-          this.paddle_height,
-          PLAYER_RIGHT
+      //   const collisionResultRight = this.ball.checkPaddleCollision(
+      //     this.right_paddle.x,
+      //     this.right_paddle.y,
+      //     this.paddle_height,
+      //     PLAYER_RIGHT
 
-      );
-      if (this.ball.x > CANVAS_WIDTH) {
-        this.player_left.incrementScore();
-        this.ball.resetBall()
-        this.left_paddle.resetPaddle(PLAYER_LEFT)
-        this.right_paddle.resetPaddle(PLAYER_RIGHT)
-        this.player_left.updateScoreText()
-      }
+      // );
+      // if (this.ball.x > CANVAS_WIDTH) {
+      //   this.player_left.incrementScore();
+      //   this.ball.resetBall()
+      //   this.left_paddle.resetPaddle(PLAYER_LEFT)
+      //   this.right_paddle.resetPaddle(PLAYER_RIGHT)
+      //   this.player_left.updateScoreText()
+      // }
 
-      if (this.ball.x < 0) {
-          this.player_right.incrementScore();
-          this.ball.resetBall()
-          this.right_paddle.resetPaddle(PLAYER_RIGHT)
-          this.left_paddle.resetPaddle(PLAYER_LEFT)
-          this.player_right.updateScoreText()
-      }
+      // if (this.ball.x < 0) {
+      //     this.player_right.incrementScore();
+      //     this.ball.resetBall()
+      //     this.right_paddle.resetPaddle(PLAYER_RIGHT)
+      //     this.left_paddle.resetPaddle(PLAYER_LEFT)
+      //     this.player_right.updateScoreText()
+      // }
   }
 
 

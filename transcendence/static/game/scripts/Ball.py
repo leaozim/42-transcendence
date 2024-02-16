@@ -36,7 +36,7 @@ class Ball:
         return [False, None]  # Certifique-se de adaptar o retorno conforme necessário
 
     def set_random_direction(self):
-        return Vector2(random.uniform(-self.speed, self.speed), random.uniform(-self.speed, self.speed))
+        return Vector2(1, 1)
 
     def accelerate_ball(self):
         self.speed += self.acceleration_amount
