@@ -1,58 +1,32 @@
 {% extends 'includes/base.html' %}
 
+{% load static %}
+
 {% block content %}
-    <div class="container popup-container">
+<div class="container popup-container">
 
-        <form id="testForm" onsubmit="sendTOTPRequest(); return false;">
-            <div class="bg-common bg-blue">
-                <h2 class="title-center">Two Factor</h2>
-            </div>
-
-            <div class="mb-3">
-                <label for="token" class="form-label">Security Code:</label>
-                <br>
-                <input type="text", class='form-control', id="token" name="token", maxlength="6" required>
-            </div>
-            <input type="submit" class="btn btn-primary" value="verify code">
-                
-            <p class="info mb-3">To verify your identity enter the 6-digit code from your authenticator app.</p>
-
-        </form>
-
-        <div id="result"></div>
+  <form id="testForm">
+    <div class="bg-common bg-blue">
+      <h2 class="title-center">Two Factor</h2>
     </div>
 
+    <div class="mb-3">
+      <label for="token" class="form-label">Security Code:</label>
+      <br>
+      <input type="text" , class='form-control' , id="token" name="token" , maxlength="6" required>
+    </div>
+    <input type="submit" class="btn btn-primary" value="verify code">
 
-    <script>
-        function sendTOTPRequest() {
-            let totpToken = document.getElementById("token").value;
+    <p class="info mb-3">To verify your identity enter the 6-digit code from your authenticator app.</p>
 
-            fetch("http://localhost:8000/totp/login/" + totpToken + "/", {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCookie("csrftoken"),
-                },
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                console.error(response)
-                throw new Error("Erro na solicitação");
-            })
-            .then(data => {
-                window.location.href = "http://localhost:8000/auth/user";
-            })
-            .catch(error => {
-                console.error("Erro:", error);
-            });
-        }
+  </form>
 
-        function getCookie(name) {
-            var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-            if (match) return match[2];
-        }
-    </script>
-{% endblock %}
+  <div id="result"></div>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script> const TOTP_LOGIN_URL = "{% url 'srcs_auth:totp-login' token=None %}".replace("None/", ""); </script>
+<script src="{% static 'registration/validate_token_2f.js' %}"></script>
+{% endblock scripts %}
