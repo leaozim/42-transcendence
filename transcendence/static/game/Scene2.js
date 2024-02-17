@@ -2,11 +2,11 @@ class Scene2 extends Phaser.Scene {
     constructor() {
       super("playGame");
       console.log('criando game')
-      const sendPlayer1Url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/player1/' + room_id + '/';
-      const sendPlayer2Url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/player2/' + room_id + '/';
+      // const sendPlayer1Url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/player1/' + room_id + '/';
+      // const sendPlayer2Url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/player2/' + room_id + '/';
       const receiveSocketUrl = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/broadcast/' + room_id + '/';
-      this.sendPlayer1Socket = new WebSocket(sendPlayer1Url);
-      this.sendPlayer2Socket = new WebSocket(sendPlayer2Url);
+      // this.sendPlayer1Socket = new WebSocket(sendPlayer1Url);
+      // this.sendPlayer2Socket = new WebSocket(sendPlayer2Url);
       this.receiveSocket = new WebSocket(receiveSocketUrl);
     }
 
@@ -18,7 +18,7 @@ class Scene2 extends Phaser.Scene {
   
     async create() {
       this.i_am = await this.getThisUser()
-      this.senderSocket = (this.i_am==leftPlayer) ? this.sendPlayer1Socket : this.sendPlayer2Socket;
+      // this.senderSocket = (this.i_am==leftPlayer) ? this.sendPlayer1Socket : this.sendPlayer2Socket;
       this.left_paddle = new Paddle(this, LEFT_PADDLE_START_POSITION.x, LEFT_PADDLE_START_POSITION.y, "paddle", (this.i_am==leftPlayer));
       this.player_left = new Player(this, this.left_paddle, PLAYER_LEFT, leftPlayer)
       this.right_paddle = new Paddle(this, RIGHT_PADDLE_START_POSITION.x, RIGHT_PADDLE_START_POSITION.y, "paddle", (this.i_am==rightPlayer));
@@ -27,19 +27,15 @@ class Scene2 extends Phaser.Scene {
 
       this.paddle_height = this.left_paddle.height;
       this.ball = new Ball(this, CENTER_OF_SCREEN.x, CENTER_OF_SCREEN.y, "ball");
+
+      this.receiveSocket.onmessage = (event) => {
+        console.log('receive data: ', event.data)
+    };
     }
 
     async update() {
       this.receiveSocket.onmessage = (event) => {
         console.log('receive data: ', event.data)
-        // const data = JSON.parse(event.data);
-        // if (data.ball_x !== undefined && data.ball_y !== undefined) {
-        //     this.ball.move(data.ball_x, data.ball_y);
-        // }
-    };
-    if (this.senderSocket !== null && this.senderSocket != null) {
-      this.senderSocket.send({'cavalinho'});
-    }
     //   this.receiveSocket.onmessage = (event) => {
     //     const data = JSON.parse(event.data);
 
@@ -99,6 +95,5 @@ class Scene2 extends Phaser.Scene {
       //     this.player_right.updateScoreText()
       // }
   }
-
-
+}
 }
