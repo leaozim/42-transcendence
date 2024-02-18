@@ -28,14 +28,20 @@ class Scene2 extends Phaser.Scene {
       this.paddle_height = this.left_paddle.height;
       this.ball = new Ball(this, CENTER_OF_SCREEN.x, CENTER_OF_SCREEN.y, "ball");
 
+      this.eventData = {"ball_x": this.ball.x, "ball_y": this.ball};
       this.receiveSocket.onmessage = (event) => {
         console.log('receive data: ', event.data)
-    };
+        this.eventData = JSON.parse(event.data);
+      };
     }
 
     async update() {
-      this.receiveSocket.onmessage = (event) => {
-        console.log('receive data: ', event.data)
+      if (this.eventData) {
+        this.ball.move(this.eventData.ball_x, this.eventData.ball_y)
+        this.receiveSocket.send(JSON.stringify({"type": "end_loop"}))
+      }
+      // this.receiveSocket.onmessage = (event) => {
+      //   console.log('receive data: ', event.data)
     //   this.receiveSocket.onmessage = (event) => {
     //     const data = JSON.parse(event.data);
 
@@ -95,5 +101,4 @@ class Scene2 extends Phaser.Scene {
       //     this.player_right.updateScoreText()
       // }
   }
-}
 }

@@ -21,7 +21,7 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
 
         await self.send(text_data=json.dumps({"type": "playerId", "playerId": 'cavalinho'}))
 
-        asyncio.create_task(self.game_loop())
+        # asyncio.create_task(self.game_loop())
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
@@ -33,20 +33,25 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message_type = text_data_json.get("type", "")
-        print('receive: ')
-        print(message_type)
+        await ball.move()
+        await self.channel_layer.group_send(self.room_group_name, {
+            "type": "game_update",
+            "data": {
+                "ball_x": ball.position.x,
+                "ball_y": ball.position.y
+            }
+        })
 
-    async def game_loop(self):
-        while True:
-            ball.move()
-            await self.channel_layer.group_send(self.room_group_name, {
-                "type": "game_update",
-                "data": {
-                    "ball_x": ball.position.x,
-                    "ball_y": ball.position.y
-                }
-            })
+    # async def game_loop(self):
+    #     while True:
+    #         await ball.move()
+    #         await self.channel_layer.group_send(self.room_group_name, {
+    #             "type": "game_update",
+    #             "data": {
+    #                 "ball_x": ball.position.x,
+    #                 "ball_y": ball.position.y
+    #             }
+    #         })
 
 
     # async def update_ball_loop(self):

@@ -18,8 +18,10 @@ class Ball:
         if self.position.y <= 0 or self.position.y >= canvas_height:
             self.velocity.y *= -1
 
-    def move(self):
+    async def move(self):
         self.hit_horizontal_borders(CANVAS_HEIGHT)
+        if self.position.x <= 0 or self.position.x >= CANVAS_WIDTH:
+            self.velocity.x *= -1
         self.position.y += self.velocity.y
         self.position.x += self.velocity.x
 
