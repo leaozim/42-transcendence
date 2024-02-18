@@ -24,11 +24,18 @@ class Scene2 extends Phaser.Scene {
       this.right_paddle = new Paddle(this, RIGHT_PADDLE_START_POSITION.x, RIGHT_PADDLE_START_POSITION.y, "paddle", (this.i_am==rightPlayer));
       this.player_right = new Player(this, this.right_paddle, PLAYER_RIGHT, rightPlayer)
       this.me = (this.i_am==leftPlayer) ? this.player_left : this.player_right
-
+      
       this.paddle_height = this.left_paddle.height;
       this.ball = new Ball(this, CENTER_OF_SCREEN.x, CENTER_OF_SCREEN.y, "ball");
-
-      this.eventData = {"ball_x": this.ball.x, "ball_y": this.ball};
+      
+      this.eventData = {
+        "ball_x": this.ball.x,
+        "ball_y": this.ball.y,
+        "left_player_position_x": this.left_paddle.x,
+        "left_player_position_y": this.left_paddle.y,
+        "right_player_position_x": this.right_paddle.x,
+        "right_player_position_y": this.right_paddle.y
+      };
       this.receiveSocket.onmessage = (event) => {
         console.log('receive data: ', event.data)
         this.eventData = JSON.parse(event.data);
@@ -38,67 +45,13 @@ class Scene2 extends Phaser.Scene {
     async update() {
       if (this.eventData) {
         this.ball.move(this.eventData.ball_x, this.eventData.ball_y)
-        this.receiveSocket.send(JSON.stringify({"type": "end_loop"}))
+        this.left_paddle.move(this.eventData.left_player_position_x, this.eventData.left_player_position_y)
+        this.right_paddle.move(this.eventData.right_player_position_x, this.eventData.right_player_position_y)
+        this.receiveSocket.send(JSON.stringify({
+          "type": "end_loop",
+          "left_player_velocity": this.left_paddle.velocity_to_dict(),
+          "right_player_velocity": this.right_paddle.velocity_to_dict(),
+        }));
       }
-      // this.receiveSocket.onmessage = (event) => {
-      //   console.log('receive data: ', event.data)
-    //   this.receiveSocket.onmessage = (event) => {
-    //     const data = JSON.parse(event.data);
-
-    //     if (data.player) {
-    //         const isLeftPlayer = data.player.left === 1;
-
-    //         if (isLeftPlayer) {
-    //             console.log("Recebido do jogador esquerdo:");
-    //         } else {
-    //             console.log("Recebido do jogador direito:");
-    //         }
-
-    //         console.log(`Paddle X: ${data.player.paddle.x}`);
-    //         console.log(`Paddle Y: ${data.player.paddle.y}`);
-
-    //         // Atualize a posição do paddle conforme necessário
-    //         if (isLeftPlayer) {
-    //             this.right_paddle.x = data.player.paddle.x;
-    //             this.right_paddle.y = data.player.paddle.y;
-    //         } else {
-    //             this.left_paddle.x = data.player.paddle.x;
-    //             this.left_paddle.y = data.player.paddle.y;
-    //         }
-    //     }
-    // };
-      //   this.left_paddle.move()
-      //   this.left_paddle.hitHorizontalBorders()
-      //   const collisionResultLeft = this.ball.checkPaddleCollision(
-      //     this.left_paddle.x,
-      //     this.left_paddle.y,
-      //     this.paddle_height,
-      //     PLAYER_LEFT
-      //   );
-      //   this.right_paddle.move()
-      //   this.right_paddle.hitHorizontalBorders()
-
-      //   const collisionResultRight = this.ball.checkPaddleCollision(
-      //     this.right_paddle.x,
-      //     this.right_paddle.y,
-      //     this.paddle_height,
-      //     PLAYER_RIGHT
-
-      // );
-      // if (this.ball.x > CANVAS_WIDTH) {
-      //   this.player_left.incrementScore();
-      //   this.ball.resetBall()
-      //   this.left_paddle.resetPaddle(PLAYER_LEFT)
-      //   this.right_paddle.resetPaddle(PLAYER_RIGHT)
-      //   this.player_left.updateScoreText()
-      // }
-
-      // if (this.ball.x < 0) {
-      //     this.player_right.incrementScore();
-      //     this.ball.resetBall()
-      //     this.right_paddle.resetPaddle(PLAYER_RIGHT)
-      //     this.left_paddle.resetPaddle(PLAYER_LEFT)
-      //     this.player_right.updateScoreText()
-      // }
   }
 }
