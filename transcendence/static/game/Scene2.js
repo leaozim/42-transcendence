@@ -2,11 +2,7 @@ class Scene2 extends Phaser.Scene {
     constructor() {
       super("playGame");
       console.log('criando game')
-      // const sendPlayer1Url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/player1/' + room_id + '/';
-      // const sendPlayer2Url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/player2/' + room_id + '/';
       const receiveSocketUrl = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/broadcast/' + room_id + '/';
-      // this.sendPlayer1Socket = new WebSocket(sendPlayer1Url);
-      // this.sendPlayer2Socket = new WebSocket(sendPlayer2Url);
       this.receiveSocket = new WebSocket(receiveSocketUrl);
     }
 
@@ -34,7 +30,8 @@ class Scene2 extends Phaser.Scene {
         "left_player_position_x": this.left_paddle.x,
         "left_player_position_y": this.left_paddle.y,
         "right_player_position_x": this.right_paddle.x,
-        "right_player_position_y": this.right_paddle.y
+        "right_player_position_y": this.right_paddle.y,
+        "score": [0, 0]
       };
       this.receiveSocket.onmessage = (event) => {
         console.log('receive data: ', event.data)
@@ -44,6 +41,10 @@ class Scene2 extends Phaser.Scene {
 
     async update() {
       if (this.eventData) {
+        this.player_left.score = this.eventData.score[PLAYER_LEFT]
+        this.player_left.updateScoreText()
+        this.player_right.score = this.eventData.score[PLAYER_RIGHT]
+        this.player_right.updateScoreText()
         this.ball.move(this.eventData.ball_x, this.eventData.ball_y)
         this.left_paddle.move(this.eventData.left_player_position_x, this.eventData.left_player_position_y)
         this.right_paddle.move(this.eventData.right_player_position_x, this.eventData.right_player_position_y)

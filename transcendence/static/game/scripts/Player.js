@@ -19,6 +19,7 @@ class Player extends Phaser.GameObjects.Image {
 
     incrementScore() {
         this.score += 1;
+        updateScoreText()
     }
 
     getScore() {

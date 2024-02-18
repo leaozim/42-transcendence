@@ -11,6 +11,7 @@ from channels.layers import get_channel_layer
 ball = Ball()
 left_paddle = Paddle(LEFT_PADDLE_START_POSITION[0], LEFT_PADDLE_START_POSITION[1])
 right_paddle = Paddle(RIGHT_PADDLE_START_POSITION[0], RIGHT_PADDLE_START_POSITION[1])
+score = [0, 0]
 # broadcast = None
 
 class BroadcastConsumer(AsyncWebsocketConsumer):
@@ -46,6 +47,15 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
         await left_paddle.set_paddle_velocity(left_player_velocity.get('x', 0), left_player_velocity.get('y', 0))
         print(left_paddle.velocity)
         await left_paddle.move()
+        ball.checkPaddleCollision(left_paddle.position.x, left_paddle.position.y, PLAYER_LEFT)
+        ball.checkPaddleCollision(right_paddle.position.x, right_paddle.position.y, PLAYER_RIGHT)
+        if (ball.position.x > CANVAS_WIDTH):
+            score[PLAYER_LEFT] += 1
+            await ball.resetBall()
+
+        if (ball.position.x < 0):
+            score[PLAYER_RIGHT] += 1
+            await ball.resetBall()
 
         await self.channel_layer.group_send(self.room_group_name, {
             "type": "game_update",
@@ -55,102 +65,7 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
                 "left_player_position_x": left_paddle.position.x,
                 "left_player_position_y": left_paddle.position.y,
                 "right_player_position_x": right_paddle.position.x,
-                "right_player_position_y": right_paddle.position.y
+                "right_player_position_y": right_paddle.position.y,
+                "score": score
             }
         })
-
-    # async def game_loop(self):
-    #     while True:
-    #         await ball.move()
-    #         await self.channel_layer.group_send(self.room_group_name, {
-    #             "type": "game_update",
-    #             "data": {
-    #                 "ball_x": ball.position.x,
-    #                 "ball_y": ball.position.y
-    #             }
-    #         })
-
-
-    # async def update_ball_loop(self):
-        # while True:
-        #     ball.move()
-        #     await self.send(
-        #         text_data=json.dumps(
-        #         {
-        #             'type': 'game_update',
-        #             'data': {
-        #                 'ball_x': ball.position.x,
-        #                 'ball_y': ball.position.y,
-        #             }
-        #         })
-        #     )
-
-# class Player1Consumer(AsyncWebsocketConsumer):
-#     async def connect(self):
-#         self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
-#         self.room_group_name = f"game_{self.room_id}_player1"
-#         self.broadcast_group_name = f"game_{self.room_id}_broadcast"
-
-#         await self.channel_layer.group_add(
-#             self.room_group_name,
-#             self.channel_name
-#         )
-
-#         await self.accept()
-
-#     async def disconnect(self, close_code):
-#         await self.channel_layer.group_discard(
-#             self.room_group_name,
-#             self.channel_name
-#         )
-
-#     async def receive(self, text_data):
-#         text_data_json = json.loads(text_data)
-
-#         # Processar dados, se necessário
-
-#         # Envie para o grupo de transmissão geral
-#         await self.channel_layer.group_send(
-#             self.broadcast_group_name, {
-#                 'type': 'player1_update',
-#                 'data': text_data_json,
-#             }
-#         )
-
-#     async def player1_update(self, event):
-#         await self.send(text_data=json.dumps(event['data']))
-
-# class Player2Consumer(AsyncWebsocketConsumer):
-#     async def connect(self):
-#         self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
-#         self.room_group_name = f"game_{self.room_id}_player2"
-#         self.broadcast_group_name = f"game_{self.room_id}_broadcast"
-
-#         await self.channel_layer.group_add(
-#             self.room_group_name,
-#             self.channel_name
-#         )
-
-#         await self.accept()
-
-#     async def disconnect(self, close_code):
-#         await self.channel_layer.group_discard(
-#             self.room_group_name,
-#             self.channel_name
-#         )
-
-#     async def receive(self, text_data):
-#         text_data_json = json.loads(text_data)
-
-#         # Processar dados, se necessário
-
-#         # Envie para o grupo de transmissão geral
-#         await self.channel_layer.group_send(
-#             self.broadcast_group_name, {
-#                 'type': 'game_update',
-#                 'data': text_data_json,
-#             }
-#         )
-
-#     async def player2_update(self, event):
-#         await self.send(text_data=json.dumps(event['data']))
