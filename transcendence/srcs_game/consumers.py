@@ -10,8 +10,9 @@ from static.game.scripts.Ball import Ball
 from static.game.scripts.Paddle import Paddle
 from static.game.scripts.Vector2 import Vector2
 from static.game.scripts.constants import *
-from asgiref.sync import async_to_sync
+from asgiref.sync import sync_to_async
 from channels.layers import get_channel_layer
+from srcs_game.models import Game
 
 '''
     Dicionário global que armazena todas as informações de todos os jogos.
@@ -38,18 +39,36 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
         self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
         self.room_group_name = f"game_{self.room_id}_broadcast"
 
+        '''
+            Role desgraçado pra pegar o id dos jogadores que jogam neste game.
+            Será usado para contar o número de conexões e começar o jogo
+            apenas quando os 2 jogadores necessários estiverem conectados.
+            Os únicos players que devem ser contados tanto no connect quanto
+            no disconnect são esses dois. Os demais vão conseguir assistir
+            o jogo mas não interagir com os paddles e ao entrarem ou saírem
+            não devem interferir no começo ou encerramento do jogo.
+        '''
+        game = await sync_to_async(Game.objects.get)(pk=self.room_id)
+        left_player = await sync_to_async(lambda: game.leftPlayer)()
+        right_player = await sync_to_async(lambda: game.rightPlayer)()
+        players_id = (left_player.id, right_player.id)
+        
+
         if self.room_group_name not in games:  # verifica se os dados do game não existe
             games[self.room_group_name] = {  # caso não exista, cria uma nova chave para armazenar os dados
                 'ball': Ball(),
                 'left_paddle': Paddle(LEFT_PADDLE_START_POSITION[0], LEFT_PADDLE_START_POSITION[1]),
                 'right_paddle': Paddle(RIGHT_PADDLE_START_POSITION[0], RIGHT_PADDLE_START_POSITION[1]),
-                'score': [0, 0]
+                'score': [0, 0],
+                'left_player_id': players_id[PLAYER_LEFT],
+                'right_player_id': players_id[PLAYER_RIGHT]
                 }
         # passa todas as variáveis do game para uma variável específica dessa instância, para facilitar o acesso depois
         self.ball = games[self.room_group_name]['ball']
         self.left_paddle = games[self.room_group_name]['left_paddle']
         self.right_paddle = games[self.room_group_name]['right_paddle']
         self.score = games[self.room_group_name]['score']
+        self.playersIds = [games[self.room_group_name]['left_player_id'], games[self.room_group_name]['right_player_id']]
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
@@ -76,7 +95,6 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
     '''
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-
         await self.ball.move()
 
         # pega informação de input dos paddles e processa as infos pra trazer nova posição dos paddles

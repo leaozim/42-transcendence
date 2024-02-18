@@ -1,9 +1,17 @@
 class Scene2 extends Phaser.Scene {
     constructor() {
       super("playGame");
-      console.log('criando game')
       const receiveSocketUrl = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/game/broadcast/' + room_id + '/';
       this.receiveSocket = new WebSocket(receiveSocketUrl);
+
+      const playerIds = {
+        leftPlayerId: leftPlayer,
+        rightPlayerId: rightPlayer
+      };
+
+      this.receiveSocket.onopen = () => {
+          this.receiveSocket.send(JSON.stringify(playerIds));
+      };
     }
 
     async getThisUser() {
