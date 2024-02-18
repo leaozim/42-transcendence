@@ -14,6 +14,8 @@ right_paddle = Paddle(RIGHT_PADDLE_START_POSITION[0], RIGHT_PADDLE_START_POSITIO
 score = [0, 0]
 # broadcast = None
 
+games = {}
+
 class BroadcastConsumer(AsyncWebsocketConsumer):
     update_lock = asyncio.Lock()
 
@@ -21,6 +23,18 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
         await self.accept()
         self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
         self.room_group_name = f"game_{self.room_id}_broadcast"
+
+        if self.room_group_name not in games:
+            games[self.room_group_name] = {
+                'ball': Ball(),
+                'left_paddle': Paddle(LEFT_PADDLE_START_POSITION[0], LEFT_PADDLE_START_POSITION[1]),
+                'right_paddle': Paddle(RIGHT_PADDLE_START_POSITION[0], RIGHT_PADDLE_START_POSITION[1]),
+                'score': [0, 0]
+                }
+        self.ball = games[self.room_group_name]['ball']
+        self.left_paddle = games[self.room_group_name]['left_paddle']
+        self.right_paddle = games[self.room_group_name]['right_paddle']
+        self.score = games[self.room_group_name]['score']
 
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
@@ -39,33 +53,32 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        await ball.move()
+        await self.ball.move()
         left_player_velocity = text_data_json.get("left_player_velocity", {})
         right_player_velocity = text_data_json.get("right_player_velocity", {})
-        await right_paddle.set_paddle_velocity(right_player_velocity.get('x', 0), right_player_velocity.get('y', 0))
-        await right_paddle.move()
-        await left_paddle.set_paddle_velocity(left_player_velocity.get('x', 0), left_player_velocity.get('y', 0))
-        print(left_paddle.velocity)
-        await left_paddle.move()
-        ball.checkPaddleCollision(left_paddle.position.x, left_paddle.position.y, PLAYER_LEFT)
-        ball.checkPaddleCollision(right_paddle.position.x, right_paddle.position.y, PLAYER_RIGHT)
-        if (ball.position.x > CANVAS_WIDTH):
-            score[PLAYER_LEFT] += 1
-            await ball.resetBall()
+        await self.right_paddle.set_paddle_velocity(right_player_velocity.get('x', 0), right_player_velocity.get('y', 0))
+        await self.right_paddle.move()
+        await self.left_paddle.set_paddle_velocity(left_player_velocity.get('x', 0), left_player_velocity.get('y', 0))
+        await self.left_paddle.move()
+        self.ball.checkPaddleCollision(self.left_paddle.position.x, self.left_paddle.position.y, PLAYER_LEFT)
+        self.ball.checkPaddleCollision(self.right_paddle.position.x, self.right_paddle.position.y, PLAYER_RIGHT)
+        if (self.ball.position.x > CANVAS_WIDTH):
+            self.score[PLAYER_LEFT] += 1
+            await self.ball.resetBall()
 
-        if (ball.position.x < 0):
-            score[PLAYER_RIGHT] += 1
-            await ball.resetBall()
+        if (self.ball.position.x < 0):
+            self.score[PLAYER_RIGHT] += 1
+            await self.ball.resetBall()
 
         await self.channel_layer.group_send(self.room_group_name, {
             "type": "game_update",
             "data": {
-                "ball_x": ball.position.x,
-                "ball_y": ball.position.y,
-                "left_player_position_x": left_paddle.position.x,
-                "left_player_position_y": left_paddle.position.y,
-                "right_player_position_x": right_paddle.position.x,
-                "right_player_position_y": right_paddle.position.y,
-                "score": score
+                "ball_x": self.ball.position.x,
+                "ball_y": self.ball.position.y,
+                "left_player_position_x": self.left_paddle.position.x,
+                "left_player_position_y": self.left_paddle.position.y,
+                "right_player_position_x": self.right_paddle.position.x,
+                "right_player_position_y": self.right_paddle.position.y,
+                "score": self.score
             }
         })
