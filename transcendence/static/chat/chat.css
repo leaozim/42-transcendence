@@ -1,4 +1,5 @@
 /* Styles for modal box */
+
 .chat .modal-content {
     display: flex;
     flex-direction: row;
@@ -8,6 +9,7 @@
     max-width: 900px;
     max-height: 550px;
     padding: 0px;
+    overflow: hidden;
 }
 
 .chat .modal-content:first-child {
@@ -15,7 +17,9 @@
     flex-direction: column;
     width: 60vw;
     height: 100%;
-    border: 6px solid #6F077C;
+    border: 1px solid #6F077C;
+    border-radius: 20px;
+    z-index: 0;
 }
 
 .chats {
@@ -23,7 +27,6 @@
     width: 100%;
     height: 100%;   
     border: 20px;
-
 }
 
 /* Styles for the user list */
@@ -52,6 +55,7 @@
     width: 100%;
     margin: 0;
     padding: 0;
+
 }
 
 .list-users:hover {
@@ -83,6 +87,7 @@
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
+
 }
 
 .item-user.selected {

@@ -7,14 +7,14 @@
           <h2 >Chats </h2>
         </div>
         <ul class="list-users">
-          {% for user in users_in_chats %} {% if user.username != request.user.username %}
-            <li class="item-user" onclick="selectItem(this); openChat('{{ user.id }}', '{{ user.username }}')">
-              <img src="{{ user.avatar }}" class="user-photo">
-              <span class="botton_name"> {{ user.username }}</span>
-            </li>
 
-          </li>
-          {% endif %} {% endfor %}
+            {% for user in users_in_chats %} {% if user.username != request.user.username %}
+              <li class="item-user" onclick="selectItem(this); openChat('{{ user.id }}', '{{ user.username }}')">
+                <img src="{{ user.avatar }}" class="user-photo">
+                <span class="botton_name"> {{ user.username }}</span>
+              </li>
+            {% endif %} {% endfor %}
+
         </ul>
         </div>
         <div id="chat-container">
@@ -32,6 +32,7 @@
           </div>
         </div>
       </div>
-    </div>
+    <div>  
+  </div>
 </div>
 

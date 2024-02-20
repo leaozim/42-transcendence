@@ -7,6 +7,7 @@ from srcs_chat import services
 from django.http import HttpResponse as HttpResponse, JsonResponse, Http404, HttpResponse
 from django.views import View
 from django.utils.decorators import method_decorator
+from django.utils import timezone
 
 class ChatView(View):
     @method_decorator(login_required)
@@ -21,8 +22,10 @@ class ChatView(View):
 
     def open_chat(self, request, room_id):
         chat = Chat.objects.get(id=int(room_id))
+        
         if not services.is_user_in_chat(chat, request.user):
             raise Http404
+        
         messages = chat.message_set.all().order_by('timestamp')
         sorted_messages = sorted(messages, key=lambda x: x.timestamp)
         other_user = chat.get_other_user(request.user)

@@ -157,7 +157,6 @@ function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
 		const divImgElement = document.createElement('div');
 		divImgElement.className = 'user-photo';
 					
-		console.log(divImgElement)
 		divImgElement.appendChild(userPhoto);
 		chatHeader.appendChild(divImgElement);
 		chatHeader.appendChild(usernameElement);
