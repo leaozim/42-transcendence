@@ -1,0 +1,27 @@
+body {
+  background-color: #000012;
+  color: #ffffff;
+}
+
+.background-image {
+  margin: auto;
+  margin-top: 5%;
+}
+
+img {
+  max-width: 100vw;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  padding-top: 5%;
+}
+
+.btn.btn-primary {
+  width: 50%;
+  border: 1px solid rgba(63, 169, 245, 1);
+  border-radius: 15px;
+  background: rgba(0, 0, 0, 0);
+  color: rgba(63, 169, 245, 1);
+}

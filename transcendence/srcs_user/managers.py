@@ -21,10 +21,13 @@ class IntraUserOAuth2Manager(models.UserManager):
         )
         return new_user
         
-    def create_superuser(self, email, username, password=None, **extra_fields):
+    def create_superuser(self, username, email, password=None, **extra_fields):
         existing_user = self.filter(username=username).first()
         if existing_user:
+            existing_user.is_staff = True
+            existing_user.is_superuser = True
+            existing_user.save()
             return existing_user
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        return self.create_user(email, username, password, **extra_fields)
+        return self.create_user(username, email, password, **extra_fields)

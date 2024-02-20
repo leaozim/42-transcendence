@@ -11,15 +11,14 @@ User List - Transcendence
             {% if user != request.user %}
                 <li>
                     <span>{{ user.username }}</span>
-                    <button onclick="onUserClick(`{{ user.id }}`, '{{ user.username }}')">Chat</button>   
-                    <button onclick="onCreateGame(`{{ user.id }}`)">Create Game</button>             
+                    <button onclick="openChat(`{{ user.id }}`, '{{ user.username }}')">Chat</button>   
                 </li>
             {% endif %}
         {% endfor %}
     </ul>
 
     <script>
-        function onUserClick(userId, username) {
+        function openChat(userId, username) {
             if (!userId || isNaN(userId)) {
                 console.error('ID do usuário inválido:', userId);
                 return;
@@ -28,25 +27,10 @@ User List - Transcendence
             fetch("/chat/create_or_open_chat/" + userId)
                 .then(response => response.json())
                 .then(data => {
-                    window.location.pathname = '/chat/' + data.room_name + '/';
+                    window.location.pathname = '/chat/' + data.room_id + '/';
                 })
                 .catch(error => console.error('Erro ao criar/abrir sala:', error));
         }
 
-        function onCreateGame(rightPlayerId) {
-            if (!rightPlayerId || isNaN(rightPlayerId)) {
-                console.error('Invalid user ID for the right player:', rightPlayerId);
-                return;
-            }
-
-            fetch("/game/create_game/" + rightPlayerId)
-                .then(response => response.json())
-                .then(data => {
-                    window.location.pathname = '/game/' + data.room_id + '/';
-                })
-                .catch(error => {
-                    console.error('Error creating game:', error);
-                });
-        }
     </script>
 {% endblock %}

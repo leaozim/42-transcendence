@@ -20,4 +20,13 @@ def room(request, room_id):
     if not game:   
         raise Http404
     game = game.first()
-    return render(request, "game/index.html", context={"room_id": room_id, "leftPlayer": game.leftPlayer.id, "rightPlayer": game.rightPlayer.id})
+    return render(request,
+                  "game/index.html",
+                  context={
+                    "room_id": room_id,
+                    "leftPlayer": game.leftPlayer.id,
+                    "rightPlayer": game.rightPlayer.id})
+
+def users_list(request):
+    users = User.objects.all()
+    return render(request, 'game/game_list.html', {'users': users})

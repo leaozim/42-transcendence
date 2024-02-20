@@ -10,6 +10,13 @@ class Message(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+    def to_dict(self):
+        return {
+            'user': self.user.username,
+            'avatar': self.user.avatar,
+            'content': self.content,
+        }
 
     class Meta:
         db_table = 'message'

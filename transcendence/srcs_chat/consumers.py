@@ -1,8 +1,6 @@
 import json
-
 from srcs_user.models import User
 from srcs_message.services import add_message
-from srcs_chat.models import Chat
 from asgiref.sync import sync_to_async
 from srcs_auth.jwt_token import verify_jwt_token, JWTVerificationFailed
 from channels.generic.websocket import AsyncWebsocketConsumer
@@ -10,8 +8,8 @@ from srcs_user.services import find_one_intra
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
-        self.room_group_name = f"chat_{self.room_name}"
+        self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
+        self.room_group_name = f"chat_{self.room_id}"
         await self.channel_layer.group_add(
 		    self.room_group_name, self.channel_name
 		)
@@ -30,7 +28,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if user_id is None:
             user_id = await self.get_user_id_from_cookie()
 
-        chat_id = int(self.room_name)
+        chat_id = int(self.room_id)
         user = await sync_to_async(User.objects.get)(id=user_id)
         await self.save_message_to_db(chat_id, message, user_id)
         await self.channel_layer.group_send(

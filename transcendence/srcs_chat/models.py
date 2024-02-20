@@ -12,7 +12,7 @@ class Chat(models.Model):
 
     def get_other_user(self, current_user):
         return self.users_on_chat.exclude(id=current_user.id).first()
-    
+        
     class Meta:
         db_table = 'chat'
 

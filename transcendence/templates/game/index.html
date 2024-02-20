@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block script %} 
+{% block scripts %} 
     <script type="text/javascript">const room_id = "{{ room_id|escapejs }}";</script>
     <script type="text/javascript">const leftPlayer = "{{ leftPlayer|escapejs }}";</script>
     <script type="text/javascript">const rightPlayer = "{{ rightPlayer|escapejs }}";</script>
@@ -16,7 +16,7 @@
     <script type="text/javascript" src="{% static 'game/Scene2.js' %}" defer ></script>
     <script type="text/javascript" src="{% static 'game/game.js' %}" defer ></script>
 
-{% endblock script %}
+{% endblock scripts %}
 
 {% block content %} 
 

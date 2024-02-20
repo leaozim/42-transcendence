@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
 
+
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -68,7 +69,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'srcs_auth.middleware.CustomAuthenticationMiddleware',
     'django_otp.middleware.OTPMiddleware',
-    'django.middleware.security.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware', 
+    
+
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -91,7 +94,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'srcs_core.context_processors.custom_context_processor'
+                'srcs_core.context_processors.custom_context_processor_user',
+                'srcs_core.context_processors.custom_context_processor_chat_data',
             ],
         },
     },

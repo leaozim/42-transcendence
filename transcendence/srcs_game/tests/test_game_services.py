@@ -6,6 +6,7 @@ from srcs_game.models import Game
 from srcs_game import services as gameServices
 from django.http import Http404
 
+# @transaction.atomic
 class GameTests(TransactionTestCase):
     reset_sequences = True
     def setUp(self):
@@ -54,25 +55,16 @@ class GameTests(TransactionTestCase):
         self.assertEqual(message, "Error when creating game.")
 
 
-    def test_compute_game_score(self):
-        """ Set the score at the end of the game (? and the winner ?) """
-        pass
-
-    def test_game_end_due_to_lagging(self):
-        """ When at least one of the players is experimenting a poor connection, the game should stop and no points computed """
-        pass
-
-    def test_game_end_due_to_disconnection(self):
-        """ When at least one of the players is disconnected, the game should stop but the mmr points should change """
-        pass
-    
-    # def test_find_blind_match_should_create_a_game_with_the_closest_mmr_player_looking_for_a_game(self):
-    #     """ When more than 2 players are waiting for a blind match,
-    #     the matchmaking system should create a game with players with closest mmr value """
+    # def test_compute_game_score(self):
+    #     """ Set the score at the end of the game (? and the winner ?) """
     #     pass
 
-    # def test_find_blind_match_should_wait_for_a_more_compatible_pair_before_unfair_game_creation(self):
-    #     """ When only two players with large difference of mmr are looking for a blind match,
-    #     the matchmaking system should wait for a while before create a match with then """
+    # def test_game_end_due_to_lagging(self):
+    #     """ When at least one of the players is experimenting a poor connection, the game should stop and no points computed """
     #     pass
+
+    # def test_game_end_due_to_disconnection(self):
+    #     """ When at least one of the players is disconnected, the game should stop but the mmr points should change """
+    #     pass
+
     
