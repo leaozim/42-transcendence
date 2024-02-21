@@ -115,6 +115,7 @@ function initializeChatLog(current_user, messages) {
 
 document.addEventListener('DOMContentLoaded', function() {
   	document.getElementById('chat-message-input').addEventListener('keydown', function(event) {
+
 		if (event.key === 'Enter') {
 			sendMessage();
 			event.preventDefault(); 
@@ -125,8 +126,9 @@ document.addEventListener('DOMContentLoaded', function() {
 function sendMessage() {
 	const messageInputDom = document.getElementById('chat-message-input');
 	const message = messageInputDom.value.trim();
-	let lastMessage = null;
-
+	
+	if (message !== '')
+		updateUserList()
 	if (message !== '' && window.chatSocket) {
 		window.chatSocket.send(JSON.stringify({
 			'message': message
@@ -173,3 +175,40 @@ function selectItem(item) {
 
 	item.classList.add('selected');
 } 
+
+async function updateUserList() {
+    try {
+        const data = await fetch("/chat/get_updated_user_list");
+        const updatedUserList = await data.json();
+        renderUpdatedUserList(updatedUserList);
+    } catch (error) {
+        console.error('Error during AJAX request:', error);
+    }
+}
+function renderUpdatedUserList(updatedUserList) {
+    const listUsersContainer = document.getElementById('list-users-container');
+    
+    while (listUsersContainer.children.length > 1) {
+        listUsersContainer.removeChild(listUsersContainer.lastChild);
+    }
+
+    const usersArray = updatedUserList.users_in_chats || [];
+
+    usersArray.forEach(user => {
+		if (user.username != user.corrent_user) {
+			const listItem = document.createElement('li');
+			listItem.className = 'item-user';
+			listItem.onclick = function () {
+				selectItem(this);
+			};
+
+			listItem.innerHTML = `
+				<img src="${user.avatar}" class="user-photo">
+				<span class="botton_name">${user.username}</span>
+			`;
+	
+            listUsersContainer.appendChild(listItem);
+		}
+
+    });
+}

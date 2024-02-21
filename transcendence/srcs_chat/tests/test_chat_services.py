@@ -14,10 +14,12 @@ class ChatTests(TransactionTestCase):
     reset_sequences = True
     def setUp(self):
         self.chat = ChatFactory()
+        self.user1, self.user2 = self.chat.users_on_chat.all()
 
     def tearDown(self):
         ChatFactory.reset_sequence()
         UserFactory.reset_sequence()
+        
 
     def test_chat_creation_factory(self):
         self.assertEqual(self.chat.users_on_chat.count(), 2)
@@ -127,3 +129,21 @@ class ChatTests(TransactionTestCase):
 
         self.assertTrue(chat.blocked)
 
+    def test_get_updated_user_list(self):
+        
+        self.chat.users_on_chat.add(self.user1, self.user2)
+
+        Message.objects.create(chat=self.chat, sender=self.user1, content="Hello!")
+
+        updated_user_list = chatServices.get_updated_user_list(id_user=self.user1.id, username=self.user1.username)
+
+        expected_user_data = [
+            {
+                'id': self.user2.id,
+                'username': self.user2.username,
+                'avatar': self.user2.avatar,
+                'corrent_user': self.user1.username
+            }
+        ]
+
+        self.assertEqual(updated_user_list, expected_user_data)

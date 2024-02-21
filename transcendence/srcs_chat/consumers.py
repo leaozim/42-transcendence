@@ -5,6 +5,7 @@ from asgiref.sync import sync_to_async
 from srcs_auth.jwt_token import verify_jwt_token, JWTVerificationFailed
 from channels.generic.websocket import AsyncWebsocketConsumer
 from srcs_user.services import find_one_intra
+from srcs_chat.services import get_updated_user_list
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -30,6 +31,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         chat_id = int(self.room_id)
         user = await sync_to_async(User.objects.get)(id=user_id)
+        user_list = await sync_to_async(get_updated_user_list)(user.id, user.username)
+        print(user_list)
         await self.save_message_to_db(chat_id, message, user_id)
         await self.channel_layer.group_send(
 		    self.room_group_name, {
@@ -37,16 +40,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'message': message,
             'user_id': user.id, 
             'username': user.username,
-            'avatar': user.avatar
+            'avatar': user.avatar,
+            'users': user_list
+
          }
 		)
-
+        
     async def chat_message(self, event):
         message = event["message"]
         username = event["username"]
         user_id = event["user_id"]
         user_avatar = event["avatar"]
-        await self.send(text_data=json.dumps({"message": message, "username": username, "user_id": user_id, "user_avatar": user_avatar}))
+        users = event["users"]
+        await self.send(text_data=json.dumps({"message": message, "username": username, "user_id": user_id, "user_avatar": user_avatar,  "users": users}))
 
     async def get_user_id_from_cookie(self):
         cookie_header = next((value for name, value in self.scope['headers'] if name == b'cookie'), None)
@@ -67,3 +73,4 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def save_message_to_db(self, chat_id, message, user_id):
         db_insert = await sync_to_async(add_message)(chat_id, message, user_id)
         return db_insert
+    

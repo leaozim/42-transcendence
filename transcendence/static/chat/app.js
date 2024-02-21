@@ -8,7 +8,6 @@ if (chatButton) {
 }
 function openChatScreen(userId, username) {
   var chatModal = document.getElementById("chat-modal");
-  console.log(chatModal)
 
   chatModal.style.display = "block";
 
