@@ -1,0 +1,23 @@
+{% extends  "includes/base.html" %}
+
+{% load static %}
+
+{% block scripts %} 
+    <script type="text/javascript">const room_id = "{{ room_id|escapejs }}";</script>
+    <script type="text/javascript">const leftPlayer = "{{ leftPlayer|escapejs }}";</script>
+    <script type="text/javascript">const rightPlayer = "{{ rightPlayer|escapejs }}";</script>
+    <script type="text/javascript" src="{% static 'game/lib/phaser.min.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'game/scripts/Vector2.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/scripts/constants.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/scripts/Ball.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/scripts/Paddle.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/scripts/Player.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/Scene1.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/Scene2.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/game.js' %}" defer ></script>
+
+{% endblock scripts %}
+
+{% block content %} 
+
+{% endblock content %}

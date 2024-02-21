@@ -1,0 +1,170 @@
+{% extends 'includes/base.html' %}
+
+{% block title %}
+    Chat Room
+{% endblock %}
+
+{% block content %}
+    <style>
+        #chat-log {
+            border: 1px solid #ddd;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        
+        .sent-message {
+            text-align: right;
+            color: #000;
+            margin-bottom: 5px;
+        }
+        .sent-message > p {
+            padding: 5px 20px;
+            background-color: #52C0D7;
+            border-radius: 15px;
+            display: inline-block;
+            margin: 0;
+        }
+        .received-message {
+            text-align: left;
+            color: #000;
+            margin-bottom: 5px;
+        }
+        .received-message > p {
+            padding: 5px 20px;
+            background-color: #606060;
+            border-radius: 15px;
+            display: inline-block;
+            margin: 0;
+        }
+        .user-photo {
+            border-radius: 50%; /* Torna a imagem redonda */
+            width: 30px; /* Define a largura desejada */
+            height: 30px; /* Define a altura desejada */
+            object-fit: cover; /* Garante que a imagem cubra completamente a área definida */
+            margin-right: 8px; /* Adiciona um pequeno espaço à direita da imagem */
+        }
+
+    </style>
+    <div id="user-info" class="mb-3"></div>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div id="chat-log" class="border rounded">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if current_user and message.user.username == current_user.username %}
+                                <div class="sent-message">
+                                    <img src="{{ message.user.avatar }}" alt="{{ message.user.username }}" class="user-photo">
+                                    <p >{{ message.content }}</p>
+                                </div>
+                            {% else %}
+                            <div class="received-message">
+                                <img src="{{ message.user.avatar }}" alt="{{ message.user.username }}" class="user-photo">
+                                    <p>{{ message.content }}</p>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+
+                <div id="chat-input-container" class="input-group mb-3">
+                    <input id="chat-message-input" type="text" class="form-control" placeholder="Type message">
+                    <div class="input-group-append">
+                        <button id="chat-message-submit" class="btn btn-primary" type="button">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Adicione o JavaScript do Bootstrap e jQuery no final do body -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+
+        base_url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/chat/' + "{{ room_name }}" + '/';
+        chatSocket = new WebSocket(base_url);
+
+        chatSocket.onmessage = function(event) {
+            let parsed = JSON.parse(event.data);
+            addReceivedMessage(parsed.username, parsed.message, parsed.user_avatar);
+        }
+
+        async function addReceivedMessage(sender, message, user_avatar) {
+            const chatLog = document.querySelector('#chat-log');
+        
+            const messageElement = document.createElement('div');
+            const avatarElement = document.createElement('img');
+            if (!user_avatar) {
+                avatarElement.src ='https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png' ; // Replace with the path to your default image
+            } else {
+                avatarElement.src = user_avatar;
+            }
+            avatarElement.alt = 'Avatar';
+            avatarElement.className = 'user-photo';
+        
+            await getLoggedInUsername().then(loggedInUsername => {
+                if (sender === loggedInUsername) {
+                    messageElement.className = 'sent-message';
+                } else {
+                    messageElement.className = 'received-message';
+                }
+        
+                messageElement.appendChild(avatarElement);
+
+                const textElement = document.createElement('p');
+                textElement.textContent = message;
+                textElement.className = 'message-text';
+        
+                messageElement.appendChild(textElement);
+        
+                chatLog.appendChild(messageElement);
+        
+                chatLog.scrollTop = chatLog.scrollHeight;
+            });
+        }
+        
+
+
+        
+        function sendMessage() {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            messageInputDom.value = '';
+        }
+
+        async function getLoggedInUsername() {  
+            try {
+                const response = await fetch('http://localhost:8000/auth/user/');
+                const data = await response.json();
+                return data.username;
+            } catch (error) {
+                console.error("Erro ao obter o nome de usuário:", error);
+                return null;
+            }
+        }
+        
+        
+        document.querySelector('#chat-message-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') { 
+                sendMessage();
+            }
+        });
+
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            sendMessage();
+        };
+
+        
+    </script>
+
+{% endblock %}
