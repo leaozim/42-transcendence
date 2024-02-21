@@ -20,4 +20,5 @@ urlpatterns = [
     path("totp/login/<str:token>/", views.TOTPVerifyView.as_view(), name="totp-login"),
     path("totp/delete/", views.TOTPDeleteView.as_view(), name="totp-delete"),
     path("validate_token_2f/", views.validate_token_2f, name="validate_token_2f"),
+    path('auth/user_id/', views.get_authenticated_user_id, name='get_authenticated_user_id'),
 ]

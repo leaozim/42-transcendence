@@ -1,0 +1,52 @@
+{% extends 'includes/base.html' %}
+
+{% block title %}
+User List - Transcendence
+{% endblock %}
+
+{% block content %}
+    <h1>User List</h1>
+    <ul>
+        {% for user in users %}
+            {% if user != request.user %}
+                <li>
+                    <span>{{ user.username }}</span>
+                    <button onclick="onUserClick(`{{ user.id }}`, '{{ user.username }}')">Chat</button>   
+                    <button onclick="onCreateGame(`{{ user.id }}`)">Create Game</button>             
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <script>
+        function onUserClick(userId, username) {
+            if (!userId || isNaN(userId)) {
+                console.error('ID do usuário inválido:', userId);
+                return;
+            }
+
+            fetch("/chat/create_or_open_chat/" + userId)
+                .then(response => response.json())
+                .then(data => {
+                    window.location.pathname = '/chat/' + data.room_name + '/';
+                })
+                .catch(error => console.error('Erro ao criar/abrir sala:', error));
+        }
+
+        function onCreateGame(rightPlayerId) {
+            if (!rightPlayerId || isNaN(rightPlayerId)) {
+                console.error('Invalid user ID for the right player:', rightPlayerId);
+                return;
+            }
+
+            fetch("/game/create_game/" + rightPlayerId)
+                .then(response => response.json())
+                .then(data => {
+                    window.location.pathname = '/game/' + data.room_id + '/';
+                })
+                .catch(error => {
+                    console.error('Error creating game:', error);
+                });
+        }
+    </script>
+{% endblock %}

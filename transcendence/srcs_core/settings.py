@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     'django_otp',
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
-    "django_browser_reload", #retirar depois, pq da conflito com o channels
 
 
 ]
@@ -72,7 +71,6 @@ MIDDLEWARE = [
     'django_otp.middleware.OTPMiddleware',
     'django.middleware.security.SecurityMiddleware', 
     
-    "django_browser_reload.middleware.BrowserReloadMiddleware",#retirar depois, pq da conflito com o channels
 
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
