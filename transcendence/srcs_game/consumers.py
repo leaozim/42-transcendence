@@ -61,7 +61,8 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
                 'right_paddle': Paddle(RIGHT_PADDLE_START_POSITION[0], RIGHT_PADDLE_START_POSITION[1]),
                 'score': [0, 0],
                 'left_player_id': players_id[PLAYER_LEFT],
-                'right_player_id': players_id[PLAYER_RIGHT]
+                'right_player_id': players_id[PLAYER_RIGHT],
+                'connected': []
                 }
         # passa todas as variáveis do game para uma variável específica dessa instância, para facilitar o acesso depois
         self.ball = games[self.room_group_name]['ball']
@@ -69,6 +70,7 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
         self.right_paddle = games[self.room_group_name]['right_paddle']
         self.score = games[self.room_group_name]['score']
         self.playersIds = [games[self.room_group_name]['left_player_id'], games[self.room_group_name]['right_player_id']]
+        self.connecteds = games[self.room_group_name]['connected']
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
@@ -95,26 +97,32 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
     '''
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        await self.ball.move()
+        logged_player_id = text_data_json.get("logged_player")
+        if logged_player_id in self.playersIds:
+            if logged_player_id not in self.connecteds:
+                self.connecteds.append(logged_player_id)
 
-        # pega informação de input dos paddles e processa as infos pra trazer nova posição dos paddles
-        left_player_velocity = text_data_json.get("left_player_velocity", {})
-        right_player_velocity = text_data_json.get("right_player_velocity", {})
-        await self.right_paddle.set_paddle_velocity(right_player_velocity.get('x', 0), right_player_velocity.get('y', 0))
-        await self.right_paddle.move()
-        await self.left_paddle.set_paddle_velocity(left_player_velocity.get('x', 0), left_player_velocity.get('y', 0))
-        await self.left_paddle.move()
+        if len(self.connecteds) == 2:
+            await self.ball.move()
 
-        # checa colisão com raquete ou ponto. atualiza o score se necessário
-        self.ball.checkPaddleCollision(self.left_paddle.position.x, self.left_paddle.position.y, PLAYER_LEFT)
-        self.ball.checkPaddleCollision(self.right_paddle.position.x, self.right_paddle.position.y, PLAYER_RIGHT)
-        
-        if (self.ball.position.x > CANVAS_WIDTH):
-            self.score[PLAYER_LEFT] += 1
-            await self.ball.resetBall()
-        if (self.ball.position.x < 0):
-            self.score[PLAYER_RIGHT] += 1
-            await self.ball.resetBall()
+            # pega informação de input dos paddles e processa as infos pra trazer nova posição dos paddles
+            left_player_velocity = text_data_json.get("left_player_velocity", {})
+            right_player_velocity = text_data_json.get("right_player_velocity", {})
+            await self.right_paddle.set_paddle_velocity(right_player_velocity.get('x', 0), right_player_velocity.get('y', 0))
+            await self.right_paddle.move()
+            await self.left_paddle.set_paddle_velocity(left_player_velocity.get('x', 0), left_player_velocity.get('y', 0))
+            await self.left_paddle.move()
+
+            # checa colisão com raquete ou ponto. atualiza o score se necessário
+            self.ball.checkPaddleCollision(self.left_paddle.position.x, self.left_paddle.position.y, PLAYER_LEFT)
+            self.ball.checkPaddleCollision(self.right_paddle.position.x, self.right_paddle.position.y, PLAYER_RIGHT)
+            
+            if (self.ball.position.x > CANVAS_WIDTH):
+                self.score[PLAYER_LEFT] += 1
+                await self.ball.resetBall()
+            if (self.ball.position.x < 0):
+                self.score[PLAYER_RIGHT] += 1
+                await self.ball.resetBall()
 
         await self.channel_layer.group_send(self.room_group_name, {
             "type": "game_update",
@@ -125,6 +133,7 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
                 "left_player_position_y": self.left_paddle.position.y,
                 "right_player_position_x": self.right_paddle.position.x,
                 "right_player_position_y": self.right_paddle.position.y,
-                "score": self.score
+                "score": self.score,
+                "connected": self.connecteds
             }
         })

@@ -74,6 +74,7 @@ class Scene2 extends Phaser.Scene {
           "type": "end_loop",
           "left_player_velocity": this.left_paddle.velocity_to_dict(),
           "right_player_velocity": this.right_paddle.velocity_to_dict(),
+          "logged_player": this.i_am
         }));
       }
   }
