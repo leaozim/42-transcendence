@@ -65,7 +65,7 @@ class TOTPService:
                 device.save()
                 user.is_2f_active = True
                 user.save()
-                return True
+            return True
 
         return False
 

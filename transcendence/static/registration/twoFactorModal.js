@@ -1,5 +1,5 @@
 import DisplayStyleEnum from "./displayStyleEnum.js";
-import verifyModal from "./verifyTwoFactorModal.js";
+import verifyTwoFactorModal from "./verifyTwoFactorModal.js";
 
 function TwoFactorModal() {
   this.modal = document.getElementById("two-factor-modal");
@@ -61,7 +61,7 @@ function TwoFactorModal() {
 
     okButton.addEventListener("click", () => {
       this.close();
-      verifyModal.open();
+      verifyTwoFactorModal.open();
     });
   }).call(this);
 }
@@ -90,8 +90,8 @@ const twoFactorModal = new TwoFactorModal();
 window.addEventListener("click", (event) => {
   if (event.target == twoFactorModal.modal) {
     twoFactorModal.close();
-  } else if (verifyModal.element && event.target == verifyModal.element) {
-    verifyModal.close();
+  } else if (event.target == verifyTwoFactorModal.element) {
+    verifyTwoFactorModal.close();
   }
 });
 

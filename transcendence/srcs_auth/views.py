@@ -1,13 +1,15 @@
 import os
 
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, JsonResponse
 from django.shortcuts import redirect, render
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_GET
 from django.views.generic.edit import CreateView
 from srcs_auth.auth import IntraAuthenticationBackend
@@ -109,6 +111,7 @@ class TOTPVerifyView(LoginRequiredMixin, View):
             return JsonResponse({}, status=200)
         return JsonResponse({}, status=204)
 
+    @method_decorator(csrf_protect)
     def post(self, request: HttpRequest, token: str) -> JsonResponse:
         user = request.user
         totp_service = TOTPService()
@@ -125,7 +128,7 @@ class TOTPVerifyView(LoginRequiredMixin, View):
             )
             return response
 
-        return JsonResponse({"error": "Invalid token"}, status=400)
+        return JsonResponse({"success": False}, status=400)
 
 
 class TOTPDeleteView(LoginRequiredMixin, View):
@@ -139,8 +142,10 @@ class TOTPDeleteView(LoginRequiredMixin, View):
             )
 
 
+@require_GET
+@login_required
 def validate_token_2f(request):
-    return render(request, "registration/validate_token_2f.html")
+    return render(request=request, template_name="registration/verifyAtLogin.html")
 
 
 def get_authenticated_user_id(request):

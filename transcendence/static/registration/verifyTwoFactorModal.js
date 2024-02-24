@@ -1,66 +1,56 @@
 import DisplayStyleEnum from "./displayStyleEnum.js";
 
-const fetchModalPageHTML = async function () {
-  const response = await fetch(VALIDATE_TOKEN_URL);
+async function getCookie(name) {
+  const result = await window.cookieStore.get(name);
 
-  if (!response.ok) {
-    throw new Error(`fetching ${VALIDATE_TOKEN_URL}`);
-  }
-
-  return response.text();
-};
-
-const parseModalHTML = function (html) {
-  return new DOMParser().parseFromString(html, "text/html").body
-    .firstElementChild;
-};
+  return result.value;
+}
 
 export default {
-  element: undefined,
+  element: document.getElementById("verify-two-factor-modal"),
 
   open: async function () {
-    this.element = parseModalHTML(await fetchModalPageHTML());
     this.element.querySelector("div.modal-content").style.width = "350px";
     this.element.querySelector("div.modal-content").style.height = "450px";
 
     (function () {
       const formElement = this.element.querySelector("form#testForm");
 
-      formElement.addEventListener("submit", () => {
+      formElement.addEventListener("submit", async () => {
         const tokenValue = this.element.querySelector("input#token").value;
         const requestURL = TOTP_LOGIN_URL + tokenValue + "/";
-        const csrfToken = this.element.querySelector(
-          "form#testForm > input",
-        ).value;
         fetch(requestURL, {
           method: "POST",
           mode: "same-origin",
           headers: {
-            "X-CSRFToken": csrfToken,
+            "X-CSRFToken": await getCookie("csrftoken"),
           },
         })
-          .then(async (response) => {
-            if (!response.ok) {
-              const responseContent = await response.json();
-              console.error(responseContent.error);
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            if (!data.success) {
+              throw new Error("Invalid Token");
             } else {
-              this.close();
+              if (window.location.href.search(VALIDATE_TOKEN_URL) > -1) {
+                window.location.href = window.location.href.replace(
+                  VALIDATE_TOKEN_URL,
+                  "",
+                );
+              } else {
+                this.close();
+              }
             }
           })
           .catch((e) => console.error(e));
       });
     }).call(this);
 
-    document
-      .getElementById("profile-modal")
-      .parentElement.appendChild(this.element);
-
     this.element.style.display = DisplayStyleEnum.BLOCK;
   },
 
   close: function () {
-    if (this.element) {
-      this.element.remove();
-    }
+    this.element.style.display = DisplayStyleEnum.NONE;
   },
 };
