@@ -25,6 +25,13 @@ class Scene2 extends Phaser.Scene {
       // descobre quem é o usuário para fazer verificações sobre ser leftPlayer, rightPlayer ou só espectador
       this.i_am = await this.getThisUser()
 
+      // Se o evento de dados indicar game over, direciona para Scene3
+      if (this.eventData && this.eventData.winner) {
+        console.log("acabou")
+        this.scene.start("GameOver");
+        return;
+      }
+
       // instancia todos os objetos
       this.left_paddle = new Paddle(this, LEFT_PADDLE_START_POSITION.x, LEFT_PADDLE_START_POSITION.y, "paddle", (this.i_am==leftPlayer));
       this.player_left = new Player(this, this.left_paddle, PLAYER_LEFT, leftPlayer)
@@ -47,11 +54,14 @@ class Scene2 extends Phaser.Scene {
       this.receiveSocket.onmessage = (event) => {
         console.log('receive data: ', event.data)
         this.eventData = JSON.parse(event.data);
+        if (this.eventData.winner !== undefined) {
+          this.scene.start("GameOver", { winner: this.eventData.winner });
+        }
       };
     }
 
     async update() {
-      if (this.eventData) {
+      if (this.eventData && this.eventData.winner === undefined) {
         // Ele sempre tenta atualizar o score, mesmo quando não há novos pontos
         // O motivo disso é que tentar atualizar só quando existe um ponto pode causar
         // pontos que demoram para serem atualizados ou que só são atualizados

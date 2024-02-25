@@ -1,4 +1,5 @@
 import json
+import time
 import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
 '''
@@ -13,6 +14,7 @@ from static.game.scripts.constants import *
 from asgiref.sync import sync_to_async
 from channels.layers import get_channel_layer
 from srcs_game.models import Game
+from srcs_user.models import User
 
 '''
     Dicionário global que armazena todas as informações de todos os jogos.
@@ -60,9 +62,11 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
                 'left_paddle': Paddle(LEFT_PADDLE_START_POSITION[0], LEFT_PADDLE_START_POSITION[1]),
                 'right_paddle': Paddle(RIGHT_PADDLE_START_POSITION[0], RIGHT_PADDLE_START_POSITION[1]),
                 'score': [0, 0],
+                'start_time': time.time(),
                 'left_player_id': players_id[PLAYER_LEFT],
                 'right_player_id': players_id[PLAYER_RIGHT],
-                'connected': []
+                'connected': []  # Essa lista serve para dizer quais entre os dois players acima estão conectados
+                # o que serve para definir início do game e interrupções por desconexão
                 }
         # passa todas as variáveis do game para uma variável específica dessa instância, para facilitar o acesso depois
         self.ball = games[self.room_group_name]['ball']
@@ -71,6 +75,7 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
         self.score = games[self.room_group_name]['score']
         self.playersIds = [games[self.room_group_name]['left_player_id'], games[self.room_group_name]['right_player_id']]
         self.connecteds = games[self.room_group_name]['connected']
+        self.start_time = games[self.room_group_name]['start_time']
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
@@ -85,6 +90,22 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
         )
 
     async def game_update(self, event):
+        elapsed_time = time.time() - self.start_time
+        if elapsed_time >= 30:
+            if len(self.connecteds) == 2:  # Ambos os jogadores estão conectados
+                if self.score[PLAYER_LEFT] > self.score[PLAYER_RIGHT]:
+                    winner = self.playersIds[PLAYER_LEFT]
+                elif self.score[PLAYER_LEFT] < self.score[PLAYER_RIGHT]:
+                    winner = self.playersIds[PLAYER_RIGHT]
+                else:
+                    winner_username = "Ninguém, pois empatou. F"
+
+                if winner:
+                    winner_user = await sync_to_async(User.objects.get)(id=winner)
+                    winner_username = winner_user.username
+            else:
+                winner_username = None
+            event['data']['winner'] = winner_username
         await self.send(text_data=json.dumps(event['data']))
 
     '''
