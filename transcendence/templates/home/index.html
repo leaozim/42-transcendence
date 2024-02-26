@@ -89,6 +89,11 @@
       <!-- Chat page -->
       {% include "chat/chatModal.html" %}
 
+      <!-- TwoFactor Modal -->
+      {% include "registration/twoFactorModal.html" %}
+
+      <!-- VerifyTwoFactorModal -->
+      {% include "registration/verifyTwoFactorModal.html" %}
     </div>
   </div>
 </div>
@@ -100,9 +105,11 @@
 <script>
   const CREATE_TWO_FACTOR_URL = "{% url 'srcs_auth:totp-create' %}";
   const DELETE_TWO_FACTOR_URL = "{% url 'srcs_auth:totp-delete' %}";
+  const VALIDATE_TOKEN_URL = "{% url 'srcs_auth:validate_token_2f' %}";
   const VERIFY_TWO_FACTOR_STATE_URL = "{% url 'srcs_auth:totp-verify' %}";
+  const TOTP_LOGIN_URL = "{% url 'srcs_auth:totp-login' token=None %}".replace("None/", "");
 </script>
-<script src="{% static 'profile/app.js' %}"></script>
+<script src="{% static 'profile/app.js' %}" type="module"></script>
 <script src="{% static 'chat/app.js' %}"></script>
 <script src="{% static 'chat/chat.js' %}"></script>
 {% endblock scripts %}

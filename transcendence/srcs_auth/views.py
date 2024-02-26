@@ -1,12 +1,15 @@
 import os
 
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_GET
 from django.views.generic.edit import CreateView
 from srcs_auth.auth import IntraAuthenticationBackend
@@ -94,11 +97,7 @@ class TOTPCreateView(LoginRequiredMixin, View):
         totp_service = TOTPService()
 
         qr_code, totp_code = totp_service.create_totp_code(user)
-        return render(
-            request,
-            "registration/totp_create_2f.html",
-            {"qrcode": qr_code, "totp_code": totp_code},
-        )
+        return JsonResponse({"qrcode": qr_code, "totp_code": totp_code}, status=200)
 
     def get(self, request: HttpRequest, *args, **kwargs):
         return self._create_qrcode(request)
@@ -112,7 +111,8 @@ class TOTPVerifyView(LoginRequiredMixin, View):
             return JsonResponse({}, status=200)
         return JsonResponse({}, status=204)
 
-    def post(self, request: HttpRequest, token):
+    @method_decorator(csrf_protect)
+    def post(self, request: HttpRequest, token: str) -> JsonResponse:
         user = request.user
         totp_service = TOTPService()
 
@@ -128,7 +128,7 @@ class TOTPVerifyView(LoginRequiredMixin, View):
             )
             return response
 
-        return JsonResponse({"error": "Invalid token"}, status=400)
+        return JsonResponse({"success": False}, status=400)
 
 
 class TOTPDeleteView(LoginRequiredMixin, View):
@@ -142,10 +142,13 @@ class TOTPDeleteView(LoginRequiredMixin, View):
             )
 
 
+@require_GET
+@login_required
 def validate_token_2f(request):
-    return render(request, "registration/validate_token_2f.html")
+    return render(request=request, template_name="registration/verifyAtLogin.html")
+
 
 def get_authenticated_user_id(request):
     if request.user.is_authenticated:
-        return JsonResponse({'user_id': request.user.id})
-    return JsonResponse({'error': 'Usuário não autenticado'}, status=401)
+        return JsonResponse({"user_id": request.user.id})
+    return JsonResponse({"error": "Usuário não autenticado"}, status=401)
