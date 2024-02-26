@@ -86,6 +86,8 @@
       </div>
       <!-- Profile page -->
       {% include "profile/modal.html" %}
+      {% include "chat/profileVisit.html" %}
+
       <!-- Chat page -->
       {% include "chat/chatModal.html" %}
 
@@ -101,8 +103,12 @@
   const CREATE_TWO_FACTOR_URL = "{% url 'srcs_auth:totp-create' %}";
   const DELETE_TWO_FACTOR_URL = "{% url 'srcs_auth:totp-delete' %}";
   const VERIFY_TWO_FACTOR_STATE_URL = "{% url 'srcs_auth:totp-verify' %}";
+  const HOME = "{% url 'srcs_home:home' %}";
+
 </script>
+
 <script src="{% static 'profile/app.js' %}"></script>
 <script src="{% static 'chat/app.js' %}"></script>
 <script src="{% static 'chat/chat.js' %}"></script>
+
 {% endblock scripts %}

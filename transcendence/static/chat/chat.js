@@ -46,12 +46,15 @@ function setupWebSocket(roomId, currentUser) {
 	chatSocket = new WebSocket(base_url);
 	chatSocket.onmessage = (event) => {
 		const parsed = JSON.parse(event.data);
-		addReceivedMessage(currentUser, parsed.username, parsed.message, parsed.user_avatar);
+		// renderUpdatedUserList(parsed.users)
+
+		addReceivedMessage(currentUser, parsed.username, parsed.message, parsed.user_avatar, parsed.users);
 	};
 }
 
 let lastMessageSender = null;
 function addReceivedMessage(currentUser, sender, message, userAvatar) {
+	console.log( "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 	const messageElement = document.createElement('div')
 	const avatarElement = document.createElement('img');
 	const textElement = document.createElement('p');
@@ -78,6 +81,7 @@ function addReceivedMessage(currentUser, sender, message, userAvatar) {
 	messageElement.appendChild(textElement);
 	chatLog.appendChild(messageElement);
 	messageElement.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+
 	lastMessageSender = sender;
 }
 
@@ -123,15 +127,17 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-function sendMessage() {
+async function sendMessage() {
 	const messageInputDom = document.getElementById('chat-message-input');
 	const message = messageInputDom.value.trim();
-	
-	if (message !== '')
-		updateUserList()
+	updatedUsers = []
+	// if (message !== '' )
+	// 	updatedUsers = await updateUserList()
+	// 	renderUpdatedUserList(updatedUsers)
 	if (message !== '' && window.chatSocket) {
 		window.chatSocket.send(JSON.stringify({
-			'message': message
+			'message': message,
+			'users': updatedUsers
 		}));
 	}
 	messageInputDom.value = '';
@@ -139,33 +145,93 @@ function sendMessage() {
 }
 
 function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
-	const chatHeader = document.createElement('header');
-	chatHeader.className = 'chat-header';
-	const existingChatHeader = document.querySelector('.chat-header');
-	if (existingChatHeader) {
-		existingChatHeader.remove();
-	}
-	if (otherUserUsername) {
-		const userPhoto = document.createElement('img');
-		userPhoto.alt = 'Avatar';
-		userPhoto.src = otherUserAvatar ?
-						otherUserAvatar :
-						'https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png'; 
+    const chatHeader = document.createElement('header');
+    chatHeader.className = 'chat-header';
+    const existingChatHeader = document.querySelector('.chat-header');
+    if (existingChatHeader) {
+        existingChatHeader.remove();
+    }
 
+    if (otherUserUsername) {
+        const userPhoto = document.createElement('img');
+        userPhoto.alt = 'Avatar';
+        userPhoto.src = otherUserAvatar ?
+                            otherUserAvatar :
+                            'https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png';
 
-		const usernameElement = document.createElement('h2');
-		usernameElement.textContent = otherUserUsername;
-	
-		const divImgElement = document.createElement('div');
-		divImgElement.className = 'user-photo';
-					
-		divImgElement.appendChild(userPhoto);
-		chatHeader.appendChild(divImgElement);
-		chatHeader.appendChild(usernameElement);
-	}
+        const usernameElement = document.createElement('h2');
+        usernameElement.textContent = otherUserUsername;
 
-  	document.getElementById('header-container').appendChild(chatHeader);
+        const divProfileElement = document.createElement('div');
+        const divImgElement = document.createElement('div');
+        divImgElement.className = 'user-photo';
+        divProfileElement.id = 'profile-element';
+
+        divProfileElement.addEventListener('click', function () {
+            // Lógica a ser executada quando o profile-element é clicado
+            openUserModal(otherUserUsername);
+        });
+
+        divImgElement.appendChild(userPhoto);
+        divProfileElement.appendChild(divImgElement);
+        divProfileElement.appendChild(usernameElement);
+
+        chatHeader.appendChild(divProfileElement);
+
+        // Criar e adicionar o botão SVG
+        const buttonSvg = document.createElement('button');
+        buttonSvg.type = 'button';
+        buttonSvg.className = 'button-game';
+		// ima.src = ;
+		const img = document.createElement('img');
+
+		img.setAttribute('src', 'static/images/blocked.png'); 
+
+        buttonSvg.appendChild(img);
+        chatHeader.appendChild(buttonSvg);
+    }
+
+    document.getElementById('header-container').appendChild(chatHeader);
 }
+
+
+// function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
+// 	const chatHeader = document.createElement('header');
+// 	chatHeader.className = 'chat-header';
+// 	const existingChatHeader = document.querySelector('.chat-header');
+// 	if (existingChatHeader) {
+// 		existingChatHeader.remove();
+// 	}
+// 	if (otherUserUsername) {
+// 		const userPhoto = document.createElement('img');
+// 		userPhoto.alt = 'Avatar';
+// 		userPhoto.src = otherUserAvatar ?
+// 						otherUserAvatar :
+// 						'https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png'; 
+
+
+// 		const usernameElement = document.createElement('h2');
+// 		usernameElement.textContent = otherUserUsername;
+		
+// 		const divProfileElement = document.createElement('div');
+// 		const divImgElement = document.createElement('div');
+// 		divImgElement.className = 'user-photo';
+//         divProfileElement.id = 'profile-element'; 
+
+// 		divProfileElement.addEventListener('click', function () {
+//             // Lógica a ser executada quando o profile-element é clicado
+//             openUserModal(otherUserUsername);
+//         });
+
+// 		divImgElement.appendChild(userPhoto);
+// 		divProfileElement.appendChild(divImgElement)
+// 		divProfileElement.appendChild(usernameElement)
+
+// 		chatHeader.appendChild(divProfileElement);
+// 	}
+
+//   	document.getElementById('header-container').appendChild(chatHeader);
+// }
 
 function selectItem(item) {
 	var items = document.querySelectorAll('.item-user');
@@ -179,13 +245,14 @@ function selectItem(item) {
 async function updateUserList() {
     try {
         const data = await fetch("/chat/get_updated_user_list");
-        const updatedUserList = await data.json();
-        renderUpdatedUserList(updatedUserList);
+        const updatedUsers = await data.json();
+		return updatedUsers;
     } catch (error) {
         console.error('Error during AJAX request:', error);
     }
 }
 function renderUpdatedUserList(updatedUserList) {
+
     const listUsersContainer = document.getElementById('list-users-container');
     
     while (listUsersContainer.children.length > 1) {
@@ -212,3 +279,4 @@ function renderUpdatedUserList(updatedUserList) {
 
     });
 }
+

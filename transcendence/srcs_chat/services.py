@@ -54,12 +54,13 @@ def get_updated_user_list(id_user, username):
     user_chats = Chat.objects.filter(users_on_chat=id_user)
     users_in_chats = User.objects.filter(users_chats__in=user_chats).distinct()
     user_chats_with_message_count = user_chats.annotate(message_count=Count('message'))
+
     users_with_messages = []
 
     for chat in user_chats_with_message_count:
         if chat.message_count > 0:
             users_with_messages.extend(users_in_chats.filter(users_chats=chat))
-
+                        
     users_data = []
     for user in users_with_messages:
     
@@ -71,5 +72,5 @@ def get_updated_user_list(id_user, username):
 
         }
         users_data.append(user_data)
-    
+        
     return (users_data)

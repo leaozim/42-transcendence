@@ -19,7 +19,6 @@
     height: 100%;
     border: 1px solid #6F077C;
     border-radius: 20px;
-    z-index: 0;
 }
 
 .chats {
@@ -125,6 +124,23 @@
         overflow: hidden;
     }
 }
+#profile-element {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.button-game{
+    background: rgba(0, 0, 0, 0);
+    border: 0px;
+    display: flex;
+    justify-content: flex-end; 
+    flex-basis:400px;
+    path {
+        align-items: center;
+    }
+    
+}
+  
 
 /* Styles for the message container */
 #message-container {
