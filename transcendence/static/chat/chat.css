@@ -114,10 +114,13 @@
 
 .chat-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     color: #ffffff;
     background-color: #6F077C;
     padding-left: 18px;
+    padding-right: 18px;
+
     h2 {
         padding: 5px 10px;
         white-space: nowrap;
@@ -129,18 +132,21 @@
     align-items: center;
     cursor: pointer;
 }
-.button-game{
-    background: rgba(0, 0, 0, 0);
-    border: 0px;
+#buttons-container {
     display: flex;
-    justify-content: flex-end; 
-    flex-basis:400px;
-    path {
-        align-items: center;
-    }
-    
 }
-  
+
+.buttons-chat{
+
+    border: 0px;
+    padding: 0;
+    margin: 0px;
+    img {
+        cursor: pointer;
+        width: 75%;
+    }
+
+}
 
 /* Styles for the message container */
 #message-container {
