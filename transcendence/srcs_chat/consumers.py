@@ -11,6 +11,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
         self.room_group_name = f"chat_{self.room_id}"
+        
+
         await self.channel_layer.group_add(
 		    self.room_group_name, self.channel_name
 		)
@@ -46,6 +48,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             "users": users,
          }
 		)
+        # await self.send_chat_update(users)
+
         
     async def chat_message(self, event):
         message = event["message"]
@@ -75,3 +79,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         db_insert = await sync_to_async(add_message)(chat_id, message, user_id)
         return db_insert
     
+    # async def send_chat_update(self, users):
+    #     print(users)
+    #     await self.channel_layer.group_send(
+    #         f"chat_update_{self.room_id}", {
+    #             'type': 'send_update',
+    #             'users': users,
+    #         }
+    #     )
+
+
