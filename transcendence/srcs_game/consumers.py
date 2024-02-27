@@ -15,6 +15,7 @@ from asgiref.sync import sync_to_async
 from channels.layers import get_channel_layer
 from srcs_game.models import Game
 from srcs_user.models import User
+from srcs_game.services import update_game_result, delete_game
 
 '''
     Dicionário global que armazena todas as informações de todos os jogos.
@@ -65,6 +66,8 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
                 'start_time': time.time(),
                 'left_player_id': players_id[PLAYER_LEFT],
                 'right_player_id': players_id[PLAYER_RIGHT],
+                'reset_timer': False,
+                'limit_time': 30,
                 'connected': []  # Essa lista serve para dizer quais entre os dois players acima estão conectados
                 # o que serve para definir início do game e interrupções por desconexão
                 }
@@ -76,6 +79,8 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
         self.playersIds = [games[self.room_group_name]['left_player_id'], games[self.room_group_name]['right_player_id']]
         self.connecteds = games[self.room_group_name]['connected']
         self.start_time = games[self.room_group_name]['start_time']
+        self.reset_timer = games[self.room_group_name]['reset_timer']
+        self.limit_time = games[self.room_group_name]['limit_time']
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
@@ -91,20 +96,28 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
 
     async def game_update(self, event):
         elapsed_time = time.time() - self.start_time
-        if elapsed_time >= 30:
+        if elapsed_time >= self.limit_time:
             if len(self.connecteds) == 2:  # Ambos os jogadores estão conectados
+                if self.reset_timer == False:
+                    self.reset_timer = True
+                    self.start_time = time.time()
+                    self.limit_time = 60
                 if self.score[PLAYER_LEFT] > self.score[PLAYER_RIGHT]:
                     winner = self.playersIds[PLAYER_LEFT]
                 elif self.score[PLAYER_LEFT] < self.score[PLAYER_RIGHT]:
                     winner = self.playersIds[PLAYER_RIGHT]
                 else:
                     winner_username = "Ninguém, pois empatou. F"
+                    winner = None
 
                 if winner:
                     winner_user = await sync_to_async(User.objects.get)(id=winner)
                     winner_username = winner_user.username
+                    await sync_to_async(update_game_result)(self.room_id, self.score)
             else:
                 winner_username = None
+                await sync_to_async(delete_game)(self.room_id)
+
             event['data']['winner'] = winner_username
         await self.send(text_data=json.dumps(event['data']))
 

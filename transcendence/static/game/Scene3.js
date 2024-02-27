@@ -7,12 +7,6 @@ class Scene3 extends Phaser.Scene {
         this.winner = data.winner
     }
 
-    async getThisUser() {
-        const response = await fetch('http://localhost:8000/auth/user_id/');
-        const data = await response.json();
-        return data.user_id
-      }
-
     async create() {
         // Adiciona o texto "Fim de jogo" no centro da tela
         this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "Fim de jogo", {
@@ -24,6 +18,11 @@ class Scene3 extends Phaser.Scene {
 
         this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 50, message, {
             font: "24px Arial",
+            fill: "#ffffff"
+        }).setOrigin(0.5);
+
+        this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 100, "Pode fechar essa janela", {
+            font: "18px Arial",
             fill: "#ffffff"
         }).setOrigin(0.5);
     }
