@@ -25,6 +25,11 @@ class Scene2 extends Phaser.Scene {
       // descobre quem é o usuário para fazer verificações sobre ser leftPlayer, rightPlayer ou só espectador
       this.i_am = await this.getThisUser()
 
+      this.waitingText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 50, "Aguardando todos os jogadores", {
+        font: "24px Arial",
+        fill: "#ffffff"
+    }).setOrigin(0.5);
+
       // Se o evento de dados indicar game over, direciona para Scene3
       if (this.eventData && this.eventData.winner) {
         console.log("acabou")
@@ -57,6 +62,9 @@ class Scene2 extends Phaser.Scene {
         if (this.eventData.winner !== undefined) {
           this.scene.start("GameOver", { winner: this.eventData.winner });
         }
+        if (this.eventData.connected && this.eventData.connected.length === 2) {
+          this.waitingText.destroy();
+        } 
       };
     }
 
