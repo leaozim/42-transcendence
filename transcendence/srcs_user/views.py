@@ -1,4 +1,4 @@
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from srcs_auth.decorators import two_factor_required
@@ -11,4 +11,4 @@ def test(request: HttpRequest) -> JsonResponse:
 
 def users_list(request):
     users = User.objects.all()
-    return render(request, 'user/users_list.html', {'users': users})
+    return render(request, 'user/usersList.html', {'users': users,  'caller': 'caller_is_user_list' })

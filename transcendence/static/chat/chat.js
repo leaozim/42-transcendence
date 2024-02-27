@@ -46,7 +46,8 @@ function setupWebSocket(roomId, currentUser) {
 	chatSocket = new WebSocket(base_url);
 	chatSocket.onmessage = (event) => {
 		const parsed = JSON.parse(event.data);
-		addReceivedMessage(currentUser, parsed.username, parsed.message, parsed.user_avatar);
+
+		addReceivedMessage(currentUser, parsed.username, parsed.message, parsed.user_avatar, parsed.users);
 	};
 }
 
@@ -78,6 +79,7 @@ function addReceivedMessage(currentUser, sender, message, userAvatar) {
 	messageElement.appendChild(textElement);
 	chatLog.appendChild(messageElement);
 	messageElement.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+
 	lastMessageSender = sender;
 }
 
@@ -115,6 +117,7 @@ function initializeChatLog(current_user, messages) {
 
 document.addEventListener('DOMContentLoaded', function() {
   	document.getElementById('chat-message-input').addEventListener('keydown', function(event) {
+
 		if (event.key === 'Enter') {
 			sendMessage();
 			event.preventDefault(); 
@@ -122,49 +125,89 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-function sendMessage() {
+document.addEventListener('DOMContentLoaded', function() {
+	document.getElementById('block')
+
+
+
+});
+
+async function sendMessage() {
 	const messageInputDom = document.getElementById('chat-message-input');
 	const message = messageInputDom.value.trim();
-	let lastMessage = null;
-
+	updatedUsers = []
 	if (message !== '' && window.chatSocket) {
 		window.chatSocket.send(JSON.stringify({
-			'message': message
+			'message': message,
+			'users': updatedUsers
 		}));
 	}
 	messageInputDom.value = '';
 
 }
 
+
 function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
-	const chatHeader = document.createElement('header');
-	chatHeader.className = 'chat-header';
-	const existingChatHeader = document.querySelector('.chat-header');
-	if (existingChatHeader) {
-		existingChatHeader.remove();
-	}
-	if (otherUserUsername) {
-		const userPhoto = document.createElement('img');
-		userPhoto.alt = 'Avatar';
-		userPhoto.src = otherUserAvatar ?
-						otherUserAvatar :
-						'https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png'; 
+    const chatHeader = document.createElement('header');
+
+    chatHeader.className = 'chat-header';
+    const existingChatHeader = document.querySelector('.chat-header');
+    if (existingChatHeader) {
+        existingChatHeader.remove();
+    }
+
+    if (otherUserUsername) {
+        const userPhoto = document.createElement('img');
+        userPhoto.alt = 'Avatar';
+        userPhoto.src = otherUserAvatar ?
+                            otherUserAvatar :
+                            'https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png';
+
+        const usernameElement = document.createElement('h2');
+        usernameElement.textContent = otherUserUsername;
+
+        const divProfileElement = document.createElement('div');
+        const divImgElement = document.createElement('div');
+        divImgElement.className = 'user-photo';
+        divProfileElement.id = 'profile-element';
+
+        divProfileElement.addEventListener('click', function () {
+            openUserModal(otherUserUsername);
+        });
+
+        divImgElement.appendChild(userPhoto);
+        divProfileElement.appendChild(divImgElement);
+        divProfileElement.appendChild(usernameElement);
+
+        chatHeader.appendChild(divProfileElement);
+		
+		const buttonsContainer = document.createElement('div');
+		buttonsContainer.id = "buttons-container"
+
+        const buttonBlock = document.createElement('div');
+        buttonBlock.className = 'buttons-chat';
+		const img = document.createElement('img');
+		img.title =  "unblocked user"
+		img.setAttribute('src', 'static/images/chat_button_unblocked.png'); 
+        buttonBlock.appendChild(img);
+        chatHeader.appendChild(buttonBlock);
 
 
-		const usernameElement = document.createElement('h2');
-		usernameElement.textContent = otherUserUsername;
-	
-		const divImgElement = document.createElement('div');
-		divImgElement.className = 'user-photo';
-					
-		console.log(divImgElement)
-		divImgElement.appendChild(userPhoto);
-		chatHeader.appendChild(divImgElement);
-		chatHeader.appendChild(usernameElement);
-	}
+        const buttonPlay = document.createElement('div');
+        buttonPlay.className = 'buttons-chat';
+		const img2 = document.createElement('img');
+		img2.title =  "init game"
+		img2.setAttribute('src', 'static/images/chat_button_play.png'); 
+		buttonPlay.appendChild(img2);
 
-  	document.getElementById('header-container').appendChild(chatHeader);
+		buttonsContainer.appendChild(buttonBlock);
+		buttonsContainer.appendChild(buttonPlay);
+        chatHeader.appendChild(buttonsContainer);
+    }
+
+    document.getElementById('header-container').appendChild(chatHeader);
 }
+
 
 function selectItem(item) {
 	var items = document.querySelectorAll('.item-user');
@@ -174,3 +217,42 @@ function selectItem(item) {
 
 	item.classList.add('selected');
 } 
+
+async function updateUserList() {
+    try {
+        const data = await fetch("/chat/get_updated_user_list");
+        const updatedUsers = await data.json();
+		return updatedUsers;
+    } catch (error) {
+        console.error('Error during AJAX request:', error);
+    }
+}
+function renderUpdatedUserList(updatedUserList) {
+
+    const listUsersContainer = document.getElementById('list-users-container');
+    
+    while (listUsersContainer.children.length > 1) {
+        listUsersContainer.removeChild(listUsersContainer.lastChild);
+    }
+
+    const usersArray = updatedUserList.users_in_chats || [];
+
+    usersArray.forEach(user => {
+		if (user.username != user.corrent_user) {
+			const listItem = document.createElement('li');
+			listItem.className = 'item-user';
+			listItem.onclick = function () {
+				selectItem(this);
+			};
+
+			listItem.innerHTML = `
+				<img src="${user.avatar}" class="user-photo">
+				<span class="botton_name">${user.username}</span>
+			`;
+	
+            listUsersContainer.appendChild(listItem);
+		}
+
+    });
+}
+

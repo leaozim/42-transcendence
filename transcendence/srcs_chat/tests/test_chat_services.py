@@ -14,10 +14,12 @@ class ChatTests(TransactionTestCase):
     reset_sequences = True
     def setUp(self):
         self.chat = ChatFactory()
+        self.user1, self.user2 = self.chat.users_on_chat.all()
 
     def tearDown(self):
         ChatFactory.reset_sequence()
         UserFactory.reset_sequence()
+        
 
     def test_chat_creation_factory(self):
         self.assertEqual(self.chat.users_on_chat.count(), 2)
@@ -126,4 +128,3 @@ class ChatTests(TransactionTestCase):
         chat = chatServices.unblock_chat(SETUP_CHAT_ID, 3)
 
         self.assertTrue(chat.blocked)
-

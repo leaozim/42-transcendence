@@ -54,6 +54,7 @@ class TOTPService:
         url = device.config_url
         totp_code = self.parse_totp_secret(url)
         qr_code = self.create_qrcode(url)
+        user.is_2f_active = True
         return qr_code, totp_code
 
     def verify_totp_token(self, user, token) -> bool:

@@ -1,0 +1,33 @@
+{% extends 'includes/base.html' %}
+{% load static %}
+
+{% block title %}
+User List - Transcendence
+{% endblock %}
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'chat/chat.css' %}">
+{% endblock stylesheet %}
+{% block content %}
+    <h1>User List</h1>
+    <ul>
+        {% for user in users %}
+            {% if user != request.user %}
+            <li class="user">
+                <span class="botton_name"> {{ user.username }}</span>
+                <button class="btn-round chat-button" type="button" data-toggle="modal" data-target="#chat-modal" onclick="openChatScreen('{{ user.id }}', '{{ user.username }}')">
+                    <i class="bi bi-chat-left"></i>
+                </button>            
+            </li>
+            {% endif %}
+        {% endfor %}
+        
+    </ul>
+    <div>      
+        {% include "chat/chatModal.html" %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'chat/app.js' %}"></script>
+    <script src="{% static 'chat/chat.js' %}"></script>
+{% endblock scripts %}

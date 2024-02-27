@@ -2,6 +2,7 @@ from srcs_chat.models import Chat
 from srcs_user.models import User
 from srcs_user.services import get_validated_user
 from django.http import Http404
+from django.db.models import Count
 
 def get_validated_chat(chat_id):
     try:
@@ -49,3 +50,27 @@ def find_open_chats(user_id):
     chats = Chat.objects.filter(users_on_chat=user)
     return chats
 
+def get_updated_user_list(id_user, username):
+    user_chats = Chat.objects.filter(users_on_chat=id_user)
+    users_in_chats = User.objects.filter(users_chats__in=user_chats).distinct()
+    user_chats_with_message_count = user_chats.annotate(message_count=Count('message'))
+
+    users_with_messages = []
+
+    for chat in user_chats_with_message_count:
+        if chat.message_count > 0:
+            users_with_messages.extend(users_in_chats.filter(users_chats=chat))
+                        
+    users_data = []
+    for user in users_with_messages:
+    
+        user_data = {
+            'id': user.id,
+            'username': user.username,
+            'avatar': user.avatar,
+            'corrent_user': username
+
+        }
+        users_data.append(user_data)
+        
+    return (users_data)

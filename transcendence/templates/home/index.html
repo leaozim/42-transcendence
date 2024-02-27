@@ -86,14 +86,17 @@
       </div>
       <!-- Profile page -->
       {% include "profile/modal.html" %}
-      <!-- Chat page -->
-      {% include "chat/chatModal.html" %}
 
       <!-- TwoFactor Modal -->
       {% include "registration/twoFactorModal.html" %}
 
       <!-- VerifyTwoFactorModal -->
       {% include "registration/verifyTwoFactorModal.html" %}
+
+      <!-- Chat page -->
+      {% include "chat/profileVisit.html" %}
+      {% include "chat/chatModal.html" %}
+
     </div>
   </div>
 </div>
@@ -112,4 +115,5 @@
 <script src="{% static 'profile/app.js' %}" type="module"></script>
 <script src="{% static 'chat/app.js' %}"></script>
 <script src="{% static 'chat/chat.js' %}"></script>
+
 {% endblock scripts %}
