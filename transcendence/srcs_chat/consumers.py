@@ -27,8 +27,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
         user_id = self.scope['user'].id
-        users = text_data_json.get('users', [])
-        print(users)
 
         if user_id is None:
             user_id = await self.get_user_id_from_cookie()
@@ -45,10 +43,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'user_id': user.id, 
             'username': user.username,
             'avatar': user.avatar,
-            "users": users,
          }
 		)
-        # await self.send_chat_update(users)
 
         
     async def chat_message(self, event):
@@ -56,8 +52,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         username = event["username"]
         user_id = event["user_id"]
         user_avatar = event["avatar"]
-        users = event["users"]
-        await self.send(text_data=json.dumps({"message": message, "username": username, "user_id": user_id, "user_avatar": user_avatar, "users": users}))
+        await self.send(text_data=json.dumps({"message": message, "username": username, "user_id": user_id, "user_avatar": user_avatar}))
 
     async def get_user_id_from_cookie(self):
         cookie_header = next((value for name, value in self.scope['headers'] if name == b'cookie'), None)
@@ -79,13 +74,39 @@ class ChatConsumer(AsyncWebsocketConsumer):
         db_insert = await sync_to_async(add_message)(chat_id, message, user_id)
         return db_insert
     
-    # async def send_chat_update(self, users):
-    #     print(users)
-    #     await self.channel_layer.group_send(
-    #         f"chat_update_{self.room_id}", {
-    #             'type': 'send_update',
-    #             'users': users,
-    #         }
-    #     )
+    
+    
+class ChatConsumerUpdate(AsyncWebsocketConsumer):
+    async def connect(self):
+
+        self.room_group_name = f"chat_update"
+        
+        await self.channel_layer.group_add(
+		    self.room_group_name, self.channel_name
+		)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+		    self.room_group_name, self.channel_name
+		)
+        
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        cavalinho = text_data_json["cavalinho"]
+        other_user_id = text_data_json.get('other_user_id')
 
 
+        await self.channel_layer.group_send(
+            self.room_group_name, {
+                'type': 'chat_message_update', 
+                'cavalinho': cavalinho, 
+                'other_user_id': other_user_id
+            }
+        )
+
+    async def chat_message_update(self, event):
+        cavalinho = event["cavalinho"]
+        other_user_id = event["other_user_id"]
+
+        await self.send(text_data=json.dumps({"cavalinho": cavalinho, "other_user_id": other_user_id}))

@@ -1,5 +1,5 @@
 const chatLog = document.querySelector('#chat-log');
-
+let otherUser; 
 async function openChat(userId, username) {
 	chatLog.innerHTML = '';
 
@@ -9,7 +9,7 @@ async function openChat(userId, username) {
 	await setupWebSocket(dataChat.room_id, dataChat.current_user);
 	initializeChatLog(dataChat.current_user, dataChat.messages);
 	appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar)
-
+	otherUser = dataChat.other_user_id;
 	document.getElementById('no-chat-selected-message').style.display = 'none';
 	document.getElementById('message-input-container').style.display = 'flex';
 }
@@ -46,29 +46,14 @@ function setupWebSocket(roomId, currentUser) {
 	chatSocket = new WebSocket(base_url);
 	chatSocket.onmessage = (event) => {
 		const parsed = JSON.parse(event.data);
-		console.log(parsed.users)
-
-		// renderUpdatedUserList(parsed.users)
-
 		addReceivedMessage(currentUser, parsed.username, parsed.message, parsed.user_avatar, parsed.users);
 	};
 
-	// const updateSocket = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/ws/chat_update/' + roomId + '/');
-    // updateSocket.onmessage = (event) => {
-    //     const updateData = JSON.parse(event.data);
-    //     if (updateData.type === 'update_users') {
-    //         const updatedUsers = updateData.users;
-	// 		console.log(updateData)
-    //         // Atualize a visualização com a lista de usuários
-    //         renderUpdatedUserList(updatedUsers);
-    //     }
-    // };
 
 }
 
 let lastMessageSender = null;
 function addReceivedMessage(currentUser, sender, message, userAvatar) {
-	console.log( "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 	const messageElement = document.createElement('div')
 	const avatarElement = document.createElement('img');
 	const textElement = document.createElement('p');
@@ -144,15 +129,22 @@ document.addEventListener('DOMContentLoaded', function() {
 async function sendMessage() {
 	const messageInputDom = document.getElementById('chat-message-input');
 	const message = messageInputDom.value.trim();
-	updatedUsers = []
-	// if (message !== '' )
-	// 	updatedUsers = await updateUserList()
-	// 	renderUpdatedUserList(updatedUsers)
-	if (message !== '' && window.chatSocket) {
-		window.chatSocket.send(JSON.stringify({
-			'message': message,
-			'users': updatedUsers
-		}));
+
+	if (message !== '') {
+		
+        if (window.chatSocket) {
+            window.chatSocket.send(JSON.stringify({
+                'message': message,
+            }));
+        }
+
+        if (window.chatSocketUpdate) {
+            window.chatSocketUpdate.send(JSON.stringify({
+                'cavalinho': 'cavalo manco',
+                'other_user_id': otherUser,
+        	}));
+		}
+
 	}
 	messageInputDom.value = '';
 
@@ -182,7 +174,6 @@ function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
         divProfileElement.id = 'profile-element';
 
         divProfileElement.addEventListener('click', function () {
-            // Lógica a ser executada quando o profile-element é clicado
             openUserModal(otherUserUsername);
         });
 
@@ -192,11 +183,9 @@ function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
 
         chatHeader.appendChild(divProfileElement);
 
-        // Criar e adicionar o botão SVG
         const buttonSvg = document.createElement('button');
         buttonSvg.type = 'button';
         buttonSvg.className = 'button-game';
-		// ima.src = ;
 		const img = document.createElement('img');
 
 		img.setAttribute('src', 'static/images/blocked.png'); 
@@ -207,45 +196,6 @@ function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
 
     document.getElementById('header-container').appendChild(chatHeader);
 }
-
-
-// function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
-// 	const chatHeader = document.createElement('header');
-// 	chatHeader.className = 'chat-header';
-// 	const existingChatHeader = document.querySelector('.chat-header');
-// 	if (existingChatHeader) {
-// 		existingChatHeader.remove();
-// 	}
-// 	if (otherUserUsername) {
-// 		const userPhoto = document.createElement('img');
-// 		userPhoto.alt = 'Avatar';
-// 		userPhoto.src = otherUserAvatar ?
-// 						otherUserAvatar :
-// 						'https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png'; 
-
-
-// 		const usernameElement = document.createElement('h2');
-// 		usernameElement.textContent = otherUserUsername;
-		
-// 		const divProfileElement = document.createElement('div');
-// 		const divImgElement = document.createElement('div');
-// 		divImgElement.className = 'user-photo';
-//         divProfileElement.id = 'profile-element'; 
-
-// 		divProfileElement.addEventListener('click', function () {
-//             // Lógica a ser executada quando o profile-element é clicado
-//             openUserModal(otherUserUsername);
-//         });
-
-// 		divImgElement.appendChild(userPhoto);
-// 		divProfileElement.appendChild(divImgElement)
-// 		divProfileElement.appendChild(usernameElement)
-
-// 		chatHeader.appendChild(divProfileElement);
-// 	}
-
-//   	document.getElementById('header-container').appendChild(chatHeader);
-// }
 
 function selectItem(item) {
 	var items = document.querySelectorAll('.item-user');
@@ -281,6 +231,7 @@ function renderUpdatedUserList(updatedUserList) {
 			listItem.className = 'item-user';
 			listItem.onclick = function () {
 				selectItem(this);
+				// openChat('{{ user.id }}', '{{ user.username }}')
 			};
 
 			listItem.innerHTML = `
@@ -294,3 +245,42 @@ function renderUpdatedUserList(updatedUserList) {
     });
 }
 
+
+async function setupWebSocketUpdate() {
+	const base_url_update = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/chat_update/';
+	chatSocketUpdate = new WebSocket(base_url_update);		
+	console.log( "entrou no update")
+
+	chatSocketUpdate.onopen = (event) => {
+        chatSocketUpdate.send(JSON.stringify({
+            'cavalinho': 'cavalo manco',
+
+        }));
+    };
+
+	const user = await getLoggedInUsername()
+	chatSocketUpdate.onmessage = async (event) => {
+		const parsed = JSON.parse(event.data);
+
+		if (parsed.other_user_id == user) {
+			updatedUsers = await updateUserList()
+			renderUpdatedUserList(updatedUsers)
+		}
+		chatSocketUpdate.send(JSON.stringify({
+			'cavalinho': parsed.cavalinho,
+		}));
+
+
+	};
+}
+
+async function getLoggedInUsername() {  
+	try {
+		const response = await fetch('http://localhost:8000/auth/user_id/');
+		const data = await response.json();
+		return data.user_id;
+	} catch (error) {
+		console.error("Erro ao obter o nome de usuário:", error);
+		return null;
+	}
+}
