@@ -157,6 +157,7 @@ async function sendMessage() {
 
 function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
     const chatHeader = document.createElement('header');
+
     chatHeader.className = 'chat-header';
     const existingChatHeader = document.querySelector('.chat-header');
     if (existingChatHeader) {
@@ -187,16 +188,35 @@ function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
         divProfileElement.appendChild(usernameElement);
 
         chatHeader.appendChild(divProfileElement);
+		
+		const buttonsContainer = document.createElement('div');
+		buttonsContainer.id = "buttons-container"
 
-        const buttonSvg = document.createElement('button');
-        buttonSvg.type = 'button';
-        buttonSvg.className = 'button-game';
+        const buttonBlock = document.createElement('div');
+        buttonBlock.className = 'buttons-chat';
 		const img = document.createElement('img');
+		img.title =  "unblocked user"
+		img.setAttribute('src', 'static/images/chat_button_unblocked.png'); 
+        buttonBlock.appendChild(img);
+        chatHeader.appendChild(buttonBlock);
 
-		img.setAttribute('src', 'static/images/blocked.png'); 
 
-        buttonSvg.appendChild(img);
-        chatHeader.appendChild(buttonSvg);
+        const buttonPlay = document.createElement('div');
+        buttonPlay.className = 'buttons-chat';
+		const img2 = document.createElement('img');
+		img2.title =  "init game"
+		img2.setAttribute('src', 'static/images/chat_button_play.png'); 
+		buttonPlay.appendChild(img2);
+		buttonPlay.addEventListener('click', function () {
+            onCreateGame(otherUser);
+        });
+
+		buttonsContainer.appendChild(buttonBlock);
+		buttonsContainer.appendChild(buttonPlay);
+
+	
+		chatHeader.appendChild(buttonsContainer);
+
     }
 
     document.getElementById('header-container').appendChild(chatHeader);
@@ -251,11 +271,25 @@ function renderUpdatedUserList(updatedUserList) {
 }
 
 function makeLinksClickable(message) {
-    // Regex para detectar URLs em uma string
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-
-    // Substituir URLs na mensagem por links clicáveis
     const messageWithClickableLinks = message.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
 
     return messageWithClickableLinks;
 }
+
+
+function onCreateGame(rightPlayerId) {
+	if (!rightPlayerId || isNaN(rightPlayerId)) {
+		console.error('Invalid user ID for the right player:', rightPlayerId);
+		return;
+	}
+  
+	fetch("/game/create_game/" + rightPlayerId)
+		.then(response => response.json())
+		.then(data => {
+			window.location.pathname = '/game/' + data.room_id + '/';
+		})
+		.catch(error => {
+			console.error('Error creating game:', error);
+		});
+  }
