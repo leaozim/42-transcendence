@@ -14,7 +14,6 @@ function openChatScreen(userId, username) {
   chatModal.style.display = "block";
 
   openChat(userId, username);
-  // setupWebSocketUpdate()
 }
 
 window.addEventListener("click", function (event) {
@@ -35,10 +34,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-
 function openUserModal(username) {
   const usernameElement = document.getElementById("user-profile-username");
   usernameElement.textContent = username;
   userModal.style.display = "block";
   chatModal.style.display = "none";
 }
+

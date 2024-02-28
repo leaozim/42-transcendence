@@ -1,5 +1,7 @@
 const chatLog = document.querySelector('#chat-log');
 let otherUser; 
+let lastMessageSender = null;
+
 async function openChat(userId, username) {
 	chatLog.innerHTML = '';
 
@@ -49,18 +51,8 @@ function setupWebSocket(roomId, currentUser) {
 		const parsed = JSON.parse(event.data);
 		addReceivedMessage(currentUser, parsed.username, parsed.message, parsed.user_avatar, parsed.users);
 	};
-	chatSocket.onerror = (error) => {
-		console.error('WebSocket error:', error);
-	};
-	
-	chatSocket.onclose = (event) => {
-		console.log('WebSocket connection closed:', event);
-	};
-
-
 }
 
-let lastMessageSender = null;
 function addReceivedMessage(currentUser, sender, message, userAvatar) {
 	const messageElement = document.createElement('div')
 	const avatarElement = document.createElement('img');
@@ -84,7 +76,6 @@ function addReceivedMessage(currentUser, sender, message, userAvatar) {
 		messageElement.appendChild(divImgElement);
 	}
 
-	// textElement.textContent = message;
 	const clickableMessage = makeLinksClickable(message);
     textElement.innerHTML = clickableMessage;
 	messageElement.appendChild(textElement);
@@ -213,8 +204,6 @@ function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
 
 		buttonsContainer.appendChild(buttonBlock);
 		buttonsContainer.appendChild(buttonPlay);
-
-	
 		chatHeader.appendChild(buttonsContainer);
 
     }
@@ -231,49 +220,9 @@ function selectItem(item) {
 	item.classList.add('selected');
 } 
 
-async function updateUserList() {
-    try {
-        const data = await fetch("/chat/get_updated_user_list");
-        const updatedUsers = await data.json();
-		return updatedUsers;
-    } catch (error) {
-        console.error('Error during AJAX request:', error);
-    }
-}
-function renderUpdatedUserList(updatedUserList) {
-
-    const listUsersContainer = document.getElementById('list-users-container');
-    
-    while (listUsersContainer.children.length > 1) {
-        listUsersContainer.removeChild(listUsersContainer.lastChild);
-    }
-
-    const usersArray = updatedUserList.users_in_chats || [];
-
-    usersArray.forEach(user => {
-		if (user.username != user.corrent_user) {
-			const listItem = document.createElement('li');
-			listItem.className = 'item-user';
-			listItem.setAttribute('data-user-id', user.id);
-			listItem.setAttribute('data-username', user.username);
-			listItem.setAttribute('onclick', `selectItem(this); openChat('${user.id}', '${user.username}')`);
-
-	        listItem.innerHTML = `
-				<img src="${user.avatar}" class="user-photo" onclick="selectItem(this.parentElement); openChat('${user.id}', '${user.username}')">
-				<span class="botton_name">${user.username}</span>
-        	`;
-
-	
-            listUsersContainer.appendChild(listItem);
-		}
-
-    });
-}
-
 function makeLinksClickable(message) {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const messageWithClickableLinks = message.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
-
     return messageWithClickableLinks;
 }
 

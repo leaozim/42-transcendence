@@ -19,7 +19,8 @@ chatSocketUpdate.onmessage = async (event) => {
     // console.log(parsed.user_list
 // )
     updatedUsers = await updateUserList() 
-    console.log(parsed)
+    console.log(parsed.user_list)
+    console.log(updatedUsers)
 
     renderUpdatedUserList(updatedUsers)
 
