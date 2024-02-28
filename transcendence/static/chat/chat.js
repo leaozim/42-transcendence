@@ -45,8 +45,17 @@ function setupWebSocket(roomId, currentUser) {
 	const base_url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/chat/' + roomId + '/';
 	chatSocket = new WebSocket(base_url);
 	chatSocket.onmessage = (event) => {
+		console.log('Received WebSocket message:', event.data);
+
 		const parsed = JSON.parse(event.data);
 		addReceivedMessage(currentUser, parsed.username, parsed.message, parsed.user_avatar, parsed.users);
+	};
+	chatSocket.onerror = (error) => {
+		console.error('WebSocket error:', error);
+	};
+	
+	chatSocket.onclose = (event) => {
+		console.log('WebSocket connection closed:', event);
 	};
 
 
@@ -229,15 +238,15 @@ function renderUpdatedUserList(updatedUserList) {
 		if (user.username != user.corrent_user) {
 			const listItem = document.createElement('li');
 			listItem.className = 'item-user';
-			listItem.onclick = function () {
-				selectItem(this);
-				// openChat('{{ user.id }}', '{{ user.username }}')
-			};
+			listItem.setAttribute('data-user-id', user.id);
+			listItem.setAttribute('data-username', user.username);
+			listItem.setAttribute('onclick', `selectItem(this); openChat('${user.id}', '${user.username}')`);
 
-			listItem.innerHTML = `
-				<img src="${user.avatar}" class="user-photo">
+	        listItem.innerHTML = `
+				<img src="${user.avatar}" class="user-photo" onclick="selectItem(this.parentElement); openChat('${user.id}', '${user.username}')">
 				<span class="botton_name">${user.username}</span>
-			`;
+        	`;
+
 	
             listUsersContainer.appendChild(listItem);
 		}
@@ -263,6 +272,7 @@ async function setupWebSocketUpdate() {
 		const parsed = JSON.parse(event.data);
 
 		if (parsed.other_user_id == user) {
+			console.log("recebaaaaaaaaaaa!")
 			updatedUsers = await updateUserList()
 			renderUpdatedUserList(updatedUsers)
 		}

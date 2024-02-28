@@ -6,6 +6,7 @@ from srcs_auth.jwt_token import verify_jwt_token, JWTVerificationFailed
 from channels.generic.websocket import AsyncWebsocketConsumer
 from srcs_user.services import find_one_intra
 from srcs_chat.services import get_updated_user_list
+from channels.db import database_sync_to_async
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -27,14 +28,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
         user_id = self.scope['user'].id
-
         if user_id is None:
             user_id = await self.get_user_id_from_cookie()
 
         chat_id = int(self.room_id)
         user = await sync_to_async(User.objects.get)(id=user_id)
-        
-        await self.save_message_to_db(chat_id, message, user_id)
         
         await self.channel_layer.group_send(
 		    self.room_group_name, {
@@ -45,8 +43,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'avatar': user.avatar,
          }
 		)
+        await self.save_message_to_db(chat_id, message, user_id)
 
-        
+
     async def chat_message(self, event):
         message = event["message"]
         username = event["username"]
@@ -70,8 +69,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     return user.id
         return None
     
-    async def save_message_to_db(self, chat_id, message, user_id):
-        db_insert = await sync_to_async(add_message)(chat_id, message, user_id)
+    @database_sync_to_async
+    def save_message_to_db(self, chat_id, message, user_id):
+        db_insert =  add_message(chat_id, message, user_id)
         return db_insert
     
     
@@ -79,16 +79,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
 class ChatConsumerUpdate(AsyncWebsocketConsumer):
     async def connect(self):
 
-        self.room_group_name = f"chat_update"
+        self.group_name = f"chat_update"
         
         await self.channel_layer.group_add(
-		    self.room_group_name, self.channel_name
+		    self.group_name, self.channel_name
 		)
         await self.accept()
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
-		    self.room_group_name, self.channel_name
+		    self.group_name, self.channel_name
 		)
         
     async def receive(self, text_data):
@@ -98,7 +98,7 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
 
 
         await self.channel_layer.group_send(
-            self.room_group_name, {
+            self.group_name, {
                 'type': 'chat_message_update', 
                 'cavalinho': cavalinho, 
                 'other_user_id': other_user_id

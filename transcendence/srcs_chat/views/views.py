@@ -56,6 +56,5 @@ class ChatView(View):
 class GetUpdatedUserListView(View):
     def get(self, request, *args, **kwargs):
         user_list = custom_context_processor_chat_data(request)
-        print(user_list)
         return JsonResponse(user_list)
             
