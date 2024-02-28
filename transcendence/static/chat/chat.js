@@ -45,7 +45,6 @@ function setupWebSocket(roomId, currentUser) {
 	const base_url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/chat/' + roomId + '/';
 	chatSocket = new WebSocket(base_url);
 	chatSocket.onmessage = (event) => {
-		console.log('Received WebSocket message:', event.data);
 
 		const parsed = JSON.parse(event.data);
 		addReceivedMessage(currentUser, parsed.username, parsed.message, parsed.user_avatar, parsed.users);
@@ -85,7 +84,9 @@ function addReceivedMessage(currentUser, sender, message, userAvatar) {
 		messageElement.appendChild(divImgElement);
 	}
 
-	textElement.textContent = message;
+	// textElement.textContent = message;
+	const clickableMessage = makeLinksClickable(message);
+    textElement.innerHTML = clickableMessage;
 	messageElement.appendChild(textElement);
 	chatLog.appendChild(messageElement);
 	messageElement.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
@@ -95,15 +96,17 @@ function addReceivedMessage(currentUser, sender, message, userAvatar) {
 
 function initializeChatLog(current_user, messages) {
 	let lastUser = "";
+	
 	messages.forEach((item) => {
 		const isCurrentUser = item.user === current_user;
 		const isUserChange = lastUser !== item.user || lastUser === '';
+		const clickableMessage = makeLinksClickable(item.content);
 		chatLog.innerHTML +=`
 			<div> 
 				${ isCurrentUser
 					? `
 						<div class="sent-message">
-							<p class="${isUserChange ? 'special-style' : ''}">${item.content}</p>
+							<p class="${isUserChange ? 'special-style' : ''}">${clickableMessage}</p>
 						</div>
 					`
 					: `
@@ -115,7 +118,7 @@ function initializeChatLog(current_user, messages) {
 								: '<div></div>'
 							}
 						  </div>
-						  <p class="${isUserChange ? 'special-style' : ''}">${item.content}</p>
+						  <p class="${isUserChange ? 'special-style' : ''}">${clickableMessage}</p>
 						</div>
 					`
 				}
@@ -146,13 +149,6 @@ async function sendMessage() {
                 'message': message,
             }));
         }
-
-        if (window.chatSocketUpdate) {
-            window.chatSocketUpdate.send(JSON.stringify({
-                'cavalinho': 'cavalo manco',
-                'other_user_id': otherUser,
-        	}));
-		}
 
 	}
 	messageInputDom.value = '';
@@ -254,43 +250,12 @@ function renderUpdatedUserList(updatedUserList) {
     });
 }
 
+function makeLinksClickable(message) {
+    // Regex para detectar URLs em uma string
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
 
-async function setupWebSocketUpdate() {
-	const base_url_update = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/chat_update/';
-	chatSocketUpdate = new WebSocket(base_url_update);		
-	console.log( "entrou no update")
+    // Substituir URLs na mensagem por links clicáveis
+    const messageWithClickableLinks = message.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
 
-	chatSocketUpdate.onopen = (event) => {
-        chatSocketUpdate.send(JSON.stringify({
-            'cavalinho': 'cavalo manco',
-
-        }));
-    };
-
-	const user = await getLoggedInUsername()
-	chatSocketUpdate.onmessage = async (event) => {
-		const parsed = JSON.parse(event.data);
-
-		if (parsed.other_user_id == user) {
-			console.log("recebaaaaaaaaaaa!")
-			updatedUsers = await updateUserList()
-			renderUpdatedUserList(updatedUsers)
-		}
-		chatSocketUpdate.send(JSON.stringify({
-			'cavalinho': parsed.cavalinho,
-		}));
-
-
-	};
-}
-
-async function getLoggedInUsername() {  
-	try {
-		const response = await fetch('http://localhost:8000/auth/user_id/');
-		const data = await response.json();
-		return data.user_id;
-	} catch (error) {
-		console.error("Erro ao obter o nome de usuário:", error);
-		return null;
-	}
+    return messageWithClickableLinks;
 }

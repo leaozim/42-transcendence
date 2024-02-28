@@ -79,7 +79,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 class ChatConsumerUpdate(AsyncWebsocketConsumer):
     async def connect(self):
 
-        self.group_name = f"chat_update"
+        self.group_name = "chat_update"
         
         await self.channel_layer.group_add(
 		    self.group_name, self.channel_name
@@ -91,22 +91,21 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
 		    self.group_name, self.channel_name
 		)
         
-    async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        cavalinho = text_data_json["cavalinho"]
-        other_user_id = text_data_json.get('other_user_id')
+    # async def receive(self, text_data):
+    #     text_data_json = json.loads(text_data)
+    #     cavalinho = text_data_json["cavalinho"]
+    #     other_user_id = text_data_json.get('other_user_id')
 
 
-        await self.channel_layer.group_send(
-            self.group_name, {
-                'type': 'chat_message_update', 
-                'cavalinho': cavalinho, 
-                'other_user_id': other_user_id
-            }
-        )
+    #     await self.channel_layer.group_send(
+    #         self.group_name, {
+    #             'type': 'chat_message_update', 
+    #             'cavalinho': cavalinho, 
+    #             'other_user_id': other_user_id
+    #         }
+        # )
 
     async def chat_message_update(self, event):
-        cavalinho = event["cavalinho"]
-        other_user_id = event["other_user_id"]
-
-        await self.send(text_data=json.dumps({"cavalinho": cavalinho, "other_user_id": other_user_id}))
+        other_user_id = event["user"]
+        user_list = event["user_list"]
+        await self.send(text_data=json.dumps({ "other_user_id": other_user_id,  "user_list": user_list}))

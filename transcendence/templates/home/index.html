@@ -50,7 +50,7 @@
           <br>
           or just chat.
         </p>
-        <button id="chat-button" class="btn-round" type="button" data-toogle="modal" data-target="" onclick="setupWebSocketUpdate()">
+        <button id="chat-button" class="btn-round" type="button" data-toogle="modal" data-target="">
           <i class="bi bi-chat-left"></i>
         </button>
       </div>
@@ -116,5 +116,7 @@
 <script src="{% static 'profile/app.js' %}" type="module"></script>
 <script src="{% static 'chat/app.js' %}"></script>
 <script src="{% static 'chat/chat.js' %}"></script>
+<script src="{% static 'chat/chatSocketUpdate.js' %}"></script>
+
 
 {% endblock scripts %}
