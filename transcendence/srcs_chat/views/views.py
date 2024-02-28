@@ -7,6 +7,9 @@ from srcs_chat import services
 from django.http import HttpResponse as HttpResponse, JsonResponse, Http404, HttpResponse
 from django.views import View
 from django.utils.decorators import method_decorator
+from django.utils import timezone
+from srcs_core.context_processors import custom_context_processor_chat_data
+from django.shortcuts import render
 
 class ChatView(View):
     @method_decorator(login_required)
@@ -21,8 +24,10 @@ class ChatView(View):
 
     def open_chat(self, request, room_id):
         chat = Chat.objects.get(id=int(room_id))
+        
         if not services.is_user_in_chat(chat, request.user):
             raise Http404
+        
         messages = chat.message_set.all().order_by('timestamp')
         sorted_messages = sorted(messages, key=lambda x: x.timestamp)
         other_user = chat.get_other_user(request.user)
@@ -47,3 +52,10 @@ class ChatView(View):
         if not chat: 
             chat = services.open_chat(user_id_logged_in, user_id)
         return JsonResponse({'room_id': chat.id})
+    
+class GetUpdatedUserListView(View):
+    def get(self, request, *args, **kwargs):
+        user_list = custom_context_processor_chat_data(request)
+        print(user_list)
+        return JsonResponse(user_list)
+            

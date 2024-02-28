@@ -13,11 +13,18 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
     {% block stylesheet %}{% endblock stylesheet %}
+    
 </head>
 
 <body>
+  <img src="{% static 'images/chat_button_unblocked.png' %}" style="display: none;">
+  <img src="{% static 'images/chat_button_blocked.png' %}" style="display: none;">
+  <img src="{% static 'images/chat_button_play.png' %}" style="display: none;">
+
+
   <main>
     {% block content %}{% endblock %}
   </main>
@@ -25,6 +32,7 @@
 
 {% block scripts %}
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
 {% endblock scripts %}
 
 </html>

@@ -1,0 +1,24 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'profile/styles.css' %}">
+{% endblock stylesheet %}
+
+{% block content %}
+
+{% include "registration/verifyTwoFactorModal.html" %}
+
+{% endblock content %}
+
+{% block scripts %}
+
+<script>
+  const TOTP_LOGIN_URL = "{% url 'srcs_auth:totp-login' token=None %}".replace("None/", "");
+  const VALIDATE_TOKEN_URL = "{% url 'srcs_auth:validate_token_2f' %}";
+</script>
+<script type="module">
+  import verifyTwoFactorModal from "{% static 'registration/verifyTwoFactorModal.js' %}"
+  verifyTwoFactorModal.open();
+</script>
+{% endblock scripts %}

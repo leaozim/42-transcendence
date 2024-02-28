@@ -54,17 +54,18 @@ class TOTPService:
         url = device.config_url
         totp_code = self.parse_totp_secret(url)
         qr_code = self.create_qrcode(url)
+        user.is_2f_active = True
         return qr_code, totp_code
 
-    def verify_totp_token(self, user, token):
+    def verify_totp_token(self, user, token) -> bool:
         device = self.get_user_totp_device(user)
 
         if device is not None and device.verify_token(token):
             if not device.confirmed:
                 device.confirmed = True
                 device.save()
-            user.is_2f_active = True
-            user.save()
+                user.is_2f_active = True
+                user.save()
             return True
 
         return False
