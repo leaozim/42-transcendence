@@ -61,7 +61,7 @@ def get_updated_user_list(id_user, username):
         if chat.message_count > 0:
             users_with_messages.extend(users_in_chats.filter(users_chats=chat))
                         
-    users_data = []
+    update_list = []
     for user in users_with_messages:
     
         user_data = {
@@ -71,6 +71,6 @@ def get_updated_user_list(id_user, username):
             'corrent_user': username
 
         }
-        users_data.append(user_data)
+        update_list.append(user_data)
         
-    return (users_data)
+    return {'users_in_chats': update_list}

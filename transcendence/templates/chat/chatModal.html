@@ -7,10 +7,8 @@
           <h2 >Chats </h2>
         </div>
         <ul class="list-users">
-
             {% for user in users_in_chats %} {% if user.username != request.user.username %}
-              <li class="item-user" onclick="selectItem(this); openChat('{{ user.id }}', '{{ user.username }}')">
-                <img src="{{ user.avatar }}" class="user-photo">
+            <li class="item-user" data-user-id="{{ user.id }}" data-username="{{ user.username }}" onclick="selectItem(this); openChat('{{ user.id }}', '{{ user.username }}')">                <img src="{{ user.avatar }}" class="user-photo">
                 <span class="botton_name"> {{ user.username }}</span>
               </li>
             {% endif %} {% endfor %}

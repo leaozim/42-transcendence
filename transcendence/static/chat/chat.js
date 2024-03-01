@@ -3,15 +3,18 @@ let otherUser;
 let lastMessageSender = null;
 
 async function openChat(userId, username) {
-	chatLog.innerHTML = '';
+	if (window.chatSocket) {
+        chatSocket.close();
+    }
 
+	chatLog.innerHTML = '';
 	const dataRoom  = await getDataRoom(userId);
 	const dataChat = await getDataChat(dataRoom.room_id);
 
 	await setupWebSocket(dataChat.room_id, dataChat.current_user);
 	initializeChatLog(dataChat.current_user, dataChat.messages);
 	appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar)
-	otherUser = dataChat.other_user_id;
+	otherUser = dataChat;
 	document.getElementById('no-chat-selected-message').style.display = 'none';
 	document.getElementById('message-input-container').style.display = 'flex';
 }
@@ -49,6 +52,7 @@ function setupWebSocket(roomId, currentUser) {
 	chatSocket.onmessage = (event) => {
 
 		const parsed = JSON.parse(event.data);
+		console.log( "sopcorrrooooo")
 		addReceivedMessage(currentUser, parsed.username, parsed.message, parsed.user_avatar, parsed.users);
 	};
 }
@@ -139,8 +143,8 @@ async function sendMessage() {
             window.chatSocket.send(JSON.stringify({
                 'message': message,
             }));
-        }
-
+        }		
+		ChatUpdater.renderUserWind( otherUser.other_user_id, otherUser.other_user_username, otherUser.other_user_avatar)
 	}
 	messageInputDom.value = '';
 

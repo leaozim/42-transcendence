@@ -1,6 +1,8 @@
 from django.db import models
 from srcs_user.models import User
 from srcs_chat.models import Chat
+import json
+from django.db.models import Count, Max
 
 class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
@@ -17,6 +19,7 @@ class Message(models.Model):
             'avatar': self.user.avatar,
             'content': self.content,
         }
+
 
     class Meta:
         db_table = 'message'

@@ -38,6 +38,7 @@ class ChatView(View):
             'messages':  messages_dict,
             'current_user': request.user.username,
             'current_user_id': request.user.id,
+            'current_user_avatat': request.user.avatar,
             'room_id': room_id,
             'other_user_username': other_user.username,
             'other_user_id': other_user.id,

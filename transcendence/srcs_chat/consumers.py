@@ -5,7 +5,6 @@ from asgiref.sync import sync_to_async
 from srcs_auth.jwt_token import verify_jwt_token, JWTVerificationFailed
 from channels.generic.websocket import AsyncWebsocketConsumer
 from srcs_user.services import find_one_intra
-from srcs_chat.services import get_updated_user_list
 from channels.db import database_sync_to_async
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -28,6 +27,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
         user_id = self.scope['user'].id
+        print( message)
+
         if user_id is None:
             user_id = await self.get_user_id_from_cookie()
 
@@ -92,6 +93,7 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
 		)
 
     async def chat_message_update(self, event):
-        other_user_id = event["user"]
-        user_list = event["user_list"]
-        await self.send(text_data=json.dumps({ "other_user_id": other_user_id,  "user_list": user_list}))
+        user_id = event.get("user_id")
+        data_receiving_user = event.get("data_receiving_user")
+        data_user = event.get("data_user")
+        await self.send(text_data=json.dumps({"user_id": user_id, "data_receiving_user": data_receiving_user, "data_user": data_user}, ))
