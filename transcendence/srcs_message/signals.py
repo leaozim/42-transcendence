@@ -9,21 +9,24 @@ from django.core.serializers import serialize
 from django.http import JsonResponse
 
 @receiver(post_save, sender=Message)
-def notification_created(sender, instance, created, **kwargs):
+def notify_message_created(sender, instance, created, **kwargs):
     if created:
-        receiving = get_user_receiving_last_message(instance.user.id)
-        receiving_data = {
-            'id': receiving.id,
-            'username': receiving.username,
-            'avatar': receiving.avatar,
+        receiving_user = get_user_receiving_last_message(instance.user.id)
+        
+        receiving_user_data = {
+            'id': receiving_user.id,
+            'username': receiving_user.username,
+            'avatar': receiving_user.avatar,
         }
-        data_user = {
+
+        sender_user_data = {
             'id': instance.user.id,
             'username': instance.user.username,
             'avatar': instance.user.avatar,
         }
-        json_data = JsonResponse(receiving_data).content.decode('utf-8')
-        json_data2 = JsonResponse(data_user).content.decode('utf-8')
+
+        json_receiving_user_data = JsonResponse(receiving_user_data).content.decode('utf-8')
+        json_sender_user_data = JsonResponse(sender_user_data).content.decode('utf-8')
 
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
@@ -31,7 +34,7 @@ def notification_created(sender, instance, created, **kwargs):
             {
                 "type": "chat_message_update",
                 "user": instance.user.id,
-                "data_receiving_user": json_data,
-                "data_user": json_data2
+                "data_receiving_user": json_receiving_user_data,
+                "data_sender_user": json_sender_user_data
             }
         )

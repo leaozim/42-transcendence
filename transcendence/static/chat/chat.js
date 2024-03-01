@@ -46,17 +46,6 @@ async function getDataChat(roomId) {
 	}
 }
 
-function setupWebSocket(roomId, currentUser) {
-	const base_url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/chat/' + roomId + '/';
-	chatSocket = new WebSocket(base_url);
-	chatSocket.onmessage = (event) => {
-
-		const parsed = JSON.parse(event.data);
-		console.log( "sopcorrrooooo")
-		addReceivedMessage(currentUser, parsed.username, parsed.message, parsed.user_avatar, parsed.users);
-	};
-}
-
 function addReceivedMessage(currentUser, sender, message, userAvatar) {
 	const messageElement = document.createElement('div')
 	const avatarElement = document.createElement('img');
@@ -132,88 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
   });
 });
-
-async function sendMessage() {
-	const messageInputDom = document.getElementById('chat-message-input');
-	const message = messageInputDom.value.trim();
-
-	if (message !== '') {
-		
-        if (window.chatSocket) {
-            window.chatSocket.send(JSON.stringify({
-                'message': message,
-            }));
-        }		
-		ChatUpdater.renderUserWind( otherUser.other_user_id, otherUser.other_user_username, otherUser.other_user_avatar)
-	}
-	messageInputDom.value = '';
-
-}
-
-function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
-    const chatHeader = document.createElement('header');
-
-    chatHeader.className = 'chat-header';
-    const existingChatHeader = document.querySelector('.chat-header');
-    if (existingChatHeader) {
-        existingChatHeader.remove();
-    }
-
-    if (otherUserUsername) {
-        const userPhoto = document.createElement('img');
-        userPhoto.alt = 'Avatar';
-        userPhoto.src = otherUserAvatar ?
-                            otherUserAvatar :
-                            'https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png';
-
-        const usernameElement = document.createElement('h2');
-        usernameElement.textContent = otherUserUsername;
-
-        const divProfileElement = document.createElement('div');
-        const divImgElement = document.createElement('div');
-        divImgElement.className = 'user-photo';
-        divProfileElement.id = 'profile-element';
-
-        divProfileElement.addEventListener('click', function () {
-            openUserModal(otherUserUsername);
-        });
-
-        divImgElement.appendChild(userPhoto);
-        divProfileElement.appendChild(divImgElement);
-        divProfileElement.appendChild(usernameElement);
-
-        chatHeader.appendChild(divProfileElement);
-		
-		const buttonsContainer = document.createElement('div');
-		buttonsContainer.id = "buttons-container"
-
-        const buttonBlock = document.createElement('div');
-        buttonBlock.className = 'buttons-chat';
-		const img = document.createElement('img');
-		img.title =  "unblocked user"
-		img.setAttribute('src', 'static/images/chat_button_unblocked.png'); 
-        buttonBlock.appendChild(img);
-        chatHeader.appendChild(buttonBlock);
-
-
-        const buttonPlay = document.createElement('div');
-        buttonPlay.className = 'buttons-chat';
-		const img2 = document.createElement('img');
-		img2.title =  "init game"
-		img2.setAttribute('src', 'static/images/chat_button_play.png'); 
-		buttonPlay.appendChild(img2);
-		buttonPlay.addEventListener('click', function () {
-            onCreateGame(otherUser);
-        });
-
-		buttonsContainer.appendChild(buttonBlock);
-		buttonsContainer.appendChild(buttonPlay);
-		chatHeader.appendChild(buttonsContainer);
-
-    }
-
-    document.getElementById('header-container').appendChild(chatHeader);
-}
 
 function selectItem(item) {
 	var items = document.querySelectorAll('.item-user');

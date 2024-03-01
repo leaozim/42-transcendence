@@ -11,20 +11,23 @@ class ChatUpdater {
         }
     }
 
-    static async renderUpdatedUser(updatedUserString, current_user_string) {
-        let current_user;
-        const updatedUser = JSON.parse(updatedUserString);
-        const current_user_jdon = JSON.parse(current_user_string);
-        current_user =  await this.getLoggedUser()
-        console.log(updatedUser.id, updatedUser.username)
-        console.log(current_user)
-        console.log(current_user_jdon.id)
-        if (current_user == current_user_jdon.id  ) {
-            this.renderUserWind(updatedUser.id, updatedUser.username, updatedUser.avatar)
+    static async renderUpdatedUser(updatedUserString, currentUserString) {
+        let loggedInUserId;
+        const updatedUserInfo = JSON.parse(updatedUserString);
+        const currentUserInfo = JSON.parse(currentUserString);
+    
+        loggedInUserId = await this.getLoggedUserId();
+        console.log(updatedUserInfo.username);
+        console.log(loggedInUserId);
+        console.log(currentUserInfo.username);
+    
+        if (loggedInUserId == currentUserInfo.id) {
+            console.log(currentUserInfo.username);
+            this.renderUserWindow(updatedUserInfo.id, updatedUserInfo.username, updatedUserInfo.avatar);
         }
     }
 
-    static renderUserWind(id, username, avatar) {
+    static renderUserWindow(id, username, avatar) {
         const listUsersContainer = document.getElementById('list-users-container');
         const titleListUsers = document.querySelector('.title-list-users');
 
@@ -46,7 +49,7 @@ class ChatUpdater {
         listUsersContainer.insertBefore(listItem, titleListUsers.nextSibling);
         
     }
-    static async getLoggedUser() {  
+    static async getLoggedUserId() {  
         try {
             const response = await fetch('http://localhost:8000/auth/user_id/');
             const data = await response.json();
