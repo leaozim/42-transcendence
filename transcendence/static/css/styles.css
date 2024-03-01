@@ -3,6 +3,10 @@ body {
   color: #ffffff;
   font-family: "Exo 2", sans-serif;
 }
+.dropdown-item:hover {
+  color: #ffffff;
+  background-color: #000012;
+}
 .popup-container {
   width: 450px;
   max-width: 100%;
@@ -105,7 +109,7 @@ body {
   position: relative;
   width: 684px;
   max-width: 100%;
-  margin: 40px auto;
+  margin: 0 auto 40px;
 }
 .main-title h1 {
   font-size: 36px;

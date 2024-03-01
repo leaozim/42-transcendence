@@ -1,10 +1,80 @@
 {% extends "includes/base.html" %}
-{% load static %}
+{% load static i18n %}
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'profile/styles.css' %}">
 <link rel="stylesheet" href="{% static 'chat/chat.css' %}">
 {% endblock stylesheet %}
 {% block content %}
+<header>
+	<nav class="navbar navbar-expand-lg navbar-dark px-0">
+   <div class="container">
+	   {% if user.is_authenticated %}<div class="user-info rounded-pill">{{ user.get_username }}</div>{% endif %}
+	   <div class="d-flex d-lg-none ms-auto align-items-center">
+		   <button class="navbar-toggler shadow-none ms-2"
+				   type="button"
+				   data-bs-toggle="collapse"
+				   data-bs-target="#navigation"
+				   aria-controls="navigation"
+				   aria-expanded="false"
+				   aria-label="Toggle navigation">
+			   <span class="navbar-toggler-icon">
+				   <span class="navbar-toggler-bar bar1"></span>
+				   <span class="navbar-toggler-bar bar2"></span>
+				   <span class="navbar-toggler-bar bar3"></span>
+			   </span>
+		   </button>
+	   </div>
+	   {% comment %} Navbar buttons this menu will change in new version {% endcomment %}
+	   <div class="collapse navbar-collapse w-100"
+			id="navigation">
+		   <ul class="navbar-nav ms-auto align-items-center">
+			   <!-- Language Dropdown -->
+			   {% get_current_language as LANGUAGE_CODE %}
+			   {% get_available_languages as LANGUAGES %}
+			   {% get_language_info_list for LANGUAGES as languages %}
+			   <li class="nav-item">
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<b>{% if LANGUAGE_CODE == "pt-br" %}PT{% else %}{{ LANGUAGE_CODE }}{% endif %}</b>
+						</button>
+						<ul class="dropdown-menu bg-black">
+							{% for language in languages %}
+							<li class="dropdown-item">
+								<form action="{% url 'set_language' %}"
+									  method="post"
+									  class="mt-1 mx-2">
+									{% csrf_token %}
+									<input name="next" type="hidden" value="{{ request.get_full_path }}" />
+									<input name="language" type="hidden" value="{{ language.code }}" />
+									<input type="submit"
+										   name="submit"
+										   class="btn btn-dark"
+										   value="{% if language.code == "pt-br" %}PT{% else %}{{ language.code }}{% endif %}" />
+									</form>
+							</li>
+						{% endfor %}
+						</ul>
+				  </div>
+			   </li>
+			   <!-- Sign Out -->
+			   {% if user.is_authenticated %}
+				   <li class="nav-item mx-2 d-none d-lg-inline-block">
+					   <form method="post" action="{% url 'srcs_auth:logout_user' %}">
+						   {% csrf_token %}
+						   {% if redirect_field_value %}
+							   <input type="hidden"
+									  name="{{ redirect_field_name }}"
+									  value="{{ redirect_field_value }}" />
+						   {% endif %}
+						   <button type="submit" class="btn btn-small btn-outline-secondary">{% trans "Sign Out" %}</button>
+					   </form>
+				   </li>
+			   {% endif %}
+		   </ul>
+	   </div>
+   </div>
+</nav>
+</header>
 <div class="container">
   <div class="row">
     <div class="col-12">
@@ -18,13 +88,15 @@
         <img src="{{ user.avatar }}" alt="image" width="128" height="128" class="img-avatar img-fluid rounded-circle" />
       </div>
       <div id="instructions-card" class="text-card">
-        <h2>instructions</h2>
+        <h2>{% translate "instructions" %}</h2>
         <p>
+		{% blocktrans %}
           Use mouse to move around main screen.
           <br>
           Click on icon to enter specific section.
           <br>
           Have fun!
+		{% endblocktrans %}
         </p>
       </div>
       <div id="profile-card" class="text-card">

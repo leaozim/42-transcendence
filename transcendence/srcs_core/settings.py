@@ -69,9 +69,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'srcs_auth.middleware.CustomAuthenticationMiddleware',
     'django_otp.middleware.OTPMiddleware',
-    'django.middleware.security.SecurityMiddleware', 
-    
-
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -139,8 +138,23 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
+USE_I18N = True
+
+LOCALE_PATHS = [
+   os.path.join(BASE_DIR, 'locale')
+]
+
+LANGUAGES = (
+   ('en', 'English'),
+   ('pt', 'Portuguese'),
+)
 
 LANGUAGE_CODE = 'en-us'
+
+LANGUAGE_CODE_TO_PATH = {
+    "pt-br": "pt_BR",
+    "en-us": "en_US"
+}
 
 TIME_ZONE = 'UTC'
 
