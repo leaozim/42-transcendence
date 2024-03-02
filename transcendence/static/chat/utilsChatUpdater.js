@@ -12,17 +12,15 @@ class ChatUpdater {
     }
 
     static async renderUpdatedUser(updatedUserString, currentUserString) {
-        let loggedInUserId;
         const updatedUserInfo = JSON.parse(updatedUserString);
         const currentUserInfo = JSON.parse(currentUserString);
-    
+        let loggedInUserId;
+
         loggedInUserId = await this.getLoggedUserId();
-        console.log(updatedUserInfo.username);
-        console.log(loggedInUserId);
-        console.log(currentUserInfo.username);
-    
         if (loggedInUserId == currentUserInfo.id) {
+            console.log(loggedInUserId.username);
             console.log(currentUserInfo.username);
+
             this.renderUserWindow(updatedUserInfo.id, updatedUserInfo.username, updatedUserInfo.avatar);
         }
     }

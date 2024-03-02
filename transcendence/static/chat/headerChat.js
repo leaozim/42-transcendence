@@ -83,3 +83,29 @@ function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
     }
     document.getElementById('header-container').appendChild(chatHeader);
 }
+
+function selectItem(item) {
+	var items = document.querySelectorAll('.item-user');
+	items.forEach(function (item) {
+		item.classList.remove('selected');
+	});
+
+	item.classList.add('selected');
+} 
+
+
+function onCreateGame(rightPlayerId) {
+	if (!rightPlayerId || isNaN(rightPlayerId)) {
+		console.error('Invalid user ID for the right player:', rightPlayerId);
+		return;
+	}
+  
+	fetch("/game/create_game/" + rightPlayerId)
+		.then(response => response.json())
+		.then(data => {
+			window.location.pathname = '/game/' + data.room_id + '/';
+		})
+		.catch(error => {
+			console.error('Error creating game:', error);
+		});
+}
