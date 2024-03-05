@@ -1,0 +1,7 @@
+#Update translation PO files WITHOUT losing previous translations:
+python manage.py makemessages -a -s
+python manage.py compilemessages
+
+#Generate a brand new PO file from scratch:
+python manage.py makemessages -l en
+python manage.py compilemessages

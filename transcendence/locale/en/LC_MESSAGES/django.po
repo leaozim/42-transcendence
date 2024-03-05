@@ -20,15 +20,15 @@ msgstr ""
 
 #: srcs_auth/views.py:41
 msgid "User not authenticated"
-msgstr "Usuário não autenticado"
+msgstr ""
 
 #: templates/home/index.html:80
 msgid "Sign Out"
-msgstr "Sair"
+msgstr ""
 
 #: templates/home/index.html:113
 msgid "instructions"
-msgstr "intruções"
+msgstr ""
 
 #: templates/home/index.html:115
 msgid ""
@@ -40,17 +40,10 @@ msgid ""
 "          Have fun!\n"
 "        "
 msgstr ""
-"\n"
-"          Use o mouse para se mover pela tela principal.\n"
-"          <br>\n"
-"          Clique no ícone para acessar uma seção específica.\n"
-"          <br>\n"
-"          Divirta-se!\n"
-"        "
 
 #: templates/home/index.html:125
 msgid "profile"
-msgstr "perfil"
+msgstr ""
 
 #: templates/home/index.html:127
 msgid ""
@@ -62,13 +55,6 @@ msgid ""
 "          Create games or chat channels.\n"
 "        "
 msgstr ""
-"\n"
-"          Configure sua autenticação.\n"
-"          <br>\n"
-"          Veja suas estatísticas.\n"
-"          <br>\n"
-"          Crie jogos ou canais de chat.\n"
-"        "
 
 #: templates/home/index.html:147
 msgid ""
@@ -80,17 +66,10 @@ msgid ""
 "          or just chat.\n"
 "          "
 msgstr ""
-"\n"
-"          Crie canais de chat,\n"
-"          <br>\n"
-"          veja seus chats em andamento\n"
-"          <br>\n"
-"          ou apenas converse.\n"
-"          "
 
 #: templates/home/index.html:164
 msgid "game"
-msgstr "jogo"
+msgstr ""
 
 #: templates/home/index.html:166
 msgid ""
@@ -102,19 +81,10 @@ msgid ""
 "                        First player to reach 5 points win.\n"
 "                        "
 msgstr ""
-"\n"
-"                        Use as setas do teclado para mover sua raquete para "
-"cima ou para baixo para rebater a bola do seu lado.\n"
-"                        <br>\n"
-"                        Se a bola sair da tela pela esquerda ou pela "
-"direita, o jogador do lado oposto ganha um ponto.\n"
-"                        <br>\n"
-"                        O primeiro jogador a alcançar 5 pontos vence.\n"
-"                        "
 
 #: templates/home/index.html:181
 msgid "tournament"
-msgstr "torneio"
+msgstr ""
 
 #: templates/home/index.html:183
 msgid ""
@@ -126,14 +96,7 @@ msgid ""
 "                        tournament.\n"
 "                        "
 msgstr ""
-"\n"
-"                        Reúna seus amigos\n"
-"                        <br>\n"
-"                        e crie seu próprio\n"
-"                        <br>\n"
-"                        torneio.\n"
-"                        "
 
 #: templates/includes/base.html:9
 msgid "Welcome to Transcendence"
-msgstr "Você eestá no Transcendence"
+msgstr ""

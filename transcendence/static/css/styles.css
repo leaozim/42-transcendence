@@ -3,6 +3,9 @@ body {
   color: #ffffff;
   font-family: "Exo 2", sans-serif;
 }
+.navbar-nav .dropdown-menu {
+  background-color: transparent;
+}
 .dropdown-item:hover {
   color: #ffffff;
   background-color: #000012;
@@ -171,6 +174,8 @@ body {
 #game-card {
   top: 702px;
   left: 120px;
+  width: 390px;
+  max-width: 100%;
 }
 
 #tournament-card {
