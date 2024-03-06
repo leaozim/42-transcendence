@@ -1,0 +1,102 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-03-05 01:40+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: srcs_auth/views.py:41
+msgid "User not authenticated"
+msgstr ""
+
+#: templates/home/index.html:80
+msgid "Sign Out"
+msgstr ""
+
+#: templates/home/index.html:113
+msgid "instructions"
+msgstr ""
+
+#: templates/home/index.html:115
+msgid ""
+"\n"
+"          Use mouse to move around main screen.\n"
+"          <br>\n"
+"          Click on icon to enter specific section.\n"
+"          <br>\n"
+"          Have fun!\n"
+"        "
+msgstr ""
+
+#: templates/home/index.html:125
+msgid "profile"
+msgstr ""
+
+#: templates/home/index.html:127
+msgid ""
+"\n"
+"          Configure your authentication.\n"
+"          <br>\n"
+"          View your statistics.\n"
+"          <br>\n"
+"          Create games or chat channels.\n"
+"        "
+msgstr ""
+
+#: templates/home/index.html:147
+msgid ""
+"\n"
+"          Create chat channels,\n"
+"          <br>\n"
+"          see your ongoing chats\n"
+"          <br>\n"
+"          or just chat.\n"
+"          "
+msgstr ""
+
+#: templates/home/index.html:164
+msgid "game"
+msgstr ""
+
+#: templates/home/index.html:166
+msgid ""
+"\n"
+"                        Use the arrow keys to move your paddle up or down to "
+"hit the ball on your side.<br>\n"
+"                        If the ball exists the screen on left or right, the "
+"player on the opposite side wins a point.<br>\n"
+"                        First player to reach 5 points win.\n"
+"                        "
+msgstr ""
+
+#: templates/home/index.html:181
+msgid "tournament"
+msgstr ""
+
+#: templates/home/index.html:183
+msgid ""
+"\n"
+"                        Gather your friends\n"
+"                        <br>\n"
+"                        and create your own\n"
+"                        <br>\n"
+"                        tournament.\n"
+"                        "
+msgstr ""
+
+#: templates/includes/base.html:9
+msgid "Welcome to Transcendence"
+msgstr ""

@@ -8,6 +8,7 @@ from django.http import HttpRequest, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_GET
@@ -37,7 +38,7 @@ def get_authenticated_user(request):
     if request.user.is_authenticated:
         return redirect("srcs_home:home")
 
-    return JsonResponse({"error": "Usuário não autenticado"}, status=401)
+    return JsonResponse({"error": _("User not authenticated")}, status=401)
 
 
 def intra_login(request: HttpRequest):

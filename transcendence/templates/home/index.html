@@ -1,119 +1,224 @@
 {% extends "includes/base.html" %}
-{% load static %}
+{% load static i18n %}
 {% block stylesheet %}
-<link rel="stylesheet" href="{% static 'profile/styles.css' %}">
-<link rel="stylesheet" href="{% static 'chat/chat.css' %}">
+    <link rel="stylesheet" href="{% static 'profile/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'chat/chat.css' %}">
 {% endblock stylesheet %}
 {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-12">
-      <div class="main-title">
-        <img src="{% static 'images/bg_big_title_blue.png' %}" alt="bg title" class="img-fluid" width="684"
-          height="167" />
-        <h1 class="title-center bg-common">Transcendence</h1>
-      </div>
-      <div class="frame-image">
-        <img src="{% static 'images/avatar_frame.png' %}" alt="avatar" class="img-fluid" width="480" height="480" />
-        <img src="{{ user.avatar }}" alt="image" width="128" height="128" class="img-avatar img-fluid rounded-circle" />
-      </div>
-      <div id="instructions-card" class="text-card">
-        <h2>instructions</h2>
-        <p>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark px-0">
+            <div class="container">
+                {% if user.is_authenticated %}<div class="user-info rounded-pill">{{ user.get_username }}</div>{% endif %}
+                <div class="d-flex d-lg-none ms-auto align-items-center">
+                    <button class="navbar-toggler shadow-none ms-2"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#navigation"
+                            aria-controls="navigation"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon">
+                            <span class="navbar-toggler-bar bar1"></span>
+                            <span class="navbar-toggler-bar bar2"></span>
+                            <span class="navbar-toggler-bar bar3"></span>
+                        </span>
+                    </button>
+                </div>
+                {% comment %} Navbar buttons this menu will change in new version {% endcomment %}
+                <div class="collapse navbar-collapse w-100" id="navigation">
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        <!-- Language Dropdown -->
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle"
+                                        type="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <b>
+                                        {% if LANGUAGE_CODE == "pt-br" %}
+                                            PT
+                                        {% else %}
+                                            {{ LANGUAGE_CODE }}
+                                        {% endif %}
+                                    </b>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    {% for language in languages %}
+                                        <li class="dropdown-item">
+                                            <form action="{% url 'set_language' %}" method="post" class="mt-1 mx-2">
+                                                {% csrf_token %}
+                                                <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+                                                <input name="language" type="hidden" value="{{ language.code }}" />
+                                                <input type="submit"
+                                                       name="submit"
+                                                       class="btn btn-dark"
+                                                       value="{% if language.code == "pt-br" %}
+                                                                  PT
+                                                              {% else %}
+                                                                  {{ language.code }}
+                                                              {% endif %}" />
+                                            </form>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </li>
+                        <!-- Sign Out -->
+                        {% if user.is_authenticated %}
+                            <li class="nav-item mx-2 d-none d-lg-inline-block">
+                                <form method="post" action="{% url 'srcs_auth:logout_user' %}">
+                                    {% csrf_token %}
+                                    {% if redirect_field_value %}
+                                        <input type="hidden"
+                                               name="{{ redirect_field_name }}"
+                                               value="{{ redirect_field_value }}" />
+                                    {% endif %}
+                                    <button type="submit" class="btn btn-small btn-outline-secondary">{% trans "Sign Out" %}</button>
+                                </form>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="main-title">
+                    <img src="{% static 'images/bg_big_title_blue.png' %}"
+                         alt="bg title"
+                         class="img-fluid"
+                         width="684"
+                         height="167" />
+                    <h1 class="title-center bg-common">Transcendence</h1>
+                </div>
+                <div class="frame-image">
+                    <img src="{% static 'images/avatar_frame.png' %}"
+                         alt="avatar"
+                         class="img-fluid"
+                         width="480"
+                         height="480" />
+                    <img src="{{ user.avatar }}"
+                         alt="image"
+                         width="128"
+                         height="128"
+                         class="img-avatar img-fluid rounded-circle" />
+                </div>
+                <div id="instructions-card" class="text-card">
+                    <h2>{% translate "instructions" %}</h2>
+                    <p>
+                        {% blocktrans %}
           Use mouse to move around main screen.
           <br>
           Click on icon to enter specific section.
           <br>
           Have fun!
-        </p>
-      </div>
-      <div id="profile-card" class="text-card">
-        <h2>profile</h2>
-        <p>
+        {% endblocktrans %}
+                    </p>
+                </div>
+                <div id="profile-card" class="text-card">
+                    <h2>{% translate "profile" %}</h2>
+                    <p>
+                        {% blocktrans %}
           Configure your authentication.
           <br>
           View your statistics.
           <br>
           Create games or chat channels.
-          <br>
-        </p>
-        <button id="profile-button" class="btn-round" type="button" data-toogle="modal" data-target="">
-          <i class="bi bi-person"></i>
-        </button>
-      </div>
-      <div id="chat-card" class="text-card">
-        <h2>chat</h2>
-        <p>
+        {% endblocktrans %}
+                        <br>
+                    </p>
+                    <button id="profile-button"
+                            class="btn-round"
+                            type="button"
+                            data-toogle="modal"
+                            data-target="">
+                        <i class="bi bi-person"></i>
+                    </button>
+                </div>
+                <div id="chat-card" class="text-card">
+                    <h2>chat</h2>
+                    <p>
+                        {% blocktrans %}
           Create chat channels,
-          <br |>
+          <br>
           see your ongoing chats
           <br>
           or just chat.
-        </p>
-        <button id="chat-button" class="btn-round" type="button" data-toogle="modal" data-target="">
-          <i class="bi bi-chat-left"></i>
-        </button>
-      </div>
-      <div id="game-card" class="text-card">
-        <h2>game</h2>
-        <p>
-          Use the arrow keys to move your paddle up or
-          <br>
-          down to hit the ball on your side.
-          <br>
-          If the ball exists the screen on left or right,
-          <br>
-          the player on the opposite side wins a point.
-          <br>
-          First player to reach 5 points win.
-        </p>
-        <button id="game-button" class="btn-round" type="button" data-toogle="modal" data-target="">
-          <i class="bi bi-controller"></i>
-        </button>
-      </div>
-      <div id="tournament-card" class="text-card">
-        <h2>tournament</h2>
-        <p>
-          Gather your friends
-          <br>
-          and create your own
-          <br>
-          tournament.
-        </p>
-        <button id="tournament-button" class="btn-round" type="button" data-toogle="modal" data-target="">
-          <i class="bi bi-trophy"></i>
-        </button>
-      </div>
-      <!-- Profile page -->
-      {% include "profile/modal.html" %}
-
-      <!-- TwoFactor Modal -->
-      {% include "registration/twoFactorModal.html" %}
-
-      <!-- VerifyTwoFactorModal -->
-      {% include "registration/verifyTwoFactorModal.html" %}
-
-      <!-- Chat page -->
-      {% include "chat/profileVisit.html" %}
-      {% include "chat/chatModal.html" %}
-
+          {% endblocktrans %}
+                    </p>
+                    <button id="chat-button"
+                            class="btn-round"
+                            type="button"
+                            data-toogle="modal"
+                            data-target="">
+                        <i class="bi bi-chat-left"></i>
+                    </button>
+                </div>
+                <div id="game-card" class="text-card">
+                    <h2>{% translate "game" %}</h2>
+                    <p>
+                        {% blocktrans %}
+                        Use the arrow keys to move your paddle up or down to hit the ball on your side.<br>
+                        If the ball exists the screen on left or right, the player on the opposite side wins a point.<br>
+                        First player to reach 5 points win.
+                        {% endblocktrans %}
+                    </p>
+                    <button id="game-button"
+                            class="btn-round"
+                            type="button"
+                            data-toogle="modal"
+                            data-target="">
+                        <i class="bi bi-controller"></i>
+                    </button>
+                </div>
+                <div id="tournament-card" class="text-card">
+                    <h2>{% translate "tournament" %}</h2>
+                    <p>
+                        {% blocktrans %}
+                        Gather your friends
+                        <br>
+                        and create your own
+                        <br>
+                        tournament.
+                        {% endblocktrans %}
+                    </p>
+                    <button id="tournament-button"
+                            class="btn-round"
+                            type="button"
+                            data-toogle="modal"
+                            data-target="">
+                        <i class="bi bi-trophy"></i>
+                    </button>
+                </div>
+                <!-- Profile page -->
+                {% include "profile/modal.html" %}
+                <!-- TwoFactor Modal -->
+                {% include "registration/twoFactorModal.html" %}
+                <!-- VerifyTwoFactorModal -->
+                {% include "registration/verifyTwoFactorModal.html" %}
+                <!-- Chat page -->
+                {% include "chat/profileVisit.html" %}
+                {% include "chat/chatModal.html" %}
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 </div>
 </div>
 {% endblock content %}
-
 {% block scripts %}
-<script>
+    <script>
   const CREATE_TWO_FACTOR_URL = "{% url 'srcs_auth:totp-create' %}";
   const DELETE_TWO_FACTOR_URL = "{% url 'srcs_auth:totp-delete' %}";
   const VALIDATE_TOKEN_URL = "{% url 'srcs_auth:validate_token_2f' %}";
   const VERIFY_TWO_FACTOR_STATE_URL = "{% url 'srcs_auth:totp-verify' %}";
   const TOTP_LOGIN_URL = "{% url 'srcs_auth:totp-login' token=None %}".replace("None/", "");
-</script>
-<script src="{% static 'profile/app.js' %}" type="module"></script>
-<script src="{% static 'chat/app.js' %}"></script>
-<script src="{% static 'chat/chat.js' %}"></script>
-
+    </script>
+    <script src="{% static 'profile/app.js' %}" type="module"></script>
+    <script src="{% static 'chat/app.js' %}"></script>
+    <script src="{% static 'chat/chat.js' %}"></script>
 {% endblock scripts %}
