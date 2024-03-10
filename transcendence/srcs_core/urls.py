@@ -12,4 +12,5 @@ urlpatterns = [
     path('', include('srcs_home.urls', 'srcs_home')),
     path("chat/", include("srcs_chat.urls")),
     path('game/', include('srcs_game.urls')),
+    path('', include(('srcs_tournament.urls', 'srcs_tournament')))
 ]

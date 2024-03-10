@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tornei</title>
+</head>
+<body>
+    <h1>Tornei</h1>
+    <ul>
+        {% for user in users %}
+            <li>{{ user.username }}
+            <form action="{% url 'srcs_tournament:create_tournament' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+                <button type="submit">Chama pu tornei</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
