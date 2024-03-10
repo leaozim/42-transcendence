@@ -4,7 +4,7 @@ class ChatUpdater {
         try {
             const data = await fetch("/chat/get_updated_user_list");
             const updatedUsers = await data.json();
-            console.log(updatedUsers)
+            // console.log(updatedUsers)
             return updatedUsers;
         } catch (error) {
             console.error('Error during AJAX request:', error);
@@ -41,7 +41,6 @@ class ChatUpdater {
         `;
         const existingUser = listUsersContainer.querySelector(`[data-user-id="${id}"]`);
         if (existingUser) {
-            console.log(existingUser)
             existingUser.remove();
         }
         listUsersContainer.insertBefore(listItem, titleListUsers.nextSibling);

@@ -12,14 +12,14 @@ async function sendMessage() {
 	const message = messageInputDom.value.trim();
 
 	if (message !== '') {
-        if (window.chatSocket) {
-		console.log( "send messag")
+        if (window.chatSocket && window.chatSocket.readyState === WebSocket.OPEN) {
+			console.log( "send messag")
 
             window.chatSocket.send(JSON.stringify({
                 'message': message,
             }));
+			ChatUpdater.renderUserWindow(otherUser.other_user_id, otherUser.other_user_username, otherUser.other_user_avatar)
         }		
-		ChatUpdater.renderUserWindow(otherUser.other_user_id, otherUser.other_user_username, otherUser.other_user_avatar)
 	}
 	messageInputDom.value = '';
 
