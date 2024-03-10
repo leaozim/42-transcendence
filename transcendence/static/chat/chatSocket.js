@@ -12,8 +12,9 @@ async function sendMessage() {
 	const message = messageInputDom.value.trim();
 
 	if (message !== '') {
-		
         if (window.chatSocket) {
+		console.log( "send messag")
+
             window.chatSocket.send(JSON.stringify({
                 'message': message,
             }));

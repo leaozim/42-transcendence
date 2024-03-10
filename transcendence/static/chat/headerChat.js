@@ -13,7 +13,7 @@ function createButtonBlock() {
     return buttonBlock;
 }
 
-function createButtonPlay(otherUserId) {
+function createButtonPlay() {
     const buttonPlay = document.createElement('div');
     buttonPlay.className = 'buttons-chat';
     const img = createButtonImage('init game', 'static/images/chat_button_play.png');
