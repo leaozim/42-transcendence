@@ -1,5 +1,7 @@
 import json
 from srcs_user.models import User
+from srcs_chat.models import Chat
+
 from srcs_message.services import add_message
 from asgiref.sync import sync_to_async
 from srcs_auth.jwt_token import verify_jwt_token, JWTVerificationFailed
@@ -27,7 +29,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
         user_id = self.scope['user'].id
-        print( message)
 
         if user_id is None:
             user_id = await self.get_user_id_from_cookie()
@@ -75,8 +76,53 @@ class ChatConsumer(AsyncWebsocketConsumer):
         db_insert =  add_message(chat_id, message, user_id)
         return db_insert
     
-    
-    
+
+
+
+USERNAME = 0
+AVATAR = 1
+MESSAGE = 2
+
+# message = {
+#     'chat': {
+#             2: { #id do chat
+#                 2: [ #id do user que esta recebendo a mensagem
+#                     'username',
+#                     'avatar', 
+#                     'message'
+#                     ],
+#                 3: []
+#             }
+#         },
+#     'check_chat': True, #quando tiver index no chat ele fica true
+#     'notifications': {  
+#             1: [ #id do user que ta recebendo notificaçao 
+#                 {
+#                     2 : [ # dados do user que ta enviando a mensagem 
+#                         'username',
+#                         'avatar',  
+#                         ]
+#                 },
+#                 {
+#                     4 : [
+#                         'username',
+#                         'avatar',  
+#                         ]
+#                 }                      
+#             ],
+#         },
+#     'check_notications': True,
+#     'tournament': {},
+#     'check_tournament': False
+# }   
+messages = {
+    'chat': {},
+    'check_chat': False,
+    'notifications': {},
+    'check_notifications': False,
+    'tournament': {},
+    'check_tournament': False
+}   
 class ChatConsumerUpdate(AsyncWebsocketConsumer):
     async def connect(self):
 
@@ -91,6 +137,93 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(
 		    self.group_name, self.channel_name
 		)
+
+    async def receive(self, text_data):
+        print(" ssssssssssssssssssssssssssssssssssssssss")
+
+        text_data_json = json.loads(text_data)
+        message = text_data_json["message"]
+        chat_id = text_data_json["chat_id"]
+        user_id = text_data_json["user_id"]
+        other_user_id = text_data_json["other_user_id"]
+        other_user_avatar = text_data_json["other_user_avatar"]
+        other_user_username = text_data_json["other_user_username"]
+
+        print(chat_id)
+        print(message)
+
+        # user_id = self.scope['user'].id
+        # if user_id is None:
+        #     user_id = await self.get_user_id_from_cookie()
+        user = await sync_to_async(User.objects.get)(id=user_id)
+        chat = await sync_to_async(Chat.objects.get)(id=chat_id)
+        print(" ssssssssssssssssssssssssssssssssssssssss")
+        # print(other_user)
+        messages['chat'][chat_id] = {
+            other_user_id: [
+                other_user_username,
+                other_user_avatar,
+                message
+            ]
+        }
+        messages['check_chat'] = True 
+        
+        if other_user_id in messages['notifications']:
+            if user.id not in messages['notifications'][other_user_id]:     
+                # messages['notifications'][other_user_id][user.id].append([user.username, user.avatar])
+                messages['notifications'][other_user_id] = {
+                    user.id : [
+                        user.username,
+                        user.avatar
+                    ]
+                }
+        else:
+            messages['notifications'][other_user_id] = {
+                user.id : [
+                    user.username,
+                    user.avatar
+                ]
+            }
+            
+        messages['check_notifications'] = True 
+
+        print(json.dumps(messages, indent=4))
+        # await self.channel_layer.group_send(
+		#     self.room_group_name, {
+        #     'chat': {
+        #             chat_id: { #id do chat
+        #                 2: [ #id do user que esta recebendo a mensagem
+        #                     'username',
+        #                     'avatar', 
+        #                     'message'
+        #                     ],
+        #                 3: []
+        #             }
+        #         },
+        #     'check_chat': True, #quando tiver index no chat ele fica true
+        #     'notifications': {  
+        #             1: [ #id do user que ta recebendo notificaçao 
+        #                 {
+        #                     2 : [ # dados do user que ta enviando a mensagem 
+        #                         'username',
+        #                         'avatar',  
+        #                         ]
+        #                 },
+        #                 {
+        #                     4 : [
+        #                         'username',
+        #                         'avatar',  
+        #                         ]
+        #                 }                      
+        #             ],
+        #         },
+        #     'check_notications': True,
+        #     'tournament': {},
+        #     'check_tournament': False
+        #     }   
+         
+		# )
+        # await self.save_message_to_db(room_id, message, user_id)
 
     async def chat_message_update(self, event):
         user_id = event.get("user_id")

@@ -17,10 +17,10 @@ chatSocketUpdate.onmessage = async (event) => {
     const receivedData = JSON.parse(event.data);
     const senderUserData = receivedData.data_sender_user;
 
-    if (senderUserData !== null && senderUserData !== undefined) {
-        const receivingUserData = receivedData.data_receiving_user;
-        ChatUpdater.renderUpdatedUser(senderUserData, receivingUserData);
-    }
+    // if (senderUserData !== null && senderUserData !== undefined) {
+    //     const receivingUserData = receivedData.data_receiving_user;
+    //     ChatUpdater.renderUpdatedUser(senderUserData, receivingUserData);
+    // }
 };
 
 chatSocketUpdate.onclose = function(e){

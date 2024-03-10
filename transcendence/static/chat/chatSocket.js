@@ -7,23 +7,29 @@ function setupWebSocket(roomId, currentUser) {
 	};
 }
 
-async function sendMessage() {
-	const messageInputDom = document.getElementById('chat-message-input');
-	const message = messageInputDom.value.trim();
+// async function sendMessage(room_id, ) {
+// 	const messageInputDom = document.getElementById('chat-message-input');
+// 	const message = messageInputDom.value.trim();
+// 	// console.log(window.chatSocket.url)
 
-	if (message !== '') {
-        if (window.chatSocket && window.chatSocket.readyState === WebSocket.OPEN) {
-			console.log( "send messag")
+// 	var regex = /\/chat\/(\d+)\/$/;
+// 	var match = regex.exec(window.chatSocket.url);
+// 	let room_id = match[1]
 
-            window.chatSocket.send(JSON.stringify({
-                'message': message,
-            }));
-			ChatUpdater.renderUserWindow(otherUser.other_user_id, otherUser.other_user_username, otherUser.other_user_avatar)
-        }		
-	}
-	messageInputDom.value = '';
+// 	if (message !== '') {
+//         if (window.chatSocket && window.chatSocket.readyState === WebSocket.OPEN) {
+// 			console.log( "send messag")
 
-}
+//             window.chatSocket.send(JSON.stringify({
+// 				'chat_id': room_id,
+//                 'message': message,
+//             }));
+// 			// ChatUpdater.renderUserWindow(otherUser.other_user_id, otherUser.other_user_username, otherUser.other_user_avatar)
+//         }		
+// 	}
+// 	messageInputDom.value = '';
+
+// }
 
 function addReceivedMessage(currentUser, sender, message, userAvatar) {
 	const messageElement = document.createElement('div')
@@ -58,12 +64,12 @@ function addReceivedMessage(currentUser, sender, message, userAvatar) {
 }
 
 
-document.addEventListener('DOMContentLoaded', function() {
-  	document.getElementById('chat-message-input').addEventListener('keydown', function(event) {
+// document.addEventListener('DOMContentLoaded', function() {
+//   	document.getElementById('chat-message-input').addEventListener('keydown', function(event) {
 
-		if (event.key === 'Enter') {
-			sendMessage();
-			event.preventDefault(); 
-		}
-  });
-});
+// 		if (event.key === 'Enter') {
+// 			sendMessage();
+// 			event.preventDefault(); 
+// 		}
+//   });
+// });

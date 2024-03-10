@@ -28,13 +28,13 @@ def notify_message_created(sender, instance, created, **kwargs):
         json_receiving_user_data = JsonResponse(receiving_user_data).content.decode('utf-8')
         json_sender_user_data = JsonResponse(sender_user_data).content.decode('utf-8')
 
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            'chat_update',
-            {
-                "type": "chat_message_update",
-                "user": instance.user.id,
-                "data_receiving_user": json_receiving_user_data,
-                "data_sender_user": json_sender_user_data
-            }
-        )
+        # channel_layer = get_channel_layer()
+        # async_to_sync(channel_layer.group_send)(
+        #     'chat_update',
+        #     {
+        #         "type": "chat_message_update",
+        #         "user": instance.user.id,
+        #         "data_receiving_user": json_receiving_user_data,
+        #         "data_sender_user": json_sender_user_data
+        #     }
+        # )
