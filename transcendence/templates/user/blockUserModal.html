@@ -1,0 +1,18 @@
+<div id="block-user-modal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-content">
+    <h1 class="bg-blue bg-common">Block User</h1>
+    <p class="profile-text">`Would you like to block ${userNameElement} ?`</p>
+    <form id="block-form" method="post" action="/user/blocked/">
+      {% csrf_token %}
+      {{ form }}
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" id="back-button" class="btn btn-primary-back">back</button>
+        </div>
+        <div class="col-md-6">
+          <button type="submit" value="Submit" id="ok-button" class="btn btn-primary">ok</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
