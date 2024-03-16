@@ -152,7 +152,7 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         print(" ssssssssssssssssssssssssssssssssssssssss")
-        print(urlparse(self.scope['path']).path)
+        print(urlparse(self.scope['path']).path) # será usado para checar se o user está no chat ou não
 
         text_data_json = json.loads(text_data)
         broadcast_type = text_data_json["type"]
