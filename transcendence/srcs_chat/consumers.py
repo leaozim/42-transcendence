@@ -112,15 +112,26 @@ MESSAGE = 2
 #             ],
 #         },
 #     'check_notications': True,
-#     'tournament': {},
+#     'tournament': {
+#               1 : { # tournament Id, utilizado para verificar se o jogador está dentro do torneio e identificar o torneio da msg
+#                      1 : [ # chat Id
+#                          'username',
+#                          'message'
+#                      ]
+#                  },
+#               }
 #     'check_tournament': False
 # }   
 messages = {
+    'type': '',
     'chat': {},
     'check_chat': False,
     'notifications': {},
     'check_notifications': False,
-    'tournament': {},
+    'tournament': {
+        'global': {},
+        'individual': {}
+        },
     'check_tournament': False
 }   
 class ChatConsumerUpdate(AsyncWebsocketConsumer):
@@ -142,50 +153,54 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
         print(" ssssssssssssssssssssssssssssssssssssssss")
 
         text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
-        chat_id = text_data_json["chat_id"]
-        user_id = text_data_json["user_id"]
-        other_user_id = text_data_json["other_user_id"]
-        other_user_avatar = text_data_json["other_user_avatar"]
-        other_user_username = text_data_json["other_user_username"]
+        broadcast_type = text_data_json["type"]
+        if broadcast_type == 'chat':
+            message = text_data_json["message"]
+            chat_id = text_data_json["chat_id"]
+            user_id = text_data_json["user_id"]
+            other_user_id = text_data_json["other_user_id"]
+            other_user_avatar = text_data_json["other_user_avatar"]
+            other_user_username = text_data_json["other_user_username"]
 
-        print(chat_id)
-        print(message)
+            print(chat_id)
+            print(message)
 
-        # user_id = self.scope['user'].id
-        # if user_id is None:
-        #     user_id = await self.get_user_id_from_cookie()
-        user = await sync_to_async(User.objects.get)(id=user_id)
-        chat = await sync_to_async(Chat.objects.get)(id=chat_id)
-        print(" ssssssssssssssssssssssssssssssssssssssss")
-        # print(other_user)
-        messages['chat'][chat_id] = {
-            other_user_id: [
-                other_user_username,
-                other_user_avatar,
-                message
-            ]
-        }
-        messages['check_chat'] = True 
-        
-        if other_user_id in messages['notifications']:
-            if user.id not in messages['notifications'][other_user_id]:     
-                # messages['notifications'][other_user_id][user.id].append([user.username, user.avatar])
+            # user_id = self.scope['user'].id
+            # if user_id is None:
+            #     user_id = await self.get_user_id_from_cookie()
+            user = await sync_to_async(User.objects.get)(id=user_id)
+            chat = await sync_to_async(Chat.objects.get)(id=chat_id)
+            print(" ssssssssssssssssssssssssssssssssssssssss")
+            # print(other_user)
+            messages['chat'][chat_id] = {
+                other_user_id: [
+                    other_user_username,
+                    other_user_avatar,
+                    message
+                ]
+            }
+            messages['check_chat'] = True 
+            
+            if other_user_id in messages['notifications']:
+                if user.id not in messages['notifications'][other_user_id]:     
+                    # messages['notifications'][other_user_id][user.id].append([user.username, user.avatar])
+                    messages['notifications'][other_user_id] = {
+                        user.id : [
+                            user.username,
+                            user.avatar
+                        ]
+                    }
+            else:
                 messages['notifications'][other_user_id] = {
                     user.id : [
                         user.username,
                         user.avatar
                     ]
                 }
-        else:
-            messages['notifications'][other_user_id] = {
-                user.id : [
-                    user.username,
-                    user.avatar
-                ]
-            }
-            
-        messages['check_notifications'] = True 
+                
+            messages['check_notifications'] = True
+        if broadcast_type == 'tournament':
+            pass
 
         print(json.dumps(messages, indent=4))
         # await self.channel_layer.group_send(
