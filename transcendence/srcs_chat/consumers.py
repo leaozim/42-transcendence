@@ -8,6 +8,7 @@ from srcs_auth.jwt_token import verify_jwt_token, JWTVerificationFailed
 from channels.generic.websocket import AsyncWebsocketConsumer
 from srcs_user.services import find_one_intra
 from channels.db import database_sync_to_async
+from urllib.parse import urlparse
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -151,6 +152,7 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         print(" ssssssssssssssssssssssssssssssssssssssss")
+        print(urlparse(self.scope['path']).path)
 
         text_data_json = json.loads(text_data)
         broadcast_type = text_data_json["type"]
