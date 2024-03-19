@@ -1,8 +1,8 @@
-async function fetchPage() {
-  return fetch(OTHER_USER_PROFILE)
+async function fetchPage(url, username = "") {
+  return fetch(url + `${username}`)
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`fail to fetching ${OTHER_USER_PROFILE}`);
+        throw new Error(`fail to fetching ${url}`);
       }
 
       return response.text();
@@ -12,10 +12,10 @@ async function fetchPage() {
     });
 }
 
-function parseHtml(htmlText) {
+function parseHtml(htmlText, elementSelector) {
   return new DOMParser()
     .parseFromString(htmlText, "text/html")
-    .body.querySelector("div#block-user-modal");
+    .body.querySelector(elementSelector);
 }
 
 let blockModal;
@@ -26,9 +26,10 @@ const _blockModal = {
   },
 
   open: async function (userNameElement, parentNode) {
-    blockModal = parseHtml(await fetchPage());
-
-    const paragraph = blockModal.querySelector("div.modal-content > p");
+    blockModal = parseHtml(
+      await fetchPage(BLOCK_USER_URL, userNameElement),
+      "div#block-user-modal",
+    );
 
     (function () {
       const okButton = blockModal.querySelector("button#ok-button");
@@ -38,7 +39,7 @@ const _blockModal = {
         event.preventDefault();
         const xhr = new XMLHttpRequest();
 
-        xhr.open("POST", OTHER_USER_PROFILE);
+        xhr.open("POST", BLOCK_USER_URL);
 
         const form = new FormData(this.modal.querySelector("form#block-form"));
 
@@ -59,8 +60,6 @@ const _blockModal = {
 
       backButton.addEventListener("click", () => this.close());
     }).call(this);
-
-    paragraph.textContent = eval(paragraph.textContent);
 
     parentNode.appendChild(_blockModal.modal);
 

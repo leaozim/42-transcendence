@@ -1,8 +1,15 @@
-<div id="block-user-modal" class="modal" tabindex="-1" role="dialog">
+<div id="{% if not blocked_user %}block-user-modal{% else %}unblock-user-modal{% endif %}" class="modal" tabindex="-1"
+  role="dialog">
   <div class="modal-content">
+    {% if not blocked_user %}
     <h1 class="bg-blue bg-common">Block User</h1>
-    <p class="profile-text">`Would you like to block ${userNameElement} ?`</p>
-    <form id="block-form" method="post" action="/user/blocked/">
+    <p class="profile-text">Would you like to block {{ username }} ?</p>
+    {% else %}
+    <h1 class="bg-pink bg-common">Unblock User</h1>
+    <p class="profile-text">Would you like to unblock {{ username }} ?</p>
+    {% endif %}
+    <form id="{% if not blocked_user %}block-form{% else %}unblock-form{% endif %}" method="post"
+      action="/user/blocked/">
       {% csrf_token %}
       {{ form }}
       <div class="row">

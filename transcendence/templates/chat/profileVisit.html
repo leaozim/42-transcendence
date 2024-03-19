@@ -3,12 +3,16 @@
   <div class="modal-content profile">
 
     <div class="nickname">
-      <h1 class="profile-text" id="user-profile-username"></h1>
+      <h1 class="profile-text" id="user-profile-username">{{ username }}</h1>
     </div>
 
     <!-- Game buttons -->
     <div class="flex-center">
+      {% if not blocked_user %}
       <button id="block-button" type="button"><img src="{% static 'images/unblocked.png' %}" alt=""></button>
+      {% else %}
+      <button id="unblock-button" type="button"><img src="{% static 'images/blocked.png' %}" alt=""></button>
+      {% endif %}
     </div>
 
 
