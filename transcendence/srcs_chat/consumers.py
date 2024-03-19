@@ -160,14 +160,14 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
         broadcast_type = "chat"
         if broadcast_type == "chat":
             message = text_data_json["message"]
-            chat_id = text_data_json["chat_id"]
-            user_id = text_data_json["user_id"]
-            other_user_id = text_data_json["other_user_id"]
+            chat_id = str(text_data_json["chat_id"])
+            user_id = str(text_data_json["user_id"])
+            other_user_id = str(text_data_json["other_user_id"])
             other_user_avatar = text_data_json["other_user_avatar"]
             other_user_username = text_data_json["other_user_username"]
-            
-            user = await sync_to_async(User.objects.get)(id=user_id)
-            chat = await sync_to_async(Chat.objects.get)(id=chat_id)
+
+
+            user = await sync_to_async(User.objects.get)(id=int(user_id))
             
             if chat_id in messages['chat']:
                 if other_user_id in messages['chat'][chat_id]:
@@ -177,42 +177,34 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
             else:
                 messages['chat'][chat_id] = {other_user_id: [[other_user_username, other_user_avatar, message]]}
 
-            # messages['chat'][chat_id] = {
-            #     other_user_id: [
-            #         other_user_username,
-            #         other_user_avatar,
-            #         message
-            #     ]
-            # }
             messages['check_chat'] = True 
             
             if other_user_id in messages['notifications']:
-                if user.id not in messages['notifications'][other_user_id]:     
+                if str(user.id) not in messages['notifications'][other_user_id]:     
                     messages['notifications'][other_user_id] = {
-                        user.id : [
+                        str(user.id) : [
                             user.username,
                             user.avatar
                         ]
                     }
             else:
                 messages['notifications'][other_user_id] = {
-                    user.id : [
+                    str(user.id) : [
                         user.username,
                         user.avatar
                     ]
                 }
             messages['check_notifications'] = True
-            message_json = json.dumps(messages, indent=4)
-            print(message_json)
+            # message_json = json.dumps(messages)
+            # print(messages)
             await self.channel_layer.group_send(
             self.group_name ,{
                     "type": "chat_message_update",  # Tipo de mensagem a ser enviada
-                    "messages": message_json  # Dados a serem enviados
+                    "messages": messages  # Dados a serem enviados
                 }
             )
-            # await self.save_message_to_db(chat_id, message, user_id)
+            await self.save_message_to_db(int(chat_id), message, int(user_id))
 
-            
         if broadcast_type == 'tournament':
             pass
        

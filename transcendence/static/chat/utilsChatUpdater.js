@@ -28,7 +28,7 @@ class ChatUpdater {
     static renderUserWindow(id, username, avatar) {
         const listUsersContainer = document.getElementById('list-users-container');
         const titleListUsers = document.querySelector('.title-list-users');
-
+        console.log(username)
         const listItem = document.createElement('li');
         listItem.className = 'item-user';
         listItem.setAttribute('data-user-id', id);
