@@ -8,25 +8,25 @@ from srcs_message.services import get_user_receiving_last_message
 from django.core.serializers import serialize
 from django.http import JsonResponse
 
-@receiver(post_save, sender=Message)
-def notify_message_created(sender, instance, created, **kwargs):
-    if created:
-        receiving_user = get_user_receiving_last_message(instance.user.id)
+# @receiver(post_save, sender=Message)
+# def notify_message_created(sender, instance, created, **kwargs):
+#     if created:
+#         receiving_user = get_user_receiving_last_message(instance.user.id)
         
-        receiving_user_data = {
-            'id': receiving_user.id,
-            'username': receiving_user.username,
-            'avatar': receiving_user.avatar,
-        }
+#         receiving_user_data = {
+#             'id': receiving_user.id,
+#             'username': receiving_user.username,
+#             'avatar': receiving_user.avatar,
+#         }
 
-        sender_user_data = {
-            'id': instance.user.id,
-            'username': instance.user.username,
-            'avatar': instance.user.avatar,
-        }
+#         sender_user_data = {
+#             'id': instance.user.id,
+#             'username': instance.user.username,
+#             'avatar': instance.user.avatar,
+#         }
 
-        json_receiving_user_data = JsonResponse(receiving_user_data).content.decode('utf-8')
-        json_sender_user_data = JsonResponse(sender_user_data).content.decode('utf-8')
+#         json_receiving_user_data = JsonResponse(receiving_user_data).content.decode('utf-8')
+#         json_sender_user_data = JsonResponse(sender_user_data).content.decode('utf-8')
 
         # channel_layer = get_channel_layer()
         # async_to_sync(channel_layer.group_send)(

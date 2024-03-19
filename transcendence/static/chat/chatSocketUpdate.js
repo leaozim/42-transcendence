@@ -12,11 +12,10 @@ chatSocketUpdate.onopen = (event) => {
 };
 
 chatSocketUpdate.onmessage = async (event) => {
-    console.log("CONNECTED TO UPDATE CHAT");
+    console.log("CONNECTED TO ONMESSAGE CHAT");
 
     const receivedData = JSON.parse(event.data);
-    const senderUserData = receivedData.data_sender_user;
-
+    console.log(receivedData)
     // if (senderUserData !== null && senderUserData !== undefined) {
     //     const receivingUserData = receivedData.data_receiving_user;
     //     ChatUpdater.renderUpdatedUser(senderUserData, receivingUserData);
@@ -24,5 +23,5 @@ chatSocketUpdate.onmessage = async (event) => {
 };
 
 chatSocketUpdate.onclose = function(e){
-    console.log("DISCONNECTED FROM UPDATE CHAT");
+    console.log("DISCONNECTED FROM UPDATE CHAT", e);
 }

@@ -138,7 +138,7 @@ messages = {
 class ChatConsumerUpdate(AsyncWebsocketConsumer):
     async def connect(self):
 
-        self.group_name = "chat_update"
+        self.group_name = "update"
         
         await self.channel_layer.group_add(
 		    self.group_name, self.channel_name
@@ -155,37 +155,39 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
         print(urlparse(self.scope['path']).path) # será usado para checar se o user está no chat ou não
 
         text_data_json = json.loads(text_data)
-        broadcast_type = text_data_json["type"]
-        if broadcast_type == 'chat':
+        # print(text_data_json)
+        # broadcast_type = text_data_json["type"]
+        broadcast_type = "chat"
+        if broadcast_type == "chat":
             message = text_data_json["message"]
             chat_id = text_data_json["chat_id"]
             user_id = text_data_json["user_id"]
             other_user_id = text_data_json["other_user_id"]
             other_user_avatar = text_data_json["other_user_avatar"]
             other_user_username = text_data_json["other_user_username"]
-
-            print(chat_id)
-            print(message)
-
-            # user_id = self.scope['user'].id
-            # if user_id is None:
-            #     user_id = await self.get_user_id_from_cookie()
+            
             user = await sync_to_async(User.objects.get)(id=user_id)
             chat = await sync_to_async(Chat.objects.get)(id=chat_id)
-            print(" ssssssssssssssssssssssssssssssssssssssss")
-            # print(other_user)
-            messages['chat'][chat_id] = {
-                other_user_id: [
-                    other_user_username,
-                    other_user_avatar,
-                    message
-                ]
-            }
+            
+            if chat_id in messages['chat']:
+                if other_user_id in messages['chat'][chat_id]:
+                    messages['chat'][chat_id][other_user_id].append([other_user_username, other_user_avatar, message])
+                else:
+                    messages['chat'][chat_id][other_user_id] = [[other_user_username, other_user_avatar, message]]
+            else:
+                messages['chat'][chat_id] = {other_user_id: [[other_user_username, other_user_avatar, message]]}
+
+            # messages['chat'][chat_id] = {
+            #     other_user_id: [
+            #         other_user_username,
+            #         other_user_avatar,
+            #         message
+            #     ]
+            # }
             messages['check_chat'] = True 
             
             if other_user_id in messages['notifications']:
                 if user.id not in messages['notifications'][other_user_id]:     
-                    # messages['notifications'][other_user_id][user.id].append([user.username, user.avatar])
                     messages['notifications'][other_user_id] = {
                         user.id : [
                             user.username,
@@ -199,12 +201,26 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
                         user.avatar
                     ]
                 }
-                
             messages['check_notifications'] = True
+            message_json = json.dumps(messages, indent=4)
+            print(message_json)
+            await self.channel_layer.group_send(
+            self.group_name ,{
+                    "type": "chat_message_update",  # Tipo de mensagem a ser enviada
+                    "messages": message_json  # Dados a serem enviados
+                }
+            )
+            # await self.save_message_to_db(chat_id, message, user_id)
+
+            
         if broadcast_type == 'tournament':
             pass
+       
 
-        print(json.dumps(messages, indent=4))
+            
+
+        # print(json.dumps(messages, indent=4))
+
         # await self.channel_layer.group_send(
 		#     self.room_group_name, {
         #     'chat': {
@@ -240,10 +256,13 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
         #     }   
          
 		# )
-        # await self.save_message_to_db(room_id, message, user_id)
 
     async def chat_message_update(self, event):
-        user_id = event.get("user_id")
-        data_receiving_user = event.get("data_receiving_user")
-        data_sender_user = event.get("data_sender_user")
-        await self.send(text_data=json.dumps({"user_id": user_id, "data_receiving_user": data_receiving_user, "data_sender_user": data_sender_user}, ))
+        messages = event["messages"]
+        await self.send(text_data=json.dumps(messages))
+    
+    @database_sync_to_async
+    def save_message_to_db(self, chat_id, message, user_id):
+        db_insert =  add_message(chat_id, message, user_id)
+        return db_insert
+
