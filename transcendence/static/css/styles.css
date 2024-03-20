@@ -34,11 +34,23 @@ body {
   height: 55px;
   margin-bottom: 25px;
 }
-.bg-blue {
+.bg-title-blue {
   background-image: url("../images/bg_title_blue.png");
 }
-.bg-pink {
+.bg-title-pink {
   background-image: url("../images/bg_title_pink.png");
+}
+.bg-pink {
+  background-color: #d613f0;
+}
+.bg-blue {
+  background-color: #0071BC;
+}
+.bg-light-blue {
+  background-color: #52C0D7;
+}
+.user-frame {
+  background-image: url("../images/user_frame.png");
 }
 .form-label {
   color: #52c0d7;
@@ -136,14 +148,12 @@ body {
 .btn-round {
   display: flex;
   font-size: 32px;
-  background-color: #d613f0;
   width: 60px;
   height: 60px;
   border: none;
   border-radius: 50%;
   justify-content: center;
   align-items: center;
-  margin: 20px auto 0;
 }
 
 .text-card {
@@ -154,7 +164,9 @@ body {
   border-radius: 20px;
   border: solid 1px #52c0d7;
 }
-
+.text-card .btn-round {
+  margin: 20px auto 0;
+}
 #instructions-card {
   top: 240px;
   left: 50%;
@@ -191,4 +203,46 @@ body {
 .text-card p {
   margin-bottom: 0;
   line-height: 1.2;
+}
+.wrapper-user-list {
+  width: 350px;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+.user-list {
+  list-style: none;
+  margin-bottom: 0;
+  padding-left: 0;
+}
+.user-list li {
+  margin-bottom: 30px;
+  position: relative;
+}
+.user-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 55px;
+  margin-left: 15px;
+  padding-left: 60px;
+  background-repeat: no-repeat;
+  background-position-x: 22px;
+}
+.user-list-item .btn-round {
+  width: 24px;
+  height: 24px;
+  margin-left: 5px;
+  margin-right: 5px;
+  font-size: 16px;
+}
+.user-list-btns {
+  display: flex;
+  margin-right: 40px;
+}
+.user-list li .avatar {
+  position: absolute;
+  left: 8px;
 }
