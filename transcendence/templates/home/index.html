@@ -174,8 +174,8 @@
   const VALIDATE_TOKEN_URL = "{% url 'srcs_auth:validate_token_2f' %}";
   const VERIFY_TWO_FACTOR_STATE_URL = "{% url 'srcs_auth:totp-verify' %}";
   const TOTP_LOGIN_URL = "{% url 'srcs_auth:totp-login' token=None %}".replace("None/", "");
-  const BLOCK_USER_URL = "{% url 'srcs_user:blocked' %}";
-  const UNBLOCK_USER_URL = "{% url 'srcs_user:unblocked' %}";
+  const BLOCK_USER_URL = "{% url 'srcs_chat:blocked' %}";
+  const UNBLOCK_USER_URL = "{% url 'srcs_chat:unblocked' %}";
   const USER_PROFILE_URL = "{% url 'srcs_chat:profile' username=None %}".replace("None", "");
 </script>
 <script src="{% static 'profile/app.js' %}" type="module"></script>

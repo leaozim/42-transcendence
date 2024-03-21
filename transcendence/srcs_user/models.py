@@ -32,5 +32,5 @@ class BlockedUser(models.Model):
         User, on_delete=models.CASCADE, related_name="blocked_by", default=None
     )
     blocked_user_id = models.IntegerField(
-        db_column="blocked_user_id", verbose_name="blocked_user", default=None
+        db_column="blocked_user_id", verbose_name="blocked_user_id", default=None
     )

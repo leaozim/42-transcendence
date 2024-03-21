@@ -1,9 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from srcs_user.models import User
-
-from .models import BlockedUser
+from srcs_user.models import BlockedUser, User
 
 
 class BlockForm(forms.Form):
