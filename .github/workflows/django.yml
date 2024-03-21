@@ -32,4 +32,4 @@ jobs:
 
     - name: Run Script in Docker Container
       run: |
-        docker exec --user=root -i server sh -c "./test.sh"
+          make test

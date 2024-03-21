@@ -12,7 +12,7 @@ clear:
 
 test: build
 	docker exec -i ${SERVER_CONTAINER_NAME} sh -c "python manage.py makemigrations && python manage.py migrate"
-	docker exec -i ${SERVER_CONTAINER_NAME} sh -c "./test.sh"
+	docker exec --user=root -i ${SERVER_CONTAINER_NAME} sh -c "./test.sh"
 
 
 .PHONY: down clear build
