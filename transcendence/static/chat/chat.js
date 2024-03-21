@@ -6,6 +6,7 @@ async function openChat(userId, username) {
 	chatLog.innerHTML = '';
 	const dataRoom  = await getDataRoom(userId);
 	const dataChat = await getDataChat(dataRoom.room_id);
+	console.log(dataChat)
 
 	// await setupWebSocket(dataChat.room_id, dataChat.current_user);
 	initializeChatLog(dataChat.current_user, dataChat.messages);
@@ -16,27 +17,29 @@ async function openChat(userId, username) {
 	let currentUserId  = dataChat.current_user_id;
 	let otherUserId = dataChat.other_user_id;
 	let otherUserUsername = dataChat.other_user_username;
+	console.log(otherUserUsername)
 	let otherUserAvatar = dataChat.other_user_avatar;
 	let roomId = dataRoom.room_id;
-	let chatMessageImput = document.getElementById('chat-message-input')
-	chatMessageImput.removeEventListener('keydown', sendMessage)
-	document.getElementById('chat-message-input').addEventListener('keydown', function(event) {
-
+	let oldChatInput = document.getElementById('chat-message-input')
+	let newChatInput = oldChatInput.cloneNode(true)
+	console.log("openChat USERNAME ANTES DA EVENTLISTENER", otherUserUsername)
+	newChatInput.addEventListener('keydown', (event) => {
 		if (event.key === 'Enter') {
+			console.log("openChat USERNAME DENTRO DA EVENTLISTENER", otherUserUsername)
 			sendMessage(roomId, currentUserId, otherUserId, otherUserUsername, otherUserAvatar)
 		}
 	});
-
-  
+	oldChatInput.parentNode.replaceChild(newChatInput, oldChatInput);
+	oldChatInput.remove()
 }
 
 async function sendMessage(roomId, currentUserId, otherUserId, otherUserUsername, otherUserAvatar) {
 	const messageInputDom = document.getElementById('chat-message-input');
 	const message = messageInputDom.value.trim();
 	if (message !== '') {
-        if (window.chatSocketUpdate && window.chatSocketUpdate.readyState === WebSocket.OPEN) {
-
-            window.chatSocketUpdate.send(JSON.stringify({
+		if (window.chatSocketUpdate && window.chatSocketUpdate.readyState === WebSocket.OPEN) {
+			
+			window.chatSocketUpdate.send(JSON.stringify({
 				'type': "chat",
 				'chat_id': roomId,
                 'message': message,
@@ -44,13 +47,43 @@ async function sendMessage(roomId, currentUserId, otherUserId, otherUserUsername
 				'other_user_id': otherUserId,
 				'other_user_avatar': otherUserAvatar,
 				'other_user_username': otherUserUsername
-
+				
             }));
-			ChatUpdater.renderUserWindow(otherUserId, otherUserUsername, otherUserAvatar)
+			console.log(otherUserUsername)
+			renderUserWindow(otherUserId, otherUserUsername, otherUserAvatar)
         }		
 	}
 	messageInputDom.value = '';
 
+}
+
+function renderUserWindow(id, username, avatar) {
+	const listUsersContainer = document.getElementById('list-users-container');
+	const titleListUsers = document.querySelector('.title-list-users');
+	console.log(username)
+	const listItem = document.createElement('li');
+	listItem.className = 'item-user';
+	listItem.setAttribute('data-user-id', id);
+	listItem.setAttribute('data-username', username);
+	listItem.setAttribute('onclick', `selectItem(this); openChat('${id}', '${username}')`);
+	
+	listItem.innerHTML = `
+	<img src="${avatar}" class="user-photo" onclick="selectItem(this.parentElement); openChat('${id}', '${username}')">
+	<span class="button_name">${username}</span>
+	`;
+	const existingUser = listUsersContainer.querySelector(`[data-user-id="${id}"]`);
+	if (!existingUser) {
+		const ul = document.querySelector('ul.list-users').appendChild(listItem)
+		// existingUser.remove();
+	}
+	// var userChat;
+	// document.querySelectorAll("li").forEach((element) => {
+	//     if (element.getAttribute("data-user-id") === id) {
+	//         element.remove();
+	//     }
+	//   });
+	// listUsersContainer.insertBefore(listItem, titleListUsers.nextSibling);
+	
 }
 
 async function getDataRoom(userId) {

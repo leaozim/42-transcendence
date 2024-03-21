@@ -155,7 +155,6 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
         print(urlparse(self.scope['path']).path) # será usado para checar se o user está no chat ou não
 
         text_data_json = json.loads(text_data)
-        # print(text_data_json)
         # broadcast_type = text_data_json["type"]
         broadcast_type = "chat"
         if broadcast_type == "chat":
@@ -168,13 +167,18 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
 
 
             user = await sync_to_async(User.objects.get)(id=int(user_id))
+            print("text_data_json", text_data_json)
+
+
             
             if chat_id in messages['chat']:
+                print("chat já existe")
                 if other_user_id in messages['chat'][chat_id]:
                     messages['chat'][chat_id][other_user_id].append([other_user_username, other_user_avatar, message])
                 else:
                     messages['chat'][chat_id][other_user_id] = [[other_user_username, other_user_avatar, message]]
             else:
+                print("chat não existe")
                 messages['chat'][chat_id] = {other_user_id: [[other_user_username, other_user_avatar, message]]}
 
             messages['check_chat'] = True 
@@ -207,7 +211,7 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
 
         if broadcast_type == 'tournament':
             pass
-       
+        print(json.dumps(messages, indent=4))
 
             
 

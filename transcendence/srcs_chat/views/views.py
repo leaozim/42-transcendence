@@ -24,6 +24,8 @@ class ChatView(View):
 
     def open_chat(self, request, room_id):
         chat = Chat.objects.get(id=int(room_id))
+        import logging
+        logging.getLogger('django.server').info(f"USERS ON CHAT {chat.users_on_chat.all().exclude(id=request.user.id).first()}")
         
         if not services.is_user_in_chat(chat, request.user):
             raise Http404
@@ -31,6 +33,7 @@ class ChatView(View):
         messages = chat.message_set.all().order_by('timestamp')
         sorted_messages = sorted(messages, key=lambda x: x.timestamp)
         other_user = chat.get_other_user(request.user)
+        logging.getLogger('django.server').info(f"OTHER_USER {other_user.id}")
         messages_dict = [message.to_dict() for message in sorted_messages]
 
         context = {

@@ -34,16 +34,23 @@ class ChatUpdater {
         listItem.setAttribute('data-user-id', id);
         listItem.setAttribute('data-username', username);
         listItem.setAttribute('onclick', `selectItem(this); openChat('${id}', '${username}')`);
-    
+        
         listItem.innerHTML = `
-            <img src="${avatar}" class="user-photo" onclick="selectItem(this.parentElement); openChat('${id}', '${username}')">
-            <span class="button_name">${username}</span>
+        <img src="${avatar}" class="user-photo" onclick="selectItem(this.parentElement); openChat('${id}', '${username}')">
+        <span class="button_name">${username}</span>
         `;
         const existingUser = listUsersContainer.querySelector(`[data-user-id="${id}"]`);
-        if (existingUser) {
-            existingUser.remove();
+        if (!existingUser) {
+            const ul = document.querySelector('ul.list-users').appendChild(listItem)
+            // existingUser.remove();
         }
-        listUsersContainer.insertBefore(listItem, titleListUsers.nextSibling);
+        // var userChat;
+        // document.querySelectorAll("li").forEach((element) => {
+        //     if (element.getAttribute("data-user-id") === id) {
+        //         element.remove();
+        //     }
+        //   });
+        // listUsersContainer.insertBefore(listItem, titleListUsers.nextSibling);
         
     }
     static async getLoggedUserId() {  
