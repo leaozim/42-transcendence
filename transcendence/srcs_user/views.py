@@ -72,7 +72,7 @@ class UnblockedFormView(LoginRequiredMixin, FormView):
     ) -> HttpResponse:
         username: str
 
-        username = self.request.GET.get("username")
+        username = self.kwargs["username"]
 
         context.update({"blocked_user": True, "username": username})
 

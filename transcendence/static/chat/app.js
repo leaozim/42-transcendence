@@ -39,17 +39,30 @@ function UserModal() {
     (function () {
       const blockButton = this.modal.querySelector("button#block-button");
       const unblockButton = this.modal.querySelector("button#unblock-button");
+      const username = this.modal.querySelector(
+        "h1#user-profile-username",
+      ).textContent;
 
       if (blockButton) {
         blockButton.addEventListener("click", async () => {
-          const usernameElement = this.modal.querySelector(
-            "h1#user-profile-username",
-          ).textContent;
-          await _blockModal.open(usernameElement, this.modal.parentNode);
+          await _blockModal.open(
+            BLOCK_USER_URL,
+            username,
+            this.modal.parentNode,
+          );
 
           this.close();
         });
-      } else {
+      } else if (unblockButton) {
+        unblockButton.addEventListener("click", async () => {
+          await _blockModal.open(
+            UNBLOCK_USER_URL,
+            username,
+            this.modal.parentNode,
+          );
+
+          this.close();
+        });
       }
     }).call(this);
 

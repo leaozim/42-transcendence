@@ -9,9 +9,9 @@
     <!-- Game buttons -->
     <div class="flex-center">
       {% if not blocked_user %}
-      <button id="block-button" type="button"><img src="{% static 'images/unblocked.png' %}" alt=""></button>
+      <button id="block-button" class="buttons-svg" type="button"><img src="{% static 'images/unblocked.png' %}" alt=""></button>
       {% else %}
-      <button id="unblock-button" type="button"><img src="{% static 'images/blocked.png' %}" alt=""></button>
+      <button id="unblock-button" class="buttons-svg" type="button"><img src="{% static 'images/blocked.png' %}" alt=""></button>
       {% endif %}
     </div>
 

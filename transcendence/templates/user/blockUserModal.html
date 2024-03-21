@@ -8,8 +8,7 @@
     <h1 class="bg-pink bg-common">Unblock User</h1>
     <p class="profile-text">Would you like to unblock {{ username }} ?</p>
     {% endif %}
-    <form id="{% if not blocked_user %}block-form{% else %}unblock-form{% endif %}" method="post"
-      action="/user/blocked/">
+    <form id="{% if not blocked_user %}block-form{% else %}unblock-form{% endif %}" method="post">
       {% csrf_token %}
       {{ form }}
       <div class="row">

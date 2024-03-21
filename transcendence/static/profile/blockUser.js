@@ -25,13 +25,21 @@ const _blockModal = {
     return blockModal;
   },
 
-  open: async function (userNameElement, parentNode) {
-    blockModal = parseHtml(
-      await fetchPage(BLOCK_USER_URL, userNameElement),
-      "div#block-user-modal",
-    );
+  open: async function(url, userName, parentNode) {
+    let modalQuerySelector;
+    let formQuerySelector;
 
-    (function () {
+    if (url === BLOCK_USER_URL) {
+      modalQuerySelector = "div#block-user-modal";
+      formQuerySelector = "form#block-form";
+    } else if (url === UNBLOCK_USER_URL) {
+      modalQuerySelector = "div#unblock-user-modal";
+      formQuerySelector = "form#unblock-form";
+    }
+
+    blockModal = parseHtml(await fetchPage(url, userName), modalQuerySelector);
+
+    (function() {
       const okButton = blockModal.querySelector("button#ok-button");
       const backButton = blockModal.querySelector("button#back-button");
 
@@ -39,11 +47,11 @@ const _blockModal = {
         event.preventDefault();
         const xhr = new XMLHttpRequest();
 
-        xhr.open("POST", BLOCK_USER_URL);
+        xhr.open("POST", url);
 
-        const form = new FormData(this.modal.querySelector("form#block-form"));
+        const form = new FormData(this.modal.querySelector(formQuerySelector));
 
-        form.set("blockedUserName", userNameElement);
+        form.set("blockedUserName", userName);
 
         xhr.send(form);
 
@@ -66,7 +74,7 @@ const _blockModal = {
     _blockModal.modal.style.display = "block";
   },
 
-  close: function () {
+  close: function() {
     this.modal.remove();
   },
 };
