@@ -1,4 +1,4 @@
-SERVER_CONTAINER_NAME="transcendence-server"
+SERVER_CONTAINER_NAME="server"
 
 build:
 	@echo "[WARNING] SEE IF YOU SETUP DE ENV FILE"

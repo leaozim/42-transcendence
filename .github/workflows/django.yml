@@ -29,7 +29,7 @@ jobs:
     - name: Run Docker Container
       run: |
         docker-compose -f ./docker-compose.yml up -d --build
-    
+
     - name: Run Script in Docker Container
       run: |
-        docker exec --user=root -i transcendence-server sh -c "./test.sh"
+        docker exec --user=root -i server sh -c "./test.sh"
