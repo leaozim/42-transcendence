@@ -1,10 +1,22 @@
 function setupWebSocket(roomId, currentUser) {
-	const base_url = 'ws://' + window.location.hostname + ':' + window.location.port + '/ws/chat/' + roomId + '/';
-	chatSocket = new WebSocket(base_url);
-	chatSocket.onmessage = (event) => {
-		const parsed = JSON.parse(event.data);
-		addReceivedMessage(currentUser, parsed.username, parsed.message, parsed.user_avatar, parsed.users);
-	};
+  const base_url = `ws://${window.location.hostname}:${window.location.port}/ws/chat/${roomId}/`;
+  const chatSocket = new WebSocket(base_url);
+
+  chatSocket.onmessage = (event) => {
+    const parsed = JSON.parse(event.data);
+    console.log(parsed);
+    addReceivedMessage(currentUser, parsed.message, parsed);
+  };
+
+  chatSocket.onopen = () => {
+    console.log("Connect");
+  };
+
+  chatSocket.onclose = () => {
+    console.log("Closed");
+  };
+
+  sockets.add(chatSocket);
 }
 
 // async function sendMessage(room_id, ) {
@@ -25,51 +37,49 @@ function setupWebSocket(roomId, currentUser) {
 //                 'message': message,
 //             }));
 // 			// ChatUpdater.renderUserWindow(otherUser.other_user_id, otherUser.other_user_username, otherUser.other_user_avatar)
-//         }		
+//         }
 // 	}
 // 	messageInputDom.value = '';
 
 // }
 
-function addReceivedMessage(currentUser, sender, message, userAvatar) {
-	const messageElement = document.createElement('div')
-	const avatarElement = document.createElement('img');
-	const textElement = document.createElement('p');
-	const divImgElement = document.createElement('div')
+function addReceivedMessage(currentUser, message, { username: sender, avatar: userAvatar }) {
+  const messageElement = document.createElement("div");
+  const avatarElement = document.createElement("img");
+  const textElement = document.createElement("p");
+  const divImgElement = document.createElement("div");
+  const chatLog = document.querySelector("div#chat-log");
 
-	if (sender === currentUser) {
-		messageElement.className = 'sent-message';
-	}
-	else {
-		if (sender != lastMessageSender) {
-			userAvatar ? userAvatar : 'https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png'; 
-			avatarElement.src = userAvatar;
-			avatarElement.alt = 'Avatar';
-			textElement.className =  'special-style';
+  if (sender === currentUser) {
+    messageElement.className = "sent-message";
+  } else {
+    if (typeof lastMessageSender === "undefined" || sender != lastMessageSender) {
+      userAvatar ? userAvatar : "https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png";
+      avatarElement.src = userAvatar;
+      avatarElement.alt = "Avatar";
+      textElement.className = "special-style";
+    }
+    divImgElement.className = "user-photo";
+    messageElement.className = "received-message";
+    divImgElement.appendChild(avatarElement);
+    messageElement.appendChild(divImgElement);
+  }
 
-		}
-		divImgElement.className = 'user-photo';
-		messageElement.className = 'received-message';
-		divImgElement.appendChild(avatarElement)
-		messageElement.appendChild(divImgElement);
-	}
+  const clickableMessage = makeLinksClickable(message);
+  textElement.innerText = clickableMessage;
+  messageElement.appendChild(textElement);
+  chatLog.appendChild(messageElement);
+  messageElement.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
 
-	const clickableMessage = makeLinksClickable(message);
-    textElement.innerHTML = clickableMessage;
-	messageElement.appendChild(textElement);
-	chatLog.appendChild(messageElement);
-	messageElement.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-
-	lastMessageSender = sender;
+  lastMessageSender = sender;
 }
-
 
 // document.addEventListener('DOMContentLoaded', function() {
 //   	document.getElementById('chat-message-input').addEventListener('keydown', function(event) {
 
 // 		if (event.key === 'Enter') {
 // 			sendMessage();
-// 			event.preventDefault(); 
+// 			event.preventDefault();
 // 		}
 //   });
 // });

@@ -1,42 +1,57 @@
 const chatModal = document.getElementById("chat-modal");
 const chatButton = document.getElementById("chat-button");
-const profileElement = document.getElementById('profile-element');
+const profileElement = document.getElementById("profile-element");
 const userModal = document.getElementById("user-modal");
 
+const sockets = {
+  webSocket: undefined,
+
+  close: function () {
+    this.webSocket.close();
+  },
+
+  add: function (socket) {
+    if (this.webSocket) {
+      this.close();
+    }
+
+    this.webSocket = socket;
+  },
+};
+
 if (chatButton) {
-  	chatButton.addEventListener("click", function () {
-		chatModal.style.display = "block";
-  	});
+  chatButton.addEventListener("click", function () {
+    chatModal.style.display = "block";
+  });
 }
 function openChatScreen(userId, username) {
-	var chatModal = document.getElementById("chat-modal");
+  var chatModal = document.getElementById("chat-modal");
 
-	chatModal.style.display = "block";
+  chatModal.style.display = "block";
 
-	openChat(userId, username);
+  openChat(userId, username);
 }
 
 window.addEventListener("click", function (event) {
-	if (event.target == chatModal) {
-		chatModal.style.display = "none";
-	}
-	if (event.target === userModal) {
-		userModal.style.display = "none"; 
-	}
+  if (event.target == chatModal) {
+    chatModal.style.display = "none";
+  }
+  if (event.target === userModal) {
+    userModal.style.display = "none";
+  }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-  	profileElement.addEventListener("click", function (event) {   
-		if (profileElement) {
-			document.dispatchEvent(new Event('showProfileModal'));
-		}
-	});
-
+  profileElement.addEventListener("click", function (event) {
+    if (profileElement) {
+      document.dispatchEvent(new Event("showProfileModal"));
+    }
+  });
 });
 
 function openUserModal(username) {
-	const usernameElement = document.getElementById("user-profile-username");
-	usernameElement.textContent = username;
-	userModal.style.display = "block";
-	chatModal.style.display = "none";
+  const usernameElement = document.getElementById("user-profile-username");
+  usernameElement.textContent = username;
+  userModal.style.display = "block";
+  chatModal.style.display = "none";
 }

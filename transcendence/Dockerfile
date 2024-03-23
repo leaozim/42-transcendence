@@ -1,14 +1,18 @@
-FROM python:3.11-alpine
-
-WORKDIR transcendence
+FROM python:3.11-alpine as builder
 
 COPY ./requirements/local.txt ./requirements.txt
 
-ENV PATH="/venv/bin:$PATH"
+RUN apk add gcc musl-dev libffi-dev; \
+    pip install -r requirements.txt --no-cache
 
-RUN pip install pip --upgrade; \
-    pip install -r requirements.txt; \
-    rm requirements.txt; \
+
+FROM python:3.11-alpine as final
+
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+
+WORKDIR transcendence
+
+RUN apk add gettext; \
     chmod -R 777 /transcendence/coverage ; \
     adduser -D app
 
