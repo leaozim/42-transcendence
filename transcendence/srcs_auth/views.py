@@ -152,3 +152,13 @@ def get_authenticated_user_id(request):
     if request.user.is_authenticated:
         return JsonResponse({"user_id": request.user.id})
     return JsonResponse({"error": "Usuário não autenticado"}, status=401)
+
+def get_authenticated_user_object(request):
+    user = request.user
+    if user.is_authenticated:
+        return JsonResponse({"user_object": {
+            "user_id": user.id,
+            "username": user.username,
+            "avatar": user.avatar
+        }})
+    return JsonResponse({"error": "Usuário não autenticado"}, status=401)

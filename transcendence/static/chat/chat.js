@@ -2,12 +2,10 @@ let chatLog = document.querySelector('#chat-log');
 let otherUser; 
 let lastMessageSender = null;
 let chat_id = null;
-async function openChat(userId, username) {
+async function openChat(other_user_id, username="") {
 	chatLog.innerHTML = '';
-	const dataRoom  = await getDataRoom(userId);
+	const dataRoom  = await getDataRoom(other_user_id);
 	const dataChat = await getDataChat(dataRoom.room_id);
-	console.log(dataChat)
-
 	// await setupWebSocket(dataChat.room_id, dataChat.current_user);
 	initializeChatLog(dataChat.current_user, dataChat.messages);
 	appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar)
@@ -17,20 +15,17 @@ async function openChat(userId, username) {
 	let currentUserId  = dataChat.current_user_id;
 	let otherUserId = dataChat.other_user_id;
 	let otherUserUsername = dataChat.other_user_username;
-	console.log(otherUserUsername)
 	let otherUserAvatar = dataChat.other_user_avatar;
 	let roomId = dataRoom.room_id;
 	let oldChatInput = document.getElementById('chat-message-input')
 	let newChatInput = oldChatInput.cloneNode(true)
-	console.log("openChat USERNAME ANTES DA EVENTLISTENER", otherUserUsername)
 	newChatInput.addEventListener('keydown', (event) => {
 		if (event.key === 'Enter') {
-			console.log("openChat USERNAME DENTRO DA EVENTLISTENER", otherUserUsername)
 			sendMessage(roomId, currentUserId, otherUserId, otherUserUsername, otherUserAvatar)
 		}
 	});
 	oldChatInput.parentNode.replaceChild(newChatInput, oldChatInput);
-	oldChatInput.remove()
+	oldChatInput.remove();
 }
 
 async function sendMessage(roomId, currentUserId, otherUserId, otherUserUsername, otherUserAvatar) {
@@ -49,18 +44,17 @@ async function sendMessage(roomId, currentUserId, otherUserId, otherUserUsername
 				'other_user_username': otherUserUsername
 				
             }));
-			console.log(otherUserUsername)
 			renderUserWindow(otherUserId, otherUserUsername, otherUserAvatar)
         }		
 	}
 	messageInputDom.value = '';
-
+	const dataChat = await getDataChat(roomId);
+	initializeChatLog(dataChat.current_user, dataChat.messages);
 }
 
 function renderUserWindow(id, username, avatar) {
 	const listUsersContainer = document.getElementById('list-users-container');
 	const titleListUsers = document.querySelector('.title-list-users');
-	console.log(username)
 	const listItem = document.createElement('li');
 	listItem.className = 'item-user';
 	listItem.setAttribute('data-user-id', id);
@@ -73,17 +67,8 @@ function renderUserWindow(id, username, avatar) {
 	`;
 	const existingUser = listUsersContainer.querySelector(`[data-user-id="${id}"]`);
 	if (!existingUser) {
-		const ul = document.querySelector('ul.list-users').appendChild(listItem)
-		// existingUser.remove();
-	}
-	// var userChat;
-	// document.querySelectorAll("li").forEach((element) => {
-	//     if (element.getAttribute("data-user-id") === id) {
-	//         element.remove();
-	//     }
-	//   });
-	// listUsersContainer.insertBefore(listItem, titleListUsers.nextSibling);
-	
+		document.querySelector('ul.list-users').appendChild(listItem);
+	}	
 }
 
 async function getDataRoom(userId) {
@@ -149,9 +134,11 @@ function initializeChatLog(current_user, messages) {
 
 function makeLinksClickable(message) {
 	const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const messageWithClickableLinks = message.replace(urlRegex, '<a href="$1" target="_blank" style="color: black;">$1</a>');
-	return messageWithClickableLinks;
+    // const messageWithClickableLinks = message.replace(urlRegex, '<a href="$1" target="_blank" style="color: black;">$1</a>');
+	// return messageWithClickableLinks;
+	return message
 }
+
 function createButtonsContainer(buttonBlock, buttonPlay) {
     const buttonsContainer = document.createElement('div');
     buttonsContainer.id = 'buttons-container';

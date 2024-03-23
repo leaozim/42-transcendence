@@ -88,7 +88,7 @@ MESSAGE = 2
 #     'chat': {
 #             2: { #id do chat
 #                 2: [ #id do user que esta recebendo a mensagem
-#                     'username',
+#                     'username', #dados do user enviando
 #                     'avatar', 
 #                     'message'
 #                     ],

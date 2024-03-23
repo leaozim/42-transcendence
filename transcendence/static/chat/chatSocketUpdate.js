@@ -12,20 +12,18 @@ chatSocketUpdate.onopen = (event) => {
 };
 
 chatSocketUpdate.onmessage = async (event) => {
-    console.log("CONNECTED TO ONMESSAGE CHAT");
-    // console.log(event.data)
 
     let receivedData = JSON.parse(event.data);
-
-    console.log(receivedData)
-    for(let [chat, user_id] of Object.entries(receivedData.chat) ) {
-        // console.log(  " aaaaaaaaaaaaaaaaaaaaaaaaaa = ", await ChatUpdater.getLoggedUserId())
-        // console.log( " aaaaaaaaaaaaaaaaaaaaaaaaaa = ", user_id)
-        // console.log( " aaaaaaaaaaaaaaaaaaaaaaaaaa = ", await ChatUpdater.getLoggedUserId() in user_id)
-
-        if (await ChatUpdater.getLoggedUserId() in user_id){
-            console.log(user_id)
-
+    const my_id = await ChatUpdater.getLoggedUserId();
+    for(let [chat_id, users_ids] of Object.entries(receivedData.chat) ) {
+        console.log(`chat: ${chat_id}`);
+        console.log(users_ids)
+        if (my_id in users_ids) {
+            const response = await fetch('http://localhost:8000/auth/user_object/');
+            const data = await response.json();
+            other_user = data.user_object
+            size = receivedData.chat[chat_id][my_id].length - 1
+            addReceivedMessage(receivedData.chat[chat_id][my_id][size][USERNAME], other_user.username, receivedData.chat[chat_id][my_id][size][MESSAGE], other_user.avatar)
         }
         
     }
