@@ -212,7 +212,7 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
         if broadcast_type == 'tournament':
             pass
         print(json.dumps(messages, indent=4))
-
+        messages['chat'] = {}
             
 
         # print(json.dumps(messages, indent=4))
