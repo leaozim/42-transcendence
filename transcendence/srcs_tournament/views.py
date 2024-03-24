@@ -10,18 +10,22 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def create_tournament(request):
+    
+    id = request.user.id
+    url = request.META["HTTP_HOST"]
+    protocol = "https" if request.is_secure() else "http"
     if request.method == 'POST':
+        query =  Tournament.objects.filter(creator__id=id, is_active=True)
+        print( "aaaa = ", query)
         other_user_id = request.POST.get('user_id')
         called_players = request.session.get('called_players', [])
         if other_user_id and other_user_id not in called_players:
             called_players.append(other_user_id)
             other_user_bot_chat = Chat.objects.filter(users_on_chat=other_user_id).filter(users_on_chat=1)
             if other_user_bot_chat.count() > 0:
-                add_message(other_user_bot_chat.first().id, "Abandon hope all ye who enter here, for this place is a tournament.", other_user_id)
+                tournament_id = query.last().id
+                add_message(other_user_bot_chat.first().id, f"You was invited to the tournament #{tournament_id}. Click here to accept: {protocol}://{url}/tournament_player_invite/{tournament_id}/{other_user_id}", other_user_id)
             request.session['called_players'] = called_players
-        # Pega o ID do usuário do cookie do header
-        id = request.user.id
-        query =  Tournament.objects.filter(creator__id=id, is_active=True)
         if id is not None and not query.exists():
             try:
                 user = User.objects.get(id=id)
@@ -49,3 +53,26 @@ def users_list(request, user_id):
     users = [user for user in users if (user.id != user_id and user.id not in called_players)]
     print(users)
     return render(request, 'tournament/users_list.html', {'users': users})
+
+
+@login_required
+def user_accept(request, user_id, user_accept_id):
+    tournament = Tournament.objects.get(pk=user_id)
+    if tournament.open_to_subscription == False:
+        return redirect('/')
+    
+    user_accept = User.objects.get(pk=user_accept_id)
+    tournament.users.add(user_accept)
+    
+    users = tournament.users.all()
+    users_count = users.count()
+    
+    if users_count == 8:
+        tournament.open_to_subscription = False
+        tournament.save()
+        
+    for user in users:
+        other_user_bot_chat = Chat.objects.filter(users_on_chat=user.id).filter(users_on_chat=1)
+        add_message(other_user_bot_chat.first().id,  f"{user_accept.username} have joined the tournament #{tournament.id}. Wait for {8 - users_count} more players to start." , 1)
+
+    return redirect('/')
