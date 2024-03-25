@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 from srcs_user.models import User
-from srcs_user.services import find_one_intra
 from srcs_tournament.models import Tournament
-from srcs_auth.jwt_token import verify_jwt_token
 from django.http import Http404
 from srcs_chat.models import Chat
 from srcs_message.services import add_message
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from datetime import timedelta
+
+def time_expired(tournament):
+    return (timezone.now() - tournament.register_date) >= timedelta(minutes=3)
 
 @login_required
 def create_tournament(request):
@@ -16,16 +19,6 @@ def create_tournament(request):
     protocol = "https" if request.is_secure() else "http"
     if request.method == 'POST':
         query =  Tournament.objects.filter(creator__id=id, is_active=True)
-        print( "aaaa = ", query)
-        other_user_id = request.POST.get('user_id')
-        called_players = request.session.get('called_players', [])
-        if other_user_id and other_user_id not in called_players:
-            called_players.append(other_user_id)
-            other_user_bot_chat = Chat.objects.filter(users_on_chat=other_user_id).filter(users_on_chat=1)
-            if other_user_bot_chat.count() > 0:
-                tournament_id = query.last().id
-                add_message(other_user_bot_chat.first().id, f"You was invited to the tournament #{tournament_id}. Click here to accept: {protocol}://{url}/tournament_player_invite/{tournament_id}/{other_user_id}", other_user_id)
-            request.session['called_players'] = called_players
         if id is not None and not query.exists():
             try:
                 user = User.objects.get(id=id)
@@ -36,12 +29,19 @@ def create_tournament(request):
                     add_message(user_id_bot_chat.first().id, "You created a tournament", id)
             except User.DoesNotExist:
                 raise Http404("Usuário não encontrado")
-            # except Exception as e:
-            #     # Lidar com outras exceções
-            #     pass
+        else:
+            tournament_id = query.last().id
+            if (time_expired(query.last())):
+                return redirect('/')
+            other_user_id = request.POST.get('user_id')
+            called_players = request.session.get('called_players', [])
+            if other_user_id and other_user_id not in called_players:
+                called_players.append(other_user_id)
+                other_user_bot_chat = Chat.objects.filter(users_on_chat=other_user_id).filter(users_on_chat=1)
+                if other_user_bot_chat.count() > 0:
+                    add_message(other_user_bot_chat.first().id, f"You was invited to the tournament #{tournament_id}. Click here to accept: {protocol}://{url}/tournament_player_invite/{tournament_id}/{other_user_id}", other_user_id)
+                request.session['called_players'] = called_players
         return redirect('srcs_tournament:users_list', user_id=id)
-
-
     return render(request, 'tournament/create_tournament.html', {'user_id': -1})
 
 
@@ -58,7 +58,11 @@ def users_list(request, user_id):
 @login_required
 def user_accept(request, user_id, user_accept_id):
     tournament = Tournament.objects.get(pk=user_id)
+    if time_expired(tournament=tournament):
+        tournament.open_to_subscription = False
+        tournament.save()
     if tournament.open_to_subscription == False:
+        add_message(Chat.objects.filter(users_on_chat=request.user.id).filter(users_on_chat=1).first().id, "Prazo para inscrição do torneio encerrado", 1)
         return redirect('/')
     
     user_accept = User.objects.get(pk=user_accept_id)

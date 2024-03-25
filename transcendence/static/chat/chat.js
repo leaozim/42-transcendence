@@ -133,9 +133,8 @@ function initializeChatLog(current_user, messages) {
 
 function makeLinksClickable(message) {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
-  // const messageWithClickableLinks = message.replace(urlRegex, '<a href="$1" target="_blank" style="color: black;">$1</a>');
-  // return messageWithClickableLinks;
-  return message
+  const messageWithClickableLinks = message.replace(urlRegex, '<a href="$1" target="_blank" style="color: black;">$1</a>');
+  return messageWithClickableLinks;
 }
 
 function createButtonsContainer(buttonBlock, buttonPlay) {
