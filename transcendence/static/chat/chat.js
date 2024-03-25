@@ -15,7 +15,7 @@ async function openChat(other_user_id, username = "") {
 
   const newChatInput = oldChatInput.cloneNode(true);
 
-  newChatInput.addEventListener("keydown", (event) => {
+  newChatInput.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
       sendMessage(dataRoom.room_id, dataChat);
     }
@@ -30,36 +30,51 @@ async function sendMessage(roomId, dataChat) {
   const message = messageInputDom.value.trim();
 
   if (message.length) {
-    if (sockets.webSocket && sockets.webSocket.readyState === WebSocket.OPEN) {
-      sockets.webSocket.send(JSON.stringify({ message: message }));
+    if (
+      sockets.chatSocket &&
+      sockets.chatSocket.readyState === WebSocket.OPEN
+    ) {
+      sockets.chatSocket.send(JSON.stringify({ message: message }));
     }
 
-    renderUserWindow(dataChat.other_user_id, dataChat.other_user_username, dataChat.other_user_avatar);
+    renderUserWindow(
+      dataChat.other_user_id,
+      dataChat.other_user_username,
+      dataChat.other_user_avatar,
+    );
   }
 
   messageInputDom.value = "";
 
   const { current_username: currentUser, messages } = await getDataChat(roomId);
-  console.log(currentUser, messages);
   initializeChatLog(currentUser, messages);
 }
 
-function renderUserWindow(id, username, avatar) {
-  const user = document.querySelector(`ul.list-users > li[data-user-id="${id}"]`);
+function createNewChatUser(id, username, avatar) {
+  const newChatUser = document.createElement("li");
 
-  if (!user) {
-    const listItem = document.createElement("li");
+  newChatUser.className = "item-user";
+  newChatUser.setAttribute("data-user-id", id);
+  newChatUser.setAttribute("data-username", username);
+  newChatUser.setAttribute(
+    "onclick",
+    `selectItem(this); openChat('${id}', '${username}')`,
+  );
 
-    listItem.className = "item-user";
-    listItem.setAttribute("data-user-id", id);
-    listItem.setAttribute("data-username", username);
-    listItem.setAttribute("onclick", `selectItem(this); openChat('${id}', '${username}')`);
-
-    listItem.innerHTML = `
+  newChatUser.innerHTML = `
       <img src="${avatar}" class="user-photo" onclick="selectItem(this.parentElement); openChat('${id}', '${username}')">
       <span class="button_name">${username}</span>`;
 
-    document.querySelector("ul.list-users").appendChild(listItem);
+  return newChatUser;
+}
+
+function renderUserWindow(id, username, avatar) {
+  const user = document.querySelector(`li[data-user-id="${id}"]`);
+
+  if (!user) {
+    document
+      .querySelector("ul.list-users")
+      .appendChild(createNewChatUser(id, username, avatar));
   }
 }
 
@@ -70,6 +85,7 @@ async function getDataRoom(userId) {
     try {
       const data = await fetch("/chat/create_or_open_chat/" + userId);
       const response = await data.json();
+
       return response;
     } catch (error) {
       console.error("Error during AJAX request:", error);
@@ -137,7 +153,10 @@ function createButtonsContainer(buttonBlock, buttonPlay) {
 function createButtonBlock() {
   const buttonBlock = document.createElement("div");
   buttonBlock.className = "buttons-chat";
-  const img = createButtonImage("unblocked user", "static/images/chat_button_unblocked.png");
+  const img = createButtonImage(
+    "unblocked user",
+    "static/images/chat_button_unblocked.png",
+  );
   buttonBlock.appendChild(img);
   return buttonBlock;
 }
@@ -145,7 +164,10 @@ function createButtonBlock() {
 function createButtonPlay() {
   const buttonPlay = document.createElement("div");
   buttonPlay.className = "buttons-chat";
-  const img = createButtonImage("init game", "static/images/chat_button_play.png");
+  const img = createButtonImage(
+    "init game",
+    "static/images/chat_button_play.png",
+  );
   buttonPlay.appendChild(img);
   buttonPlay.addEventListener("click", function () {
     onCreateGame(otherUser.other_user_id);

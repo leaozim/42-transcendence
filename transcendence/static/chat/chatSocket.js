@@ -4,7 +4,6 @@ function setupWebSocket(roomId, currentUser) {
 
   chatSocket.onmessage = (event) => {
     const parsed = JSON.parse(event.data);
-    console.log(parsed);
     addReceivedMessage(currentUser, parsed.message, parsed);
   };
 

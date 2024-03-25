@@ -6,4 +6,6 @@ class SrcsMessageConfig(AppConfig):
     name = "srcs_message"
 
     def ready(self) -> None:
+        import srcs_message.signals
+
         pass

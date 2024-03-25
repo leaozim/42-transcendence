@@ -3,21 +3,61 @@ const chatButton = document.getElementById("chat-button");
 const profileElement = document.getElementById("profile-element");
 const userModal = document.getElementById("user-modal");
 
-const sockets = {
-  webSocket: undefined,
+function Sockets() {
+  this.chatSocket;
+  this.infoSocket;
 
-  close: function () {
-    this.webSocket.close();
-  },
+  (async function () {
+    const response = await fetch("/user/");
+    const data = await response.json();
+    const url = `ws://${window.location.host}/ws/chat_update/${data.id}`;
 
-  add: function (socket) {
-    if (this.webSocket) {
-      this.close();
-    }
+    this.infoSocket = new WebSocket(url);
 
-    this.webSocket = socket;
-  },
+    this.infoSocket.onopen = () => {
+      console.log("CONNECTED TO UPDATE CHAT");
+    };
+
+    this.infoSocket.onmessage = async (event) => {
+      const parseNestedJson = (_, value) => {
+        try {
+          return JSON.parse(value);
+        } catch (error) {
+          return value;
+        }
+      };
+
+      const userNotification = JSON.parse(
+        await event.data.text(),
+        parseNestedJson,
+      ).data;
+
+      renderUserWindow(
+        userNotification.id,
+        userNotification.username,
+        userNotification.avatar,
+      );
+    };
+
+    this.infoSocket.onclose = (e) => {
+      console.log("DISCONNECTED FROM UPDATE CHAT", e);
+    };
+  }).call(this);
+}
+
+Sockets.prototype.add = function (socket) {
+  this.close();
+
+  this.chatSocket = socket;
 };
+
+Sockets.prototype.close = function () {
+  if (this.chatSocket) {
+    this.chatSocket.close();
+  }
+};
+
+const sockets = new Sockets();
 
 if (chatButton) {
   chatButton.addEventListener("click", function () {
@@ -35,6 +75,7 @@ function openChatScreen(userId, username) {
 window.addEventListener("click", function (event) {
   if (event.target == chatModal) {
     chatModal.style.display = "none";
+    sockets.close();
   }
   if (event.target === userModal) {
     userModal.style.display = "none";
@@ -54,4 +95,5 @@ function openUserModal(username) {
   usernameElement.textContent = username;
   userModal.style.display = "block";
   chatModal.style.display = "none";
+  sockets.close();
 }

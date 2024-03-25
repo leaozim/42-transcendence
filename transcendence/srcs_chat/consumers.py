@@ -4,7 +4,8 @@ from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from srcs_auth.jwt_token import verify_jwt_token
-from srcs_message.services import add_message
+from srcs_chat.services import get_validated_chat_and_user
+from srcs_message.models import Message
 from srcs_user.models import User
 from srcs_user.services import find_one_intra
 
@@ -24,7 +25,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
         user_id = self.scope["user"].id
-        print(message)
 
         if user_id is None:
             user_id = await self.get_user_id_from_cookie()
@@ -76,14 +76,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def save_message_to_db(self, chat_id, message, user_id):
-        db_insert = add_message(chat_id, message, user_id)
-        return db_insert
+        chat, user = get_validated_chat_and_user(chat_id, user_id)
+        return Message.objects.create(chat_id=chat.id, content=message, user_id=user.id)
 
 
 class ChatConsumerUpdate(AsyncWebsocketConsumer):
     async def connect(self):
 
-        self.group_name = "chat_update"
+        user_id = self.scope["url_route"]["kwargs"]["user_id"]
+        self.group_name = f"chat_update.{user_id}"
 
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
@@ -92,15 +93,6 @@ class ChatConsumerUpdate(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def chat_message_update(self, event):
-        user_id = event.get("user_id")
-        data_receiving_user = event.get("data_receiving_user")
-        data_sender_user = event.get("data_sender_user")
         await self.send(
-            text_data=json.dumps(
-                {
-                    "user_id": user_id,
-                    "data_receiving_user": data_receiving_user,
-                    "data_sender_user": data_sender_user,
-                },
-            )
+            bytes_data=json.dumps({"data": event.get("data")}).encode("utf-8")
         )
