@@ -122,14 +122,14 @@ body {
 }
 .main-title {
   position: relative;
-  width: 684px;
+  width: 344px;
   max-width: 100%;
   margin: 0 auto 40px;
 }
 .main-title h1 {
-  font-size: 36px;
+  font-size: 25px;
   position: absolute;
-  top: 23%;
+  top: -6%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -137,7 +137,7 @@ body {
   position: relative;
   width: 480px;
   height: 480px;
-  margin: 210px auto 210px;
+  margin: 210px auto 0;
 }
 .img-avatar {
   position: absolute;
@@ -168,30 +168,30 @@ body {
   margin: 20px auto 0;
 }
 #instructions-card {
-  top: 240px;
+  top: 180px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 #profile-card {
-  top: 400px;
+  top: 170px;
   left: 196px;
 }
 
 #chat-card {
-  top: 413px;
+  top: 203px;
   right: 215px;
 }
 
 #game-card {
-  top: 702px;
+  top: 522px;
   left: 120px;
   width: 390px;
   max-width: 100%;
 }
 
 #tournament-card {
-  top: 765px;
+  top: 545px;
   right: 155px;
 }
 
