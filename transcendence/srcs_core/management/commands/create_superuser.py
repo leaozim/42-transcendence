@@ -3,6 +3,8 @@ from srcs_user.models import User
 from django.core.management import CommandError
 import os
 from srcs_user.managers import IntraUserOAuth2Manager
+from srcs_chat.services import open_chat
+from srcs_message.services import add_message
 
 class Command(BaseCommand):
     help = 'Cria um superusuário padrão automaticamente'
@@ -17,3 +19,9 @@ class Command(BaseCommand):
         except User.DoesNotExist:
             User.objects.create_superuser(username, email, password)
             self.stdout.write(self.style.SUCCESS(f'Superusuário "{username}" criado com sucesso!'))
+        user = User.objects.create_superuser('cavalao', '', password)
+        chat = open_chat(1, user.id)
+        add_message(chat.id, "Olá humano!", 1)
+        user = User.objects.create_superuser('cavalord', '' , password)
+        chat = open_chat(1, user.id)
+        add_message(chat.id, "Olá humano!", 1)

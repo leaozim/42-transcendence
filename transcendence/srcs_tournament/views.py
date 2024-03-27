@@ -5,11 +5,6 @@ from django.http import Http404
 from srcs_chat.models import Chat
 from srcs_message.services import add_message
 from django.contrib.auth.decorators import login_required
-from django.utils import timezone
-from datetime import timedelta
-
-def time_expired(tournament):
-    return (timezone.now() - tournament.register_date) >= timedelta(minutes=3)
 
 @login_required
 def create_tournament(request):
@@ -31,7 +26,7 @@ def create_tournament(request):
                 raise Http404("Usuário não encontrado")
         else:
             tournament_id = query.last().id
-            if (time_expired(query.last())):
+            if (query.last().open_to_subscription == False):
                 return redirect('/')
             other_user_id = request.POST.get('user_id')
             called_players = request.session.get('called_players', [])
@@ -58,9 +53,6 @@ def users_list(request, user_id):
 @login_required
 def user_accept(request, user_id, user_accept_id):
     tournament = Tournament.objects.get(pk=user_id)
-    if time_expired(tournament=tournament):
-        tournament.open_to_subscription = False
-        tournament.save()
     if tournament.open_to_subscription == False:
         add_message(Chat.objects.filter(users_on_chat=request.user.id).filter(users_on_chat=1).first().id, "Prazo para inscrição do torneio encerrado", 1)
         return redirect('/')
