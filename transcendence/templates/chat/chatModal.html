@@ -1,41 +1,41 @@
 <div id="chat-modal" class="modal chat" tabindex="-1" role="dialog">
-  <div class="modal-content">
-      <div class="chats">
-
-        <div id="list-users-container">
-        <div class="title-list-users">
-          <h2 >Chats </h2>
-        </div>
-        <ul class="list-users">
-
-            {% for user in users_in_chats %} {% if user.username != request.user.username %}
-              <li class="item-user" onclick="selectItem(this); openChat('{{ user.id }}', '{{ user.username }}')">
-                <img src="{{ user.avatar }}" class="user-photo">
-                <span class="botton_name"> {{ user.username }}</span>
-              </li>
-            {% endif %} {% endfor %}
-
-        </ul>
-        </div>
-        <div id="chat-container">
-          <header id="header-container">
-            <div class="chat-header">
-                <div id="profile-element" data-user-id="{{ user.id }}" data-username="{{ user.username }}"></div>
-                <div id="buttons-container" data-user-id="{{ user.id }}" data-username="{{ user.username }}"></div>
+    <div class="modal-content">
+        <div class="chats">
+            <div id="list-users-container">
+                <div class="title-list-users">
+                    <h2>Chats</h2>
+                </div>
+                <ul class="list-users">
+                    {% for user in users_in_chats %}
+                        {% if user.username != request.user.username %}
+                            <li class="item-user"
+                                onclick="selectItem(this); openChat('{{ user.id }}', '{{ user.username }}')">
+                                <img src="{{ user.avatar }}" class="user-photo">
+                                <span class="botton_name">{{ user.username }}</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
             </div>
-          </header>
-          <div id="message-container">
-            <p id="no-chat-selected-message">No chats selected!</p>
-            <div id="chat-log">
+            <div id="chat-container">
+                <header id="header-container">
+                    <div class="chat-header">
+                        <div id="profile-element"
+                             data-user-id="{{ user.id }}"
+                             data-username="{{ user.username }}"></div>
+                        <div id="buttons-container"
+                             data-user-id="{{ user.id }}"
+                             data-username="{{ user.username }}"></div>
+                    </div>
+                </header>
+                <div id="message-container">
+                    <p id="no-chat-selected-message">No chats selected!</p>
+                    <div id="chat-log"></div>
+                </div>
+                <div id="message-input-container">
+                    <input type="text" id="chat-message-input" placeholder="message" />
+                </div>
             </div>
-          </div>
-
-          <div id="message-input-container">
-            <input type="text" id="chat-message-input" placeholder="message" />
-          </div>
         </div>
-      </div>
-    <div>  
-  </div>
+	</div>
 </div>
-
