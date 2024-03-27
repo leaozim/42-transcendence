@@ -48,17 +48,52 @@ class Tournament(models.Model):
         first_matchmaking.players.set(first_matchmaking_users)
         first_matchmaking.save()
 
+        matchmackings = [first_matchmaking]
+
         second_matchmaking_users = users[4:]
         if len(second_matchmaking_users) < 4:
             for user in second_matchmaking_users:
                 chat = Chat.objects.filter(users_on_chat=user.id).filter(users_on_chat=BOT_ID)
                 add_message(chat.first().id, "num rolô torneio pra você", BOT_ID)
+                self.users.remove(user)
         else:
             second_matchmaking = Matchmaking.objects.create(tournament=self)
             second_matchmaking.players.set(second_matchmaking_users)
             second_matchmaking.save()
+            matchmackings.append(second_matchmaking)
 
         self.save()
+        for matchmaking in matchmackings:
+            players = matchmaking.players.all()
+                
+            game_1 = Game.objects.create(
+            leftPlayer=players[0],
+            rightPlayer=players[1],
+            leftPlayerScore=0,
+            rightPlayerScore=0
+            )
+            self.games.add(game_1)
+
+            chat = Chat.objects.filter(users_on_chat=game_1.leftPlayer.id).filter(users_on_chat=BOT_ID)
+            add_message(chat.first().id, f"Clique aqui para o seu próximo jogo: http://localhost:8000/game/{game_1.id}/", BOT_ID)
+
+            chat = Chat.objects.filter(users_on_chat=game_1.rightPlayer.id).filter(users_on_chat=BOT_ID)
+            add_message(chat.first().id, f"Clique aqui para o seu próximo jogo: http://localhost:8000/game/{game_1.id}", BOT_ID)
+
+            game_2 = Game.objects.create(
+                leftPlayer=players[2],
+                rightPlayer=players[3],
+                leftPlayerScore=0,
+                rightPlayerScore=0
+            )
+            self.games.add(game_2)
+
+            chat = Chat.objects.filter(users_on_chat=game_2.leftPlayer.id).filter(users_on_chat=BOT_ID)
+            add_message(chat.first().id, f"Clique aqui para o seu próximo jogo: http://localhost:8000/game/{game_2.id}/", BOT_ID)
+
+            chat = Chat.objects.filter(users_on_chat=game_2.rightPlayer.id).filter(users_on_chat=BOT_ID)
+            add_message(chat.first().id, f"Clique aqui para o seu próximo jogo: http://localhost:8000/game/{game_2.id}", BOT_ID)
+
 
 class Matchmaking(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='matchmakings')
