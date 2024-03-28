@@ -136,4 +136,4 @@ msgstr ""
 
 #: templates/includes/base.html:9
 msgid "Welcome to Transcendence"
-msgstr "Você eestá no Transcendence"
+msgstr "Você está no Transcendence"
