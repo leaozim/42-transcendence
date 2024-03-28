@@ -15,39 +15,42 @@ async function openChat(other_user_id, username = "") {
 
   const newChatInput = oldChatInput.cloneNode(true);
 
+  oldChatInput.parentNode.replaceChild(newChatInput, oldChatInput);
+  oldChatInput.remove();
+
   newChatInput.addEventListener("keydown", function (event) {
+    event.stopImmediatePropagation();
     if (event.key === "Enter") {
-      sendMessage(dataRoom.room_id, dataChat);
+      sendMessage();
     }
   });
 
-  oldChatInput.parentNode.replaceChild(newChatInput, oldChatInput);
-  oldChatInput.remove();
+  initializeChatLog(dataChat.current_user, dataChat.messages);
 }
 
-async function sendMessage(roomId, dataChat) {
-  const messageInputDom = document.getElementById("chat-message-input");
-  const message = messageInputDom.value.trim();
+function addSendedMessage(message) {
+  const chatLog = document.getElementById("chat-log");
+  const messageHTML = createMessageHtml(MessageType.sent, message, true);
+
+  chatLog.insertAdjacentHTML("beforeend", messageHTML);
+}
+
+async function sendMessage() {
+  const input = document.getElementById("chat-message-input");
+  const message = input.value.trim();
+
+  input.value = "";
 
   if (message.length) {
     if (
       sockets.chatSocket &&
       sockets.chatSocket.readyState === WebSocket.OPEN
     ) {
-      sockets.chatSocket.send(JSON.stringify({ message: message }));
+      await sockets.chatSocket.send(JSON.stringify({ message: message }));
     }
 
-    renderUserWindow(
-      dataChat.other_user_id,
-      dataChat.other_user_username,
-      dataChat.other_user_avatar,
-    );
+    addSendedMessage(message);
   }
-
-  messageInputDom.value = "";
-
-  const { current_username: currentUser, messages } = await getDataChat(roomId);
-  initializeChatLog(currentUser, messages);
 }
 
 function createNewChatUser(id, username, avatar) {
@@ -101,46 +104,6 @@ async function getDataChat(roomId) {
   } catch (error) {
     console.error("Error during AJAX request:", error);
   }
-}
-
-function initializeChatLog(currentUser, messages) {
-  let lastUser = "";
-  const chatLog = document.querySelector("div#chat-log");
-  chatLog.innerHTML = "";
-
-  messages.forEach((item) => {
-    const isCurrentUser = item.user === currentUser;
-    const isUserChange = lastUser !== item.user || lastUser === "";
-    const clickableMessage = makeLinksClickable(item.content);
-    chatLog.innerHTML += `
-<div>
-  ${
-    isCurrentUser
-      ? `
-  <div class="sent-message">
-    <p class="${isUserChange ? "special-style" : ""}">${clickableMessage}</p>
-  </div>
-  `
-      : `
-  <div class="received-message">
-    <div class="user-photo">
-      ${isUserChange ? `<img src="${item.avatar}" alt="${item.user}">` : "<div></div>"}
-    </div>
-    <p class="${isUserChange ? "special-style" : ""}">${clickableMessage}</p>
-  </div>
-  `
-  }
-</div>
-`;
-    lastUser = item.user;
-  });
-}
-
-function makeLinksClickable(message) {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  // const messageWithClickableLinks = message.replace(urlRegex, '<a href="$1" target="_blank" style="color: black;">$1</a>');
-  // return messageWithClickableLinks;
-  return message;
 }
 
 function createButtonsContainer(buttonBlock, buttonPlay) {

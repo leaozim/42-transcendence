@@ -17,10 +17,11 @@ class ChatUpdater {
 
     loggedInUserId = await this.getLoggedUserId();
     if (loggedInUserId == currentUserInfo.id) {
-      console.log(loggedInUserId.username);
-      console.log(currentUserInfo.username);
-
-      this.renderUserWindow(updatedUserInfo.id, updatedUserInfo.username, updatedUserInfo.avatar);
+      this.renderUserWindow(
+        updatedUserInfo.id,
+        updatedUserInfo.username,
+        updatedUserInfo.avatar,
+      );
     }
   }
 
@@ -31,13 +32,18 @@ class ChatUpdater {
     listItem.className = "item-user";
     listItem.setAttribute("data-user-id", id);
     listItem.setAttribute("data-username", username);
-    listItem.setAttribute("onclick", `selectItem(this); openChat('${id}', '${username}')`);
+    listItem.setAttribute(
+      "onclick",
+      `selectItem(this); openChat('${id}', '${username}')`,
+    );
 
     listItem.innerHTML = `
         <img src="${avatar}" class="user-photo" onclick="selectItem(this.parentElement); openChat('${id}', '${username}')">
         <span class="button_name">${username}</span>
         `;
-    const existingUser = listUsersContainer.querySelector(`[data-user-id="${id}"]`);
+    const existingUser = listUsersContainer.querySelector(
+      `[data-user-id="${id}"]`,
+    );
     if (!existingUser) {
       document.querySelector("ul.list-users").appendChild(listItem);
     }
@@ -53,4 +59,3 @@ class ChatUpdater {
     }
   }
 }
-

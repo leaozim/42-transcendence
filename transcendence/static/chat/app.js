@@ -14,10 +14,6 @@ function Sockets() {
 
     this.infoSocket = new WebSocket(url);
 
-    this.infoSocket.onopen = () => {
-      console.log("CONNECTED TO UPDATE CHAT");
-    };
-
     this.infoSocket.onmessage = async (event) => {
       const parseNestedJson = (_, value) => {
         try {
@@ -37,10 +33,6 @@ function Sockets() {
         userNotification.username,
         userNotification.avatar,
       );
-    };
-
-    this.infoSocket.onclose = (e) => {
-      console.log("DISCONNECTED FROM UPDATE CHAT", e);
     };
   }).call(this);
 }

@@ -1,84 +1,57 @@
-function setupWebSocket(roomId, currentUser) {
-  const base_url = `ws://${window.location.hostname}:${window.location.port}/ws/chat/${roomId}/`;
+async function setupWebSocket(roomId, currentUser) {
+  const response = await fetch("/user/");
+  const { id: user_id } = await response.json();
+  const base_url = `ws://${window.location.host}/ws/chat/${roomId}/${user_id}`;
   const chatSocket = new WebSocket(base_url);
 
   chatSocket.onmessage = (event) => {
-    const parsed = JSON.parse(event.data);
-    addReceivedMessage(currentUser, parsed.message, parsed);
-  };
-
-  chatSocket.onopen = () => {
-    console.log("Connect");
-  };
-
-  chatSocket.onclose = () => {
-    console.log("Closed");
+    addReceivedMessage(JSON.parse(event.data));
   };
 
   sockets.add(chatSocket);
 }
 
-// async function sendMessage(room_id, ) {
-// 	const messageInputDom = document.getElementById('chat-message-input');
-// 	const message = messageInputDom.value.trim();
-// 	// console.log(window.chatSocket.url)
+function addReceivedMessage(data) {
+  const chatLog = document.getElementById("chat-log");
 
-// 	var regex = /\/chat\/(\d+)\/$/;
-// 	var match = regex.exec(window.chatSocket.url);
-// 	let room_id = match[1]
+  const getLastReceivedMessage = () => {
+    const receivedsMessages = chatLog.querySelectorAll("div.received-message");
+    return receivedsMessages[receivedsMessages.length - 1];
+  };
 
-// 	if (message !== '') {
-//         if (window.chatSocket && window.chatSocket.readyState === WebSocket.OPEN) {
-// 			console.log( "send messag")
+  let lastMessage = getLastReceivedMessage();
 
-//             window.chatSocket.send(JSON.stringify({
-// 				'chat_id': room_id,
-//                 'message': message,
-//             }));
-// 			// ChatUpdater.renderUserWindow(otherUser.other_user_id, otherUser.other_user_username, otherUser.other_user_avatar)
-//         }
-// 	}
-// 	messageInputDom.value = '';
+  const resetLastMessage = () => {
+    const userPictureDiv = lastMessage.querySelector("div.user-photo");
+    const lastMessageParagraph = lastMessage.querySelector("p.special-style");
 
-// }
-
-function addReceivedMessage(currentUser, message, { username: sender, avatar: userAvatar }) {
-  const messageElement = document.createElement("div");
-  const avatarElement = document.createElement("img");
-  const textElement = document.createElement("p");
-  const divImgElement = document.createElement("div");
-  const chatLog = document.querySelector("div#chat-log");
-
-  if (sender === currentUser) {
-    messageElement.className = "sent-message";
-  } else {
-    if (typeof lastMessageSender === "undefined" || sender != lastMessageSender) {
-      userAvatar ? userAvatar : "https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png";
-      avatarElement.src = userAvatar;
-      avatarElement.alt = "Avatar";
-      textElement.className = "special-style";
+    if (lastMessageParagraph) {
+      lastMessageParagraph.classList.remove("special-style");
     }
-    divImgElement.className = "user-photo";
-    messageElement.className = "received-message";
-    divImgElement.appendChild(avatarElement);
-    messageElement.appendChild(divImgElement);
-  }
+    userPictureDiv.remove();
+  };
 
-  const clickableMessage = makeLinksClickable(message);
-  textElement.innerText = clickableMessage;
-  messageElement.appendChild(textElement);
-  chatLog.appendChild(messageElement);
-  messageElement.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+  const userPictureElement = `
+    <div class="user-photo">
+      <img src="${data.avatar}" alt="${data.username}">
+    </div>
+  `;
 
-  lastMessageSender = sender;
+  const messageHtml = createMessageHtml(
+    MessageType.received,
+    data.message,
+    true,
+    userPictureElement,
+  );
+
+  resetLastMessage();
+
+  chatLog.insertAdjacentHTML("beforeend", messageHtml);
+
+  lastMessage = getLastReceivedMessage();
+  lastMessage.scrollIntoView({
+    behavior: "smooth",
+    block: "end",
+    inline: "nearest",
+  });
 }
-
-// document.addEventListener('DOMContentLoaded', function() {
-//   	document.getElementById('chat-message-input').addEventListener('keydown', function(event) {
-
-// 		if (event.key === 'Enter') {
-// 			sendMessage();
-// 			event.preventDefault();
-// 		}
-//   });
-// });

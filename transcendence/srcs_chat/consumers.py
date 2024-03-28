@@ -3,7 +3,9 @@ import json
 from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.db.models import Q
 from srcs_auth.jwt_token import verify_jwt_token
+from srcs_chat.models import Chat
 from srcs_chat.services import get_validated_chat_and_user
 from srcs_message.models import Message
 from srcs_user.models import User
@@ -13,13 +15,21 @@ from srcs_user.services import find_one_intra
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
-        self.room_group_name = f"chat_{self.room_id}"
+        self.user_id = self.scope["url_route"]["kwargs"]["user_id"]
+        self.room_prefix = f"chat_{self.room_id}"
+        self.room_group_name = f"{self.room_prefix}_{self.user_id}"
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+
+    async def _get_receiver_id(self, chat_id, user_id) -> int:
+        chat = await sync_to_async(Chat.objects.get)(id=chat_id)
+        query = await sync_to_async(chat.users_on_chat.filter)(~Q(id=user_id))
+
+        return await sync_to_async(query.first)()
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -31,9 +41,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         chat_id = int(self.room_id)
         user = await sync_to_async(User.objects.get)(id=user_id)
+        receiver = await self._get_receiver_id(chat_id, user_id)
 
         await self.channel_layer.group_send(
-            self.room_group_name,
+            f"{self.room_prefix}_{receiver.id}",
             {
                 "type": "chat_message",
                 "message": message,

@@ -1,37 +1,46 @@
-function initializeChatLog(current_user, messages) {
-  let lastUser = "";
-  const chatLog = document.querySelector("div#chat-log");
+const MessageType = {
+  sent: "sent-message",
+  received: "received-message",
+};
 
-  messages.forEach((item) => {
+function createMessageHtml(
+  messageType,
+  message,
+  isLastMessage = false,
+  userPictureElement = "",
+) {
+  const pClass = isLastMessage ? 'class="special-style"' : "";
+
+  return `<div class=${messageType}>${userPictureElement}<p ${pClass}>${message}</p></div>`;
+}
+
+function initializeChatLog(current_user, messages) {
+  const chatLog = document.querySelector("div#chat-log");
+  chatLog.innerHTML = "";
+  let senderAvatar, senderName;
+
+  messages.forEach((item, index) => {
     const isCurrentUser = item.user === current_user;
-    const isUserChange = lastUser !== item.user || lastUser === "";
     const clickableMessage = makeLinksClickable(item.content);
-    chatLog.innerHTML += `
-			<div> 
-				${
-          isCurrentUser
-            ? `
-						<div class="sent-message">
-							<p class="${isUserChange ? "special-style" : ""}">${clickableMessage}</p>
-						</div>
-					`
-            : `
-						<div class="received-message">
-						  <div class="user-photo">
-							${
-                isUserChange
-                  ? `<img src="${item.avatar}" alt="${item.user}" >`
-                  : "<div></div>"
-              }
-						  </div>
-						  <p class="${isUserChange ? "special-style" : ""}">${clickableMessage}</p>
-						</div>
-					`
-        }
-			</div>
-		`;
-    lastUser = item.user;
+
+    if (!isCurrentUser) {
+      senderAvatar = item.avatar;
+      senderName = item.user;
+    }
+
+    chatLog.innerHTML += `<div>${createMessageHtml(
+      isCurrentUser ? MessageType.sent : MessageType.received,
+      clickableMessage,
+      messages.length - 1 === index,
+    )}</div>`;
   });
+
+  const receivedMessages = chatLog.querySelectorAll("div.received-message");
+
+  receivedMessages[receivedMessages.length - 1].insertAdjacentHTML(
+    "afterbegin",
+    `<div class="user-photo"><img src="${senderAvatar}" alt="${senderName}"></div>`,
+  );
 }
 
 function makeLinksClickable(message) {
@@ -42,4 +51,3 @@ function makeLinksClickable(message) {
   );
   return messageWithClickableLinks;
 }
-
