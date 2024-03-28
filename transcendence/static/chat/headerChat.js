@@ -1,111 +1,3 @@
-async function openChat(other_user_id, username = "") {
-  const chatLog = document.getElementById("chat-log");
-  const dataRoom = await getDataRoom(other_user_id);
-  const dataChat = await getDataChat(dataRoom.room_id);
-  const oldChatInput = document.getElementById("chat-message-input");
-  setupWebSocket(dataChat.room_id, dataChat.current_user);
-
-  chatLog.innerHTML = "";
-
-  if (dataChat.messages.length) {
-    initializeChatLog(dataChat.current_username, dataChat.messages);
-  }
-  appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar);
-
-  document.getElementById("no-chat-selected-message").style.display = "none";
-  document.getElementById("message-input-container").style.display = "flex";
-
-  const newChatInput = oldChatInput.cloneNode(true);
-
-  oldChatInput.parentNode.replaceChild(newChatInput, oldChatInput);
-  oldChatInput.remove();
-
-  newChatInput.addEventListener("keydown", function (event) {
-    event.stopImmediatePropagation();
-    if (event.key === "Enter") {
-      sendMessage();
-    }
-  });
-}
-
-function addSendedMessage(message) {
-  const chatLog = document.getElementById("chat-log");
-  const messageHTML = createMessageHtml(MessageType.sent, message, true);
-
-  chatLog.insertAdjacentHTML("beforeend", messageHTML);
-}
-
-async function sendMessage() {
-  const input = document.getElementById("chat-message-input");
-  const message = input.value.trim();
-
-  input.value = "";
-
-  if (message.length) {
-    if (
-      sockets.chatSocket &&
-      sockets.chatSocket.readyState === WebSocket.OPEN
-    ) {
-      await sockets.chatSocket.send(JSON.stringify({ message: message }));
-    }
-
-    addSendedMessage(message);
-  }
-}
-
-function createNewChatUser(id, username, avatar) {
-  const newChatUser = document.createElement("li");
-
-  newChatUser.className = "item-user";
-  newChatUser.setAttribute("data-user-id", id);
-  newChatUser.setAttribute("data-username", username);
-  newChatUser.setAttribute(
-    "onclick",
-    `selectItem(this); openChat('${id}', '${username}')`,
-  );
-
-  newChatUser.innerHTML = `
-      <img src="${avatar}" class="user-photo" onclick="selectItem(this.parentElement); openChat('${id}', '${username}')">
-      <span class="button_name">${username}</span>`;
-
-  return newChatUser;
-}
-
-function renderUserWindow(id, username, avatar) {
-  const user = document.querySelector(`li[data-user-id="${id}"]`);
-
-  if (!user) {
-    document
-      .querySelector("ul.list-users")
-      .appendChild(createNewChatUser(id, username, avatar));
-  }
-}
-
-async function getDataRoom(userId) {
-  if (!userId || isNaN(userId)) {
-    console.error("Invalid user ID:", userId);
-  } else {
-    try {
-      const data = await fetch("/chat/create_or_open_chat/" + userId);
-      const response = await data.json();
-
-      return response;
-    } catch (error) {
-      console.error("Error during AJAX request:", error);
-    }
-  }
-}
-
-async function getDataChat(roomId) {
-  try {
-    const data = await fetch("/chat/" + roomId);
-    const response = await data.json();
-    return response;
-  } catch (error) {
-    console.error("Error during AJAX request:", error);
-  }
-}
-
 function createButtonsContainer(buttonBlock, buttonPlay) {
   const buttonsContainer = document.createElement("div");
   buttonsContainer.id = "buttons-container";
@@ -163,6 +55,7 @@ function createUsernameElement(otherUserUsername, userPhoto) {
   divProfileElement.appendChild(usernameElement);
   return divProfileElement;
 }
+
 function createUserPhoto(otherUserAvatar) {
   const userPhoto = document.createElement("img");
   userPhoto.alt = "Avatar";
@@ -171,18 +64,21 @@ function createUserPhoto(otherUserAvatar) {
     : "https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png";
   return userPhoto;
 }
+
 function removeExistingChatHeader() {
   const existingChatHeader = document.querySelector(".chat-header");
   if (existingChatHeader) {
     existingChatHeader.remove();
   }
 }
+
 function createChatHeader() {
   const chatHeader = document.createElement("header");
   chatHeader.className = "chat-header";
   removeExistingChatHeader();
   return chatHeader;
 }
+
 function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
   const chatHeader = createChatHeader();
 
@@ -223,3 +119,4 @@ function onCreateGame(rightPlayerId) {
       console.error("Error creating game:", error);
     });
 }
+

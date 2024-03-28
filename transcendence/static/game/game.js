@@ -7,7 +7,7 @@ const config = {
         width: CANVAS_WIDTH,
         height: CANVAS_HEIGHT
     },
-    scene: [Scene1, Scene2],
+    scene: [Scene1, Scene2, Scene3],
     physics: {
         default: 'arcade',
         arcade: {

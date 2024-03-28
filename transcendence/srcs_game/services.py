@@ -13,3 +13,19 @@ def create_game(left_player, right_player):
         rightPlayerScore=0
     )
     return game
+
+def update_game_result(game_id, score):
+    try:
+        game = Game.objects.get(pk=game_id)
+        game.leftPlayerScore = score[0]
+        game.rightPlayerScore = score[1]
+        game.save()
+    except Game.DoesNotExist:
+        raise Http404("Game does not exist")
+    
+def delete_game(game_id):
+    try:
+        game = Game.objects.get(pk=game_id)
+        game.delete()
+    except Game.DoesNotExist:
+        raise Http404("Game does not exist")

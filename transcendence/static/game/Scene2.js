@@ -25,6 +25,19 @@ class Scene2 extends Phaser.Scene {
       // descobre quem é o usuário para fazer verificações sobre ser leftPlayer, rightPlayer ou só espectador
       this.i_am = await this.getThisUser()
 
+      // Mensagem para indicar que o jogo está parado pois precisa de todos os jogadores conectados
+      this.waitingText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 50, "Waiting for all the players to connect", {
+        font: "24px Arial",
+        fill: "#ffffff"
+    }).setOrigin(0.5);
+
+      // Se o evento de dados indicar game over, direciona para Scene3
+      if (this.eventData && this.eventData.winner) {
+        console.log("acabou")
+        this.scene.start("GameOver");
+        return;
+      }
+
       // instancia todos os objetos
       this.left_paddle = new Paddle(this, LEFT_PADDLE_START_POSITION.x, LEFT_PADDLE_START_POSITION.y, "paddle", (this.i_am==leftPlayer));
       this.player_left = new Player(this, this.left_paddle, PLAYER_LEFT, leftPlayer)
@@ -47,11 +60,21 @@ class Scene2 extends Phaser.Scene {
       this.receiveSocket.onmessage = (event) => {
         console.log('receive data: ', event.data)
         this.eventData = JSON.parse(event.data);
+
+        // Troca para a próxima Scene, enviando nome do jogador vencedor para ser exibido na tela
+        if (this.eventData.winner !== undefined) {
+          this.scene.start("GameOver", { winner: this.eventData.winner });
+        }
+
+        // Após 2 jogadores se conectarem, o jogo começa então essa mensagem é removida da tela
+        if (this.eventData.connected && this.eventData.connected.length === 2) {
+          this.waitingText.destroy();
+        } 
       };
     }
 
     async update() {
-      if (this.eventData) {
+      if (this.eventData && this.eventData.winner === undefined) {
         // Ele sempre tenta atualizar o score, mesmo quando não há novos pontos
         // O motivo disso é que tentar atualizar só quando existe um ponto pode causar
         // pontos que demoram para serem atualizados ou que só são atualizados
@@ -74,6 +97,7 @@ class Scene2 extends Phaser.Scene {
           "type": "end_loop",
           "left_player_velocity": this.left_paddle.velocity_to_dict(),
           "right_player_velocity": this.right_paddle.velocity_to_dict(),
+          "logged_player": this.i_am
         }));
       }
   }
