@@ -7,7 +7,9 @@ async function openChat(other_user_id, username = "") {
 
   chatLog.innerHTML = "";
 
-  initializeChatLog(dataChat.current_username, dataChat.messages);
+  if (dataChat.messages.length) {
+    initializeChatLog(dataChat.current_username, dataChat.messages);
+  }
   appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar);
 
   document.getElementById("no-chat-selected-message").style.display = "none";
@@ -24,8 +26,6 @@ async function openChat(other_user_id, username = "") {
       sendMessage();
     }
   });
-
-  initializeChatLog(dataChat.current_user, dataChat.messages);
 }
 
 function addSendedMessage(message) {

@@ -37,10 +37,12 @@ function initializeChatLog(current_user, messages) {
 
   const receivedMessages = chatLog.querySelectorAll("div.received-message");
 
-  receivedMessages[receivedMessages.length - 1].insertAdjacentHTML(
-    "afterbegin",
-    `<div class="user-photo"><img src="${senderAvatar}" alt="${senderName}"></div>`,
-  );
+  if (receivedMessages.length) {
+    receivedMessages[receivedMessages.length - 1].insertAdjacentHTML(
+      "afterbegin",
+      `<div class="user-photo"><img src="${senderAvatar}" alt="${senderName}"></div>`,
+    );
+  }
 }
 
 function makeLinksClickable(message) {

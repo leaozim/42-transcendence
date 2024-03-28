@@ -28,7 +28,9 @@ function addReceivedMessage(data) {
     if (lastMessageParagraph) {
       lastMessageParagraph.classList.remove("special-style");
     }
-    userPictureDiv.remove();
+    if (userPictureDiv) {
+      userPictureDiv.remove();
+    }
   };
 
   const userPictureElement = `
