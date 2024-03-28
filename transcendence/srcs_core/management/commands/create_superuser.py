@@ -10,7 +10,7 @@ class Command(BaseCommand):
     help = "Cria um superusuário padrão automaticamente"
 
     def handle(self, *args, **options):
-        username = "test"
+        username = os.getenv("POSTGRES_USERNAME")
         email = ""
         password = os.getenv("POSTGRES_PASSWORD")
         try:

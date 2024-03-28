@@ -1,22 +1,40 @@
-{% extends 'includes/base.html' %}
+{% load static i18n %}
 
-{% block title %}
-User List - Transcendence
-{% endblock %}
-
-{% block content %}
-    <h1>User List</h1>
-    <ul>
-        {% for user in users %}
-            {% if user != request.user %}
-                <li>
-                    <span>{{ user.username }}</span>
-                    <button onclick="onUserClick(`{{ user.id }}`, '{{ user.username }}')">Chat</button>   
-                    <button onclick="onCreateGame(`{{ user.id }}`)">Create Game</button>             
-                </li>
-            {% endif %}
-        {% endfor %}
-    </ul>
+            <div class="wrapper-user-list">
+                <div class="bg-common bg-title-pink mb-5">
+                    <h2 class="title-center">{% translate "Players" %}</h2>
+                </div>
+                <ul class="user-list">
+                    {% for user in object_list %}
+                        {% if user != request.user %}
+                            <li>
+                                <img src="{% if user.avatar %}{{ user.avatar }}{% else %}{% static "images/sloth.jpg" %}{% endif %}" alt="image" width="48" height="48" class="avatar img-fluid rounded-circle" />
+                                <div class="user-list-item user-frame">
+                                    <span>{{ user.username }}</span>
+                                    <div class="user-list-btns">
+                                        <button id="game-button"
+                                                class="btn-round bg-blue"
+                                                type="button"
+                                                data-toggle="modal"
+                                                data-target=""
+                                                onclick="onUserClick(`{{ user.id }}`, '{{ user.username }}')">
+                                            <i class="bi bi-chat-left"></i>
+                                        </button>
+                                        <button id="game-button"
+                                                class="btn-round bg-pink"
+                                                type="button"
+                                                data-toggle="modal"
+                                                data-target=""
+                                                onclick="onCreateGame(`{{ user.id }}`)">
+                                            <i class="bi bi-controller"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
 
     <script>
         function onUserClick(userId, username) {
@@ -49,4 +67,3 @@ User List - Transcendence
                 });
         }
     </script>
-{% endblock %}
