@@ -11,7 +11,7 @@ function createMessageHtml(
 ) {
   const pClass = isLastMessage ? 'class="special-style"' : "";
 
-  return `<div class=${messageType}>${userPictureElement}<p ${pClass}>${message}</p></div>`;
+  return `<div class=${messageType}>${userPictureElement}<p ${pClass}>${makeLinksClickable(message)}</p></div>`;
 }
 
 function initializeChatLog(current_user, messages) {
@@ -22,7 +22,6 @@ function initializeChatLog(current_user, messages) {
 
   messages.forEach((item, index) => {
     const isCurrentUser = item.user === current_user;
-    const clickableMessage = makeLinksClickable(item.content);
 
     if (!isCurrentUser) {
       senderAvatar = item.avatar;
@@ -31,7 +30,7 @@ function initializeChatLog(current_user, messages) {
 
     chatLog.innerHTML += `<div>${createMessageHtml(
       isCurrentUser ? MessageType.sent : MessageType.received,
-      clickableMessage,
+      item.content,
       messages.length - 1 === index,
     )}</div>`;
   });
