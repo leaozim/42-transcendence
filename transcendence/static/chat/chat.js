@@ -34,11 +34,11 @@ function clearChatLog() {
 }
 
 function closeChat() {
-  const chatInput = document.getElementById("chat-message-input");
+  const chatInputDiv = document.getElementById("message-input-container");
   const paragraphNoChat = document.getElementById("no-chat-selected-message");
 
-  paragraphNoChat.style.display = "";
-  chatInput.style.display = "none";
+  paragraphNoChat.style.display = "block";
+  chatInputDiv.style.display = "none";
   chatModal.style.display = "none";
   removeExistingChatHeader();
   deSelectItens();
