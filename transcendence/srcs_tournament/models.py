@@ -5,8 +5,7 @@ from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import threading
-from srcs_message.services import add_message, BOT_ID
-from srcs_chat.models import Chat
+from srcs_message.services import add_tournament_message
 from srcs_tournament.services import create_a_tournament_game
 
 def get_current_datetime():
@@ -38,18 +37,14 @@ class Tournament(models.Model):
 
         if users_count < 4:
             for user in users:
-                chat = Chat.objects.filter(users_on_chat=user.id).filter(users_on_chat=BOT_ID)
-                add_message(chat.first().id, "num rolô torneio", BOT_ID)
+                add_tournament_message(user.id,
+                    "The tournament was canceled because it didn't reach the required number of entries")
                 self.is_active = False
                 self.save()
                 return
 
-        matchmaking = Matchmaking.objects.create(tournament=self)
-        matchmaking.players.set(users)
-        matchmaking.save()
-
         self.save()
-        players = list(matchmaking.players.all())
+        players = list(users)
         
         create_a_tournament_game(self, players[0], players[1])
         create_a_tournament_game(self, players[2], players[3])
@@ -75,13 +70,8 @@ class Tournament(models.Model):
                     winner = final_game.rightPlayer
 
                 for user in self.users.all():
-                    chat = Chat.objects.filter(users_on_chat=user.id).filter(users_on_chat=BOT_ID).first()
-                    add_message(chat.id, f"O VENCEDOR FOI {winner.tournament_alias}", BOT_ID)
-
-class Matchmaking(models.Model):
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='matchmakings')
-    players = models.ManyToManyField(User, related_name='matchmakings')
-    created_at = models.DateTimeField(auto_now_add=True)
+                    add_tournament_message(user.id,
+                                           f"The winner of the tournament was {winner.tournament_alias}")
 
 @receiver(post_save, sender=Tournament)
 def schedule_tournament_close(sender, instance, created, **kwargs):

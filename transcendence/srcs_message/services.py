@@ -1,5 +1,6 @@
 from srcs_chat.services import get_validated_chat_and_user
 from srcs_message.models import Message
+from srcs_chat.models import Chat
 
 BOT_ID = 1
 
@@ -18,6 +19,11 @@ def add_message(chat_id, content, user_id):
     )
     
     return message
+
+def add_tournament_message(user_id, message):
+    chat = Chat.objects.filter(users_on_chat=user_id).filter(users_on_chat=BOT_ID)
+    if chat.count() > 0:
+        add_message(chat.first().id, message, BOT_ID)
 
 def get_user_receiving_last_message(user_id):
     last_message = Message.objects.filter(user__id=user_id).order_by('-timestamp').first()
