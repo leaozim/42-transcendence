@@ -1,8 +1,6 @@
 import os
 
-from django.core.management import CommandError
 from django.core.management.base import BaseCommand
-from srcs_user.managers import IntraUserOAuth2Manager
 from srcs_user.models import User
 
 

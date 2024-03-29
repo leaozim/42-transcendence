@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
       .then((response) => response.text())
       .then((html) => {
         document.querySelector("#modal .modal-content").innerHTML = html;
-		var myModal = new bootstrap.Modal(document.getElementById('modal'));
-		myModal.show();
+        var myModal = new bootstrap.Modal(document.getElementById("modal"));
+        myModal.show();
       })
       .catch((error) => {
         console.error("Error loading the modal content: ", error);

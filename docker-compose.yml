@@ -29,10 +29,10 @@ services:
     networks:
       - sonarnet
 
-  transcendence-server:
+  server:
     image: transcendence
     build: ./transcendence/
-    container_name: transcendence-server
+    container_name: server
     environment:
       AUTH_URL_INTRA: ${AUTH_URL_INTRA}
       REDIRECT_URI: ${REDIRECT_URI}

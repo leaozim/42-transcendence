@@ -163,6 +163,7 @@ function createUsernameElement(otherUserUsername, userPhoto) {
   divProfileElement.appendChild(usernameElement);
   return divProfileElement;
 }
+
 function createUserPhoto(otherUserAvatar) {
   const userPhoto = document.createElement("img");
   userPhoto.alt = "Avatar";
@@ -171,18 +172,21 @@ function createUserPhoto(otherUserAvatar) {
     : "https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png";
   return userPhoto;
 }
+
 function removeExistingChatHeader() {
   const existingChatHeader = document.querySelector(".chat-header");
   if (existingChatHeader) {
     existingChatHeader.remove();
   }
 }
+
 function createChatHeader() {
   const chatHeader = document.createElement("header");
   chatHeader.className = "chat-header";
   removeExistingChatHeader();
   return chatHeader;
 }
+
 function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
   const chatHeader = createChatHeader();
 
