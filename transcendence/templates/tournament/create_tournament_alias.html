@@ -1,25 +1,13 @@
-<div id="two-factor-modal" class="modal" tabindex="-1" role="dialog">
-	<div class="modal-content">
-	  <div class="container popup-container">
-		<div class="bg-common bg-title-pink">
-		  <h2 class="title-center">Two Factor</h2>
-		</div>
-		<div class="mb-3">
-			<head>
-				<meta charset="UTF-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<title>Create Tournament Alias</title>
-			</head>
-			<body>
-				<form method="post">
-					{% csrf_token %}
-					<label for="name">Name:</label>
-					<input type="text" id="name" name="name" required>
-					<button type="submit">Submit</button>
-				</form>
-		  </div>
-		</div>
-	  </div>
-	</div>
-  </div>
+{% if flag_tournament_created %}
+<p>
+	Nickname registered
+</p>
+{% else %}
+<form method="post" id="tournament-alias-form" action="{% url "srcs_tournament:create_tournament_alias" %}">
+	{% csrf_token %}
+	<label for="name">Name:</label>
+	<input type="text" id="name" name="name" required>
+	<button type="submit">Submit</button>
+</form>
+{% endif %}
   

@@ -181,6 +181,44 @@ function createUsernameElement(otherUserUsername, userPhoto) {
   return divProfileElement;
 }
 
+function openOnModal(url) {
+  fetch(url)
+      .then((response) => response.text())
+      .then((html) => {
+        document.querySelector("#tournament-alias").innerHTML = html;
+        initializeFormSubmission();
+      })
+      .catch((error) => {
+        console.error("Error loading the modal content: ", error);
+      });
+}
+
+function initializeFormSubmission() {
+  document.querySelector('#tournament-alias-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      fetch(this.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+              'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+          },
+      })
+      .then(response => {
+          if (response.ok) {
+              return response.text();
+          }
+          throw new Error('Form submission failed!');
+      })
+      .then(data => {
+          console.log('Form submitted successfully:', data);
+          document.querySelector("#tournament-alias").innerHTML = data;
+      })
+      .catch(error => console.error('Error submitting the form:', error));
+  });
+}
+
 function createUserPhoto(otherUserAvatar) {
   const userPhoto = document.createElement("img");
   userPhoto.alt = "Avatar";
