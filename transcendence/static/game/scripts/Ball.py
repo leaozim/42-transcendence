@@ -3,7 +3,7 @@ from static.game.scripts.constants import *
 from static.game.scripts.Vector2 import Vector2
 
 class Ball:
-    def __init__(self, initial_speed=2, max_speed=10, acceleration_interval=3000, acceleration_amount=0.1):
+    def __init__(self, initial_speed=4, max_speed=10, acceleration_interval=3000, acceleration_amount=0.1):
         self.initial_speed = initial_speed
         self.speed = self.initial_speed
         self.max_speed = max_speed

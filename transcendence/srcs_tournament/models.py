@@ -5,10 +5,9 @@ from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import threading
-from srcs_message.services import add_message
+from srcs_message.services import add_message, BOT_ID
 from srcs_chat.models import Chat
-
-BOT_ID = 1
+from srcs_tournament.services import create_a_tournament_game
 
 def get_current_datetime():
     return timezone.now()
@@ -30,10 +29,9 @@ class Tournament(models.Model):
     register_date = models.DateTimeField(default=get_current_datetime)
 
     def schedule_tournament(self):
-        threading.Timer(180, self.close_tournament_subscription).start()
+        threading.Timer(60, self.close_tournament_subscription).start()
 
     def close_tournament_subscription(self):
-        print(get_current_datetime())
         self.open_to_subscription = False
         users = self.users.all()
         users_count = users.count()
@@ -42,58 +40,43 @@ class Tournament(models.Model):
             for user in users:
                 chat = Chat.objects.filter(users_on_chat=user.id).filter(users_on_chat=BOT_ID)
                 add_message(chat.first().id, "num rolô torneio", BOT_ID)
-        
-        first_matchmaking_users = users[:4]
-        first_matchmaking = Matchmaking.objects.create(tournament=self)
-        first_matchmaking.players.set(first_matchmaking_users)
-        first_matchmaking.save()
+                self.is_active = False
+                self.save()
+                return
 
-        matchmackings = [first_matchmaking]
-
-        second_matchmaking_users = users[4:]
-        if len(second_matchmaking_users) < 4:
-            for user in second_matchmaking_users:
-                chat = Chat.objects.filter(users_on_chat=user.id).filter(users_on_chat=BOT_ID)
-                add_message(chat.first().id, "num rolô torneio pra você", BOT_ID)
-                self.users.remove(user)
-        else:
-            second_matchmaking = Matchmaking.objects.create(tournament=self)
-            second_matchmaking.players.set(second_matchmaking_users)
-            second_matchmaking.save()
-            matchmackings.append(second_matchmaking)
+        matchmaking = Matchmaking.objects.create(tournament=self)
+        matchmaking.players.set(users)
+        matchmaking.save()
 
         self.save()
-        for matchmaking in matchmackings:
-            players = matchmaking.players.all()
-                
-            game_1 = Game.objects.create(
-            leftPlayer=players[0],
-            rightPlayer=players[1],
-            leftPlayerScore=0,
-            rightPlayerScore=0
-            )
-            self.games.add(game_1)
+        players = list(matchmaking.players.all())
+        
+        create_a_tournament_game(self, players[0], players[1])
+        create_a_tournament_game(self, players[2], players[3])
+    
+    def update_state(self):
+        if len(self.games.all()) < 3 and all(game.is_finish for game in self.games.all()):
+            winners = []
+            for game in self.games.all():
+                if game.leftPlayerScore > game.rightPlayerScore:
+                    winners.append(game.leftPlayer)
+                else:
+                    winners.append(game.rightPlayer)
+            
+            create_a_tournament_game(self, winners[0], winners[1])
+        if len(self.games.all()) == 3 and all(game.is_finish for game in self.games.all()):
+            final_game = list(self.games.all())[2]
+            if final_game.is_finish and self.is_active == True:
+                self.is_active = False
+                self.save()
+                if final_game.leftPlayerScore > final_game.rightPlayerScore:
+                    winner = final_game.leftPlayer
+                else:
+                    winner = final_game.rightPlayer
 
-            chat = Chat.objects.filter(users_on_chat=game_1.leftPlayer.id).filter(users_on_chat=BOT_ID)
-            add_message(chat.first().id, f"Clique aqui para o seu próximo jogo: http://localhost:8000/game/{game_1.id}/", BOT_ID)
-
-            chat = Chat.objects.filter(users_on_chat=game_1.rightPlayer.id).filter(users_on_chat=BOT_ID)
-            add_message(chat.first().id, f"Clique aqui para o seu próximo jogo: http://localhost:8000/game/{game_1.id}", BOT_ID)
-
-            game_2 = Game.objects.create(
-                leftPlayer=players[2],
-                rightPlayer=players[3],
-                leftPlayerScore=0,
-                rightPlayerScore=0
-            )
-            self.games.add(game_2)
-
-            chat = Chat.objects.filter(users_on_chat=game_2.leftPlayer.id).filter(users_on_chat=BOT_ID)
-            add_message(chat.first().id, f"Clique aqui para o seu próximo jogo: http://localhost:8000/game/{game_2.id}/", BOT_ID)
-
-            chat = Chat.objects.filter(users_on_chat=game_2.rightPlayer.id).filter(users_on_chat=BOT_ID)
-            add_message(chat.first().id, f"Clique aqui para o seu próximo jogo: http://localhost:8000/game/{game_2.id}", BOT_ID)
-
+                for user in self.users.all():
+                    chat = Chat.objects.filter(users_on_chat=user.id).filter(users_on_chat=BOT_ID).first()
+                    add_message(chat.id, f"O VENCEDOR FOI {winner.tournament_alias}", BOT_ID)
 
 class Matchmaking(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='matchmakings')
@@ -103,5 +86,4 @@ class Matchmaking(models.Model):
 @receiver(post_save, sender=Tournament)
 def schedule_tournament_close(sender, instance, created, **kwargs):
     if created:
-        print(get_current_datetime())
         instance.schedule_tournament()

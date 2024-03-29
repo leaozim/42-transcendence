@@ -1,11 +1,7 @@
-from django.http import Http404
-from srcs_chat.models import Chat
 from srcs_chat.services import get_validated_chat_and_user
-from django.db.models import Subquery, OuterRef
-
-from srcs_user.models import User
 from srcs_message.models import Message
 
+BOT_ID = 1
 
 def add_message(chat_id, content, user_id):
     chat, user = get_validated_chat_and_user(chat_id, user_id)
