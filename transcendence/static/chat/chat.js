@@ -1,11 +1,10 @@
 async function openChat(other_user_id, username = "") {
-  const chatLog = document.getElementById("chat-log");
   const dataRoom = await getDataRoom(other_user_id);
   const dataChat = await getDataChat(dataRoom.room_id);
   const oldChatInput = document.getElementById("chat-message-input");
   setupWebSocket(dataChat.room_id, dataChat.current_user);
 
-  chatLog.innerHTML = "";
+  clearChatLog();
 
   if (dataChat.messages.length) {
     initializeChatLog(dataChat.current_username, dataChat.messages);
@@ -26,6 +25,24 @@ async function openChat(other_user_id, username = "") {
       sendMessage();
     }
   });
+}
+
+function clearChatLog() {
+  const chatLog = document.getElementById("chat-log");
+
+  chatLog.innerHTML = "";
+}
+
+function closeChat() {
+  const chatInput = document.getElementById("chat-message-input");
+  const paragraphNoChat = document.getElementById("no-chat-selected-message");
+
+  paragraphNoChat.style.display = "";
+  chatInput.style.display = "none";
+  chatModal.style.display = "none";
+  removeExistingChatHeader();
+  deSelectItens();
+  clearChatLog();
 }
 
 function addSendedMessage(message) {
