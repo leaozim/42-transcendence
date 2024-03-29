@@ -10,5 +10,5 @@ def create_a_tournament_game(tournament, left_player, right_player):
         tournament_id=tournament.id
         )
     tournament.games.add(game)
-    add_tournament_message(game.leftPlayer.id, f'Click here for your next game: http://localhost:8000/game/{game.id}/')
-    add_tournament_message(game.rightPlayer.id, f'Click here for your next game: http://localhost:8000/game/{game.id}/')
+    add_tournament_message(left_player.id, f'Click here for your next game against {right_player.tournament_alias}: http://localhost:8000/game/{game.id}/')
+    add_tournament_message(right_player.id, f'Click here for your next game against {left_player.tournament_alias}: http://localhost:8000/game/{game.id}/')

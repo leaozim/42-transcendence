@@ -45,6 +45,8 @@ class Tournament(models.Model):
 
         self.save()
         players = list(users)
+        for player in players:
+            add_tournament_message(player.id, f"The games are about to start.<br>First games will be:<br>{players[0]} vs {players[1]}<br>and<br>{players[2]} vs {players[3]}")
         
         create_a_tournament_game(self, players[0], players[1])
         create_a_tournament_game(self, players[2], players[3])
@@ -57,7 +59,8 @@ class Tournament(models.Model):
                     winners.append(game.leftPlayer)
                 else:
                     winners.append(game.rightPlayer)
-            
+            for player in self.users.all():
+                add_tournament_message(player.id, f"the winners of the first round and participants in the final to decide the winner are<br>{winners[0].tournament_alias}<br>and<br>{winners[1].tournament_alias}<br>")
             create_a_tournament_game(self, winners[0], winners[1])
         if len(self.games.all()) == 3 and all(game.is_finish for game in self.games.all()):
             final_game = list(self.games.all())[2]
@@ -71,7 +74,7 @@ class Tournament(models.Model):
 
                 for user in self.users.all():
                     add_tournament_message(user.id,
-                                           f"The winner of the tournament was {winner.tournament_alias}")
+                                           f"The winner of the tournament was:<br>{winner.tournament_alias}")
 
 @receiver(post_save, sender=Tournament)
 def schedule_tournament_close(sender, instance, created, **kwargs):

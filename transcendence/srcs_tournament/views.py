@@ -4,7 +4,6 @@ from srcs_tournament.models import Tournament
 from django.http import Http404
 from srcs_message.services import add_tournament_message
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 
 @login_required
 def create_tournament(request):
