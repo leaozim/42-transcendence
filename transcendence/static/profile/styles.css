@@ -16,7 +16,7 @@
   border: 1px solid #d613f0;
   border-radius: 17px;
   width: 635px;
-  height: 987px;
+  height: 550px;
   flex-shrink: 0;
 }
 
@@ -143,4 +143,12 @@ input:checked + .slider:before {
 .nickname h1 {
   font-size: 50px;
   margin: 10% auto;
+}
+
+#user-info  {
+  display: inline-block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
