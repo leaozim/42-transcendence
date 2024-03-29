@@ -1,11 +1,18 @@
+from typing import Any, Dict
+
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, JsonResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404, HttpResponse, JsonResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_protect
+from django.views.generic import FormView, TemplateView
 from srcs_auth.decorators import two_factor_required
 from srcs_chat import services
+from srcs_chat.form import BlockForm
 from srcs_chat.models import Chat
 from srcs_core.context_processors import custom_context_processor_chat_data
+from srcs_user.models import User
 
 
 class ChatView(View):
@@ -60,3 +67,92 @@ class GetUpdatedUserListView(View):
         user_list = custom_context_processor_chat_data(request)
         return JsonResponse(user_list)
 
+
+@method_decorator(csrf_protect, name="dispatch")
+class BlockedFormView(LoginRequiredMixin, FormView):
+    template_name = "user/blockUserModal.html"
+    form_class = BlockForm
+    success_url = "/"
+
+    def render_to_response(
+        self, context: Dict[str, Any], **response_kwargs: Any
+    ) -> HttpResponse:
+        username: str
+
+        username = self.kwargs["username"]
+
+        context.update({"blocked_user": False, "username": username})
+
+        return super().render_to_response(context, **response_kwargs)
+
+    def form_invalid(self, form: BlockForm) -> HttpResponse:
+        return HttpResponse(content="User not exist", status=404)
+
+    def form_valid(self, form: BlockForm) -> HttpResponse:
+        blocked_user_name: str = form.cleaned_data.get("blockedUserName")
+        blocked_user_id: int = User.objects.get(username=blocked_user_name).id
+
+        blocked_user = self.request.user.blocked_by.create(
+            blocked_user_id=blocked_user_id
+        )
+
+        self.request.user.blocked_by.add(blocked_user)
+
+        return HttpResponse(content="", status=200)
+
+
+@method_decorator(csrf_protect, name="dispatch")
+class UnblockedFormView(LoginRequiredMixin, FormView):
+    template_name = "user/blockUserModal.html"
+    form_class = BlockForm
+    success_url = "/"
+
+    def render_to_response(
+        self, context: Dict[str, Any], **response_kwargs: Any
+    ) -> HttpResponse:
+        username: str
+
+        username = self.kwargs["username"]
+
+        context.update({"blocked_user": True, "username": username})
+
+        return super().render_to_response(context, **response_kwargs)
+
+    def form_invalid(self, form: BlockForm) -> HttpResponse:
+        return HttpResponse(content="User not exist", status=404)
+
+    def form_valid(self, form: BlockForm) -> HttpResponse:
+        blocked_user_id: int
+        unblocked_user_name: str
+
+        unblocked_user_name = form.cleaned_data.get("blockedUserName")
+        blocked_user_id = User.objects.get(username=unblocked_user_name).id
+
+        self.request.user.blocked_by.filter(blocked_user_id=blocked_user_id).delete()
+
+        return HttpResponse(content="", status=200)
+
+
+@method_decorator(csrf_protect, name="dispatch")
+class ProfileView(LoginRequiredMixin, TemplateView):
+    template_name = "chat/profileVisit.html"
+
+    def get_context_data(self, **kwargs: Any) -> Any:
+        username: str
+        blocked_user: bool
+        context: Dict[str, Any]
+
+        username = self.kwargs["username"]
+
+        blocked_user = (
+            self.request.user.blocked_by.filter(
+                blocked_user_id=User.objects.get(username=username).id
+            ).count()
+            == 1
+        )
+
+        context = super().get_context_data(**kwargs)
+
+        context.update({"username": username, "blocked_user": blocked_user})
+
+        return context

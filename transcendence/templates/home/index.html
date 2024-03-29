@@ -161,7 +161,6 @@
       <!-- VerifyTwoFactorModal -->
       {% include "registration/verifyTwoFactorModal.html" %}
       <!-- Chat page -->
-      {% include "chat/profileVisit.html" %}
       {% include "chat/chatModal.html" %}
       <!-- Modal component -->
       {% include "includes/modal.html" %}
@@ -177,9 +176,13 @@
   const VALIDATE_TOKEN_URL = "{% url 'srcs_auth:validate_token_2f' %}";
   const VERIFY_TWO_FACTOR_STATE_URL = "{% url 'srcs_auth:totp-verify' %}";
   const TOTP_LOGIN_URL = "{% url 'srcs_auth:totp-login' token=None %}".replace("None/", "");
+  const BLOCK_USER_URL = "{% url 'srcs_chat:blocked' %}";
+  const UNBLOCK_USER_URL = "{% url 'srcs_chat:unblocked' %}";
+  const USER_PROFILE_URL = "{% url 'srcs_chat:profile' username=None %}".replace("None", "");
 </script>
 
 <script src="{% static 'profile/app.js' %}" type="module"></script>
+<script src="{% static 'profile/blockUser.js' %}"></script>
 <script src="{% static 'chat/utilsChatUpdater.js' %}"></script>
 <script src="{% static 'chat/initialChatLog.js' %}"></script>
 <script src="{% static 'chat/chat.js' %}"></script>
@@ -187,5 +190,4 @@
 <script src="{% static 'chat/chatSocket.js' %}"></script>
 <script src="{% static 'chat/headerChat.js' %}"></script>
 <script src="{% static 'game/game_list.js' %}"></script>
-
 {% endblock scripts %}

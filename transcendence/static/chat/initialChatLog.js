@@ -16,8 +16,9 @@ function createMessageHtml(
 
 function initializeChatLog(current_user, messages) {
   const chatLog = document.querySelector("div#chat-log");
-  chatLog.innerHTML = "";
   let senderAvatar, senderName;
+
+  clearChatLog();
 
   messages.forEach((item, index) => {
     const isCurrentUser = item.user === current_user;
