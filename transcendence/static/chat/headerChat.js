@@ -73,9 +73,9 @@ function removeExistingChatHeader() {
 }
 
 function createChatHeader() {
+  removeExistingChatHeader();
   const chatHeader = document.createElement("header");
   chatHeader.className = "chat-header";
-  removeExistingChatHeader();
   return chatHeader;
 }
 
@@ -96,7 +96,7 @@ function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
 }
 
 function deSelectItens() {
-  const items = document.querySelectorAll(".item-user");
+  const items = document.querySelectorAll("li.item-user");
   items.forEach(function (item) {
     item.classList.remove("selected");
   });
