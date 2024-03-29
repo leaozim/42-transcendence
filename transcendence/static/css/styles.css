@@ -44,10 +44,10 @@ body {
   background-color: #d613f0;
 }
 .bg-blue {
-  background-color: #0071BC;
+  background-color: #0071bc;
 }
 .bg-light-blue {
-  background-color: #52C0D7;
+  background-color: #52c0d7;
 }
 .user-frame {
   background-image: url("../images/user_frame.png");
@@ -120,11 +120,26 @@ body {
   background: #1e1e1e !important;
   color: #ffffff !important;
 }
+.main-content {
+  display: flex;
+  flex-flow: column;
+}
+@media (min-width: 1200px) {
+  .main-content {
+    display: block;
+  }
+}
 .main-title {
   position: relative;
   width: 344px;
   max-width: 100%;
-  margin: 0 auto 40px;
+  margin: 40px auto;
+  order: 1;
+}
+@media (min-width: 1200px) {
+  .main-title {
+    margin: 0 auto 40px;
+  }
 }
 .main-title h1 {
   font-size: 25px;
@@ -135,15 +150,34 @@ body {
 }
 .frame-image {
   position: relative;
-  width: 480px;
-  height: 480px;
-  margin: 210px auto 0;
+  text-align: center;
+  order: 3;
+}
+@media (min-width: 1200px) {
+  .frame-image {
+    margin: 210px auto 0;
+  }
+}
+.img-avatar-frame {
+  width: 410px;
+  margin-left: -3px;
+}
+@media (min-width: 1440px) {
+  .img-avatar-frame {
+    width: 480px;
+  }
 }
 .img-avatar {
   position: absolute;
   top: 50%;
   left: 50%;
+  width: 105px;
   transform: translate(-50%, -50%);
+}
+@media (min-width: 1440px) {
+  .img-avatar {
+    width: 128px;
+  }
 }
 .btn-round {
   display: flex;
@@ -157,42 +191,67 @@ body {
 }
 
 .text-card {
-  position: absolute;
   color: #52c0d7;
   text-align: center;
   padding: 16px 52px;
   border-radius: 20px;
   border: solid 1px #52c0d7;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+@media (min-width: 1200px) {
+  .text-card {
+    position: absolute;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
 }
 .text-card .btn-round {
   margin: 20px auto 0;
 }
 #instructions-card {
-  top: 180px;
-  left: 50%;
-  transform: translateX(-50%);
+  order: 2;
 }
-
+@media (min-width: 1200px) {
+  #instructions-card {
+    top: 180px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
 #profile-card {
-  top: 170px;
-  left: 196px;
+  top: 240px;
+  left: 26px;
+  order: 4;
 }
 
 #chat-card {
   top: 203px;
-  right: 215px;
+  right: 75px;
+  order: 5;
 }
 
 #game-card {
   top: 522px;
-  left: 120px;
-  width: 390px;
+  left: 20px;
   max-width: 100%;
+  order: 6;
 }
-
+@media (min-width: 1200px) {
+  #game-card {
+    width: 350px;
+  }
+}
+@media (min-width: 1440px) {
+  #game-card {
+    left: 120px;
+    width: 390px;
+  }
+}
 #tournament-card {
   top: 545px;
-  right: 155px;
+  right: 105px;
+  order: 7;
 }
 
 .text-card h2 {
