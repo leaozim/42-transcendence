@@ -73,9 +73,9 @@ function removeExistingChatHeader() {
 }
 
 function createChatHeader() {
+  removeExistingChatHeader();
   const chatHeader = document.createElement("header");
   chatHeader.className = "chat-header";
-  removeExistingChatHeader();
   return chatHeader;
 }
 
@@ -95,12 +95,15 @@ function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
   document.getElementById("header-container").appendChild(chatHeader);
 }
 
-function selectItem(item) {
-  var items = document.querySelectorAll(".item-user");
+function deSelectItens() {
+  const items = document.querySelectorAll("li.item-user");
   items.forEach(function (item) {
     item.classList.remove("selected");
   });
+}
 
+function selectItem(item) {
+  deSelectItens();
   item.classList.add("selected");
 }
 
@@ -119,4 +122,3 @@ function onCreateGame(rightPlayerId) {
       console.error("Error creating game:", error);
     });
 }
-

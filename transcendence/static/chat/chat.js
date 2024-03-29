@@ -1,11 +1,10 @@
 async function openChat(other_user_id, username = "") {
-  const chatLog = document.getElementById("chat-log");
   const dataRoom = await getDataRoom(other_user_id);
   const dataChat = await getDataChat(dataRoom.room_id);
   const oldChatInput = document.getElementById("chat-message-input");
   setupWebSocket(dataChat.room_id, dataChat.current_user);
 
-  chatLog.innerHTML = "";
+  clearChatLog();
 
   if (dataChat.messages.length) {
     initializeChatLog(dataChat.current_username, dataChat.messages);
@@ -26,6 +25,24 @@ async function openChat(other_user_id, username = "") {
       sendMessage();
     }
   });
+}
+
+function clearChatLog() {
+  const chatLog = document.getElementById("chat-log");
+
+  chatLog.innerHTML = "";
+}
+
+function closeChat() {
+  const chatInputDiv = document.getElementById("message-input-container");
+  const paragraphNoChat = document.getElementById("no-chat-selected-message");
+
+  paragraphNoChat.style.display = "block";
+  chatInputDiv.style.display = "none";
+  chatModal.style.display = "none";
+  removeExistingChatHeader();
+  deSelectItens();
+  clearChatLog();
 }
 
 function addSendedMessage(message) {
@@ -162,6 +179,44 @@ function createUsernameElement(otherUserUsername, userPhoto) {
   divProfileElement.appendChild(divImgElement);
   divProfileElement.appendChild(usernameElement);
   return divProfileElement;
+}
+
+function openOnModal(url) {
+  fetch(url)
+      .then((response) => response.text())
+      .then((html) => {
+        document.querySelector("#tournament-alias").innerHTML = html;
+        initializeFormSubmission();
+      })
+      .catch((error) => {
+        console.error("Error loading the modal content: ", error);
+      });
+}
+
+function initializeFormSubmission() {
+  document.querySelector('#tournament-alias-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      fetch(this.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+              'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+          },
+      })
+      .then(response => {
+          if (response.ok) {
+              return response.text();
+          }
+          throw new Error('Form submission failed!');
+      })
+      .then(data => {
+          console.log('Form submitted successfully:', data);
+          document.querySelector("#tournament-alias").innerHTML = data;
+      })
+      .catch(error => console.error('Error submitting the form:', error));
+  });
 }
 
 function createUserPhoto(otherUserAvatar) {

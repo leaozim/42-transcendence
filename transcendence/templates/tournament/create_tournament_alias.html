@@ -1,0 +1,13 @@
+{% if flag_tournament_created %}
+<p>
+	Nickname registered
+</p>
+{% else %}
+<form method="post" id="tournament-alias-form" action="{% url "srcs_tournament:create_tournament_alias" %}">
+	{% csrf_token %}
+	<label for="name">Name:</label>
+	<input type="text" id="name" name="name" required>
+	<button type="submit">Submit</button>
+</form>
+{% endif %}
+  

@@ -6,7 +6,7 @@
 {% endblock stylesheet %}
 {% block content %}
 <header>
-  <nav class="navbar navbar-expand-lg navbar-dark px-0">
+  <nav class="navbar navbar-expand navbar-dark px-0">
     <div class="container">
       {% if user.is_authenticated %}<div class="user-info rounded-pill">{{ user.get_username }}</div>{% endif %}
       <div class="d-flex d-lg-none ms-auto align-items-center">
@@ -55,7 +55,7 @@
           </li>
           <!-- Sign Out -->
           {% if user.is_authenticated %}
-          <li class="nav-item mx-2 d-none d-lg-inline-block">
+          <li class="nav-item mx-2 d-inline-block">
             <form method="post" action="{% url 'srcs_auth:logout_user' %}">
               {% csrf_token %}
               {% if redirect_field_value %}
@@ -72,14 +72,14 @@
 </header>
 <div class="container">
   <div class="row">
-    <div class="col-12">
+    <div class="col-12 main-content">
       <div class="main-title">
         <img src="{% static 'images/bg_big_title_blue.png' %}" alt="bg title" class="img-fluid" width="344"
           height="80" />
         <h1 class="title-center bg-common">Transcendence</h1>
       </div>
       <div class="frame-image">
-        <img src="{% static 'images/avatar_frame.png' %}" alt="avatar" class="img-fluid" width="480" height="480" />
+        <img src="{% static 'images/avatar_frame.png' %}" alt="avatar" class="img-avatar-frame img-fluid" width="480" height="480" />
         <img src="{{ user.avatar }}" alt="image" width="128" height="128" class="img-avatar img-fluid rounded-circle" />
       </div>
       <div id="instructions-card" class="text-card">
@@ -164,6 +164,8 @@
       {% include "chat/chatModal.html" %}
       <!-- Modal component -->
       {% include "includes/modal.html" %}
+        <!-- Chat page -->
+        {% include "tournament/create_tournament_alias.html" %}
 
     </div>
   </div>
@@ -185,9 +187,9 @@
 <script src="{% static 'profile/blockUser.js' %}"></script>
 <script src="{% static 'chat/utilsChatUpdater.js' %}"></script>
 <script src="{% static 'chat/initialChatLog.js' %}"></script>
+<script src="{% static 'chat/headerChat.js' %}"></script>
 <script src="{% static 'chat/chat.js' %}"></script>
 <script src="{% static 'chat/app.js' %}"></script>
 <script src="{% static 'chat/chatSocket.js' %}"></script>
-<script src="{% static 'chat/headerChat.js' %}"></script>
 <script src="{% static 'game/game_list.js' %}"></script>
 {% endblock scripts %}

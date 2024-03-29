@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db import models
 from srcs_user.managers import IntraUserOAuth2Manager
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class User(AbstractUser, PermissionsMixin):
@@ -15,7 +17,8 @@ class User(AbstractUser, PermissionsMixin):
         default="https://res.cloudinary.com/dw9xon1xs/image/upload/v1699535128/nico_nk9vdi.jpg",
     )
     mmr = models.FloatField(default=0)
-
+    tournament_alias = models.CharField(max_length=255, blank=True)
+    
     @property
     def is_authenticated(self):
         return True
@@ -34,3 +37,9 @@ class BlockedUser(models.Model):
     blocked_user_id = models.IntegerField(
         db_column="blocked_user_id", verbose_name="blocked_user_id", default=None
     )
+
+@receiver(post_save, sender=User)
+def schedule_tournament_close(sender, instance, created, **kwargs):
+    if created:
+        instance.tournament_alias = instance.username
+        instance.save()
