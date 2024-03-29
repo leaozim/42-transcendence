@@ -4,6 +4,7 @@ from srcs_tournament.models import Tournament
 from django.http import Http404
 from srcs_message.services import add_tournament_message
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 @login_required
 def create_tournament(request):
@@ -30,7 +31,9 @@ def create_tournament(request):
             called_players = request.session.get('called_players', [])
             if other_user_id and other_user_id not in called_players:
                 called_players.append(other_user_id)
-                add_tournament_message(other_user_id, f"You was invited to the tournament #{tournament_id}. Click here to accept: {protocol}://{url}/tournament_player_invite/{tournament_id}/{other_user_id}")
+                # add_tournament_message(other_user_id, f"You was invited to the tournament #{tournament_id}. Click here to accept: {protocol}://{url}/tournament_player_invite/{tournament_id}/{other_user_id}")
+                add_tournament_message(other_user_id, f"You was invited to the tournament #{tournament_id}. Click here to accept: {protocol}://{url}/tournament-alias")
+
                 request.session['called_players'] = called_players
         return redirect('srcs_tournament:users_list', user_id=id)
     return render(request, 'tournament/create_tournament.html', {'user_id': -1})
@@ -70,3 +73,9 @@ def user_accept(request, user_id, user_accept_id):
                                f"{user_accept.username} have joined the tournament #{tournament.id}. Wait for {4 - users_count} more players to start.")
         
     return redirect('/')
+
+
+@login_required
+def create_tournament_alias(request):
+ 
+    return render(request, 'create_tournament_alias.html')
