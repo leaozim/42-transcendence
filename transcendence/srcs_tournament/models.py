@@ -53,12 +53,7 @@ class Tournament(models.Model):
     
     def update_state(self):
         if len(self.games.all()) < 3 and all(game.is_finish for game in self.games.all()):
-            winners = []
-            for game in self.games.all():
-                if game.leftPlayerScore > game.rightPlayerScore:
-                    winners.append(game.leftPlayer)
-                else:
-                    winners.append(game.rightPlayer)
+            winners = [game.winner for game in self.games.all()]
             for player in self.users.all():
                 add_tournament_message(player.id, f"the winners of the first round and participants in the final to decide the winner are<br>{winners[0].tournament_alias}<br>and<br>{winners[1].tournament_alias}<br>")
             create_a_tournament_game(self, winners[0], winners[1])
@@ -67,10 +62,7 @@ class Tournament(models.Model):
             if final_game.is_finish and self.is_active == True:
                 self.is_active = False
                 self.save()
-                if final_game.leftPlayerScore > final_game.rightPlayerScore:
-                    winner = final_game.leftPlayer
-                else:
-                    winner = final_game.rightPlayer
+                winner = final_game.winner
 
                 for user in self.users.all():
                     add_tournament_message(user.id,
