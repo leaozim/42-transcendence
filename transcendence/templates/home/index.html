@@ -74,8 +74,8 @@
   <div class="row">
     <div class="col-12">
       <div class="main-title">
-        <img src="{% static 'images/bg_big_title_blue.png' %}" alt="bg title" class="img-fluid" width="684"
-          height="167" />
+        <img src="{% static 'images/bg_big_title_blue.png' %}" alt="bg title" class="img-fluid" width="344"
+          height="80" />
         <h1 class="title-center bg-common">Transcendence</h1>
       </div>
       <div class="frame-image">
@@ -106,7 +106,7 @@
           {% endblocktrans %}
           <br>
         </p>
-        <button id="profile-button" class="btn-round" type="button" data-toogle="modal" data-target="">
+        <button id="profile-button" class="btn-round bg-pink" type="button" data-toggle="modal" data-target="">
           <i class="bi bi-person"></i>
         </button>
       </div>
@@ -121,7 +121,7 @@
           or just chat.
           {% endblocktrans %}
         </p>
-        <button id="chat-button" class="btn-round" type="button" data-toogle="modal" data-target="">
+        <button id="chat-button" class="btn-round bg-pink" type="button" data-toggle="modal" data-target="">
           <i class="bi bi-chat-left"></i>
         </button>
       </div>
@@ -134,7 +134,8 @@
           First player to reach 5 points win.
           {% endblocktrans %}
         </p>
-        <button id="game-button" class="btn-round" type="button" data-toogle="modal" data-target="">
+        <button id="game-button" class="btn-round bg-pink" type="button" data-bs-toggle="modal"
+          data-bs-target="#game-modal">
           <i class="bi bi-controller"></i>
         </button>
       </div>
@@ -149,7 +150,7 @@
           tournament.
           {% endblocktrans %}
         </p>
-        <button id="tournament-button" class="btn-round" type="button" data-toogle="modal" data-target="">
+        <button id="tournament-button" class="btn-round bg-pink" type="button" data-toggle="modal" data-target="">
           <i class="bi bi-trophy"></i>
         </button>
       </div>
@@ -161,10 +162,11 @@
       {% include "registration/verifyTwoFactorModal.html" %}
       <!-- Chat page -->
       {% include "chat/chatModal.html" %}
+      <!-- Modal component -->
+      {% include "includes/modal.html" %}
+
     </div>
   </div>
-</div>
-</div>
 </div>
 {% endblock content %}
 {% block scripts %}
@@ -178,8 +180,14 @@
   const UNBLOCK_USER_URL = "{% url 'srcs_chat:unblocked' %}";
   const USER_PROFILE_URL = "{% url 'srcs_chat:profile' username=None %}".replace("None", "");
 </script>
+
 <script src="{% static 'profile/app.js' %}" type="module"></script>
 <script src="{% static 'profile/blockUser.js' %}"></script>
-<script src="{% static 'chat/app.js' %}"></script>
+<script src="{% static 'chat/utilsChatUpdater.js' %}"></script>
+<script src="{% static 'chat/initialChatLog.js' %}"></script>
 <script src="{% static 'chat/chat.js' %}"></script>
+<script src="{% static 'chat/app.js' %}"></script>
+<script src="{% static 'chat/chatSocket.js' %}"></script>
+<script src="{% static 'chat/headerChat.js' %}"></script>
+<script src="{% static 'game/game_list.js' %}"></script>
 {% endblock scripts %}

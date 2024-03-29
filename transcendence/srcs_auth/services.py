@@ -114,3 +114,5 @@ class TOTPService:
     def get_user_totp_devices(self, user, confirmed=None):
         devices = TOTPDevice.objects.devices_for_user(user, confirmed=confirmed)
         return devices
+
+

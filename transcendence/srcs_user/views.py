@@ -11,6 +11,12 @@ def test(request: HttpRequest) -> JsonResponse:
     return JsonResponse({"msg": "hello"})
 
 
+@login_required
+@two_factor_required
+def get_id(request: HttpRequest, **kwargs) -> JsonResponse:
+    return JsonResponse({"id": request.user.id})
+
+
 def users_list(request):
     users = User.objects.all()
     return render(

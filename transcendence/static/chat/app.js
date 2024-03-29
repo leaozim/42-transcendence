@@ -3,6 +3,54 @@ const chatButton = document.getElementById("chat-button");
 const profileElement = document.getElementById("profile-element");
 const userModal = new UserModal();
 
+function Sockets() {
+  this.chatSocket;
+  this.infoSocket;
+
+  (async function () {
+    const response = await fetch("/user/");
+    const data = await response.json();
+    const url = `ws://${window.location.host}/ws/chat_update/${data.id}`;
+
+    this.infoSocket = new WebSocket(url);
+
+    this.infoSocket.onmessage = async (event) => {
+      const parseNestedJson = (_, value) => {
+        try {
+          return JSON.parse(value);
+        } catch (error) {
+          return value;
+        }
+      };
+
+      const userNotification = JSON.parse(
+        await event.data.text(),
+        parseNestedJson,
+      ).data;
+
+      renderUserWindow(
+        userNotification.id,
+        userNotification.username,
+        userNotification.avatar,
+      );
+    };
+  }).call(this);
+}
+
+Sockets.prototype.add = function (socket) {
+  this.close();
+
+  this.chatSocket = socket;
+};
+
+Sockets.prototype.close = function () {
+  if (this.chatSocket) {
+    this.chatSocket.close();
+  }
+};
+
+const sockets = new Sockets();
+
 if (chatButton) {
   chatButton.addEventListener("click", function () {
     chatModal.style.display = "block";
@@ -18,6 +66,7 @@ function openChatScreen(userId, username) {
 window.addEventListener("click", function (event) {
   if (event.target == chatModal) {
     chatModal.style.display = "none";
+    sockets.close();
   } else if (userModal.modal && event.target === userModal.modal) {
     userModal.close();
   } else if (_blockModal.modal && event.target == _blockModal.modal) {

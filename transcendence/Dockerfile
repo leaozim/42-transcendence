@@ -5,7 +5,6 @@ COPY ./requirements/local.txt ./requirements.txt
 RUN apk add gcc musl-dev libffi-dev; \
     pip install -r requirements.txt --no-cache
 
-
 FROM python:3.11-alpine as final
 
 COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages

@@ -40,8 +40,9 @@ class ChatView(View):
         context = {
             "chat_id": chat.id,
             "messages": messages_dict,
-            "current_user": request.user.username,
+            "current_username": request.user.username,
             "current_user_id": request.user.id,
+            "current_user_avatat": request.user.avatar,
             "room_id": room_id,
             "other_user_username": other_user.username,
             "other_user_id": other_user.id,
@@ -64,7 +65,6 @@ class ChatView(View):
 class GetUpdatedUserListView(View):
     def get(self, request, *args, **kwargs):
         user_list = custom_context_processor_chat_data(request)
-        print(user_list)
         return JsonResponse(user_list)
 
 
