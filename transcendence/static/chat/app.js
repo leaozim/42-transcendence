@@ -66,6 +66,7 @@ function openChatScreen(userId, username) {
 window.addEventListener("click", function (event) {
   if (event.target == chatModal) {
     chatModal.style.display = "none";
+    deSelectItens();
     sockets.close();
   } else if (userModal.modal && event.target === userModal.modal) {
     userModal.close();
