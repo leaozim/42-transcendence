@@ -1,8 +1,6 @@
 import os
 
-from django.core.management import CommandError
 from django.core.management.base import BaseCommand
-from srcs_user.managers import IntraUserOAuth2Manager
 from srcs_user.models import User
 
 
@@ -10,7 +8,7 @@ class Command(BaseCommand):
     help = "Cria um superusuário padrão automaticamente"
 
     def handle(self, *args, **options):
-        username = os.getenv("POSTGRES_USERNAME")
+        username = os.getenv("POSTGRES_USER")
         email = ""
         password = os.getenv("POSTGRES_PASSWORD")
         try:
