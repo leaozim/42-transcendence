@@ -10,7 +10,7 @@ window.addEventListener("click", function (event) {
   }
 });
 
-const verifyTwoFactorState = () => {
+const verifyTwoFactorState = async () => {
   return fetch(VERIFY_TWO_FACTOR_STATE_URL)
     .then((response) => {
       if (!response.ok) {
@@ -36,15 +36,5 @@ inputSlide.addEventListener("change", async function () {
   } else {
     const response = await fetch(DELETE_TWO_FACTOR_URL);
     console.log(await response.json());
-    // fetch(DELETE_TWO_FACTOR_URL)
-    //   .then((response) => {
-    //     if (!response.ok) {
-    //       throw new Error("Couldn't delete two factor");
-    //     }
-    //     return response.json();
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
   }
 });
