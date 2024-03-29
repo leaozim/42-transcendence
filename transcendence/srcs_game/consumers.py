@@ -119,6 +119,9 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
                 await sync_to_async(delete_game)(self.room_id)
 
             event['data']['winner'] = winner_username
+            game = await sync_to_async(Game.objects.get)(id=self.room_id)
+            game.is_finish = True
+            await sync_to_async(game.save)()
         await self.send(text_data=json.dumps(event['data']))
 
     '''

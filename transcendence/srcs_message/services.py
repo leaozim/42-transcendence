@@ -1,5 +1,29 @@
+from srcs_chat.services import get_validated_chat_and_user
 from srcs_message.models import Message
+from srcs_chat.models import Chat
 
+BOT_ID = 1
+
+def add_message(chat_id, content, user_id):
+    chat, user = get_validated_chat_and_user(chat_id, user_id)
+    
+    if len(content) > 500 or not content:
+        return 
+    if chat.blocked:
+        return
+    
+    message = Message.objects.create(
+        chat_id=chat.id,
+        content=content,
+        user_id=user.id
+    )
+    
+    return message
+
+def add_tournament_message(user_id, message):
+    chat = Chat.objects.filter(users_on_chat=user_id).filter(users_on_chat=BOT_ID)
+    if chat.count() > 0:
+        add_message(chat.first().id, message, BOT_ID)
 
 def get_user_receiving_last_message(user_id):
     last_message = (
