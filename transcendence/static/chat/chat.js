@@ -181,6 +181,19 @@ function createUsernameElement(otherUserUsername, userPhoto) {
   return divProfileElement;
 }
 
+
+function dontOpenOnModal(url) {
+  console.log(url)
+  fetch(url)
+      .then((response) => response.text())
+      .then((html) => {
+        console.log("Sucesso")
+      })
+      .catch((error) => {
+        console.error("Error loading the modal content: ", error);
+      });
+}
+
 function openOnModal(url) {
   fetch(url)
       .then((response) => response.text())

@@ -1,6 +1,6 @@
 import json
 import time
-import asyncio
+
 from channels.generic.websocket import AsyncWebsocketConsumer
 '''
     Note que essa bola e raquete são diferentes pro python e pro js.
@@ -9,13 +9,11 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 '''
 from static.game.scripts.Ball import Ball
 from static.game.scripts.Paddle import Paddle
-from static.game.scripts.Vector2 import Vector2
 from static.game.scripts.constants import *
 from asgiref.sync import sync_to_async
-from channels.layers import get_channel_layer
 from srcs_game.models import Game
 from srcs_user.models import User
-from srcs_game.services import update_game_result, delete_game
+from srcs_game.services import update_game_result
 
 '''
     Dicionário global que armazena todas as informações de todos os jogos.
@@ -97,6 +95,7 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
     async def game_update(self, event):
         elapsed_time = time.time() - self.start_time
         if elapsed_time >= self.limit_time:
+            winner_user = None
             if len(self.connecteds) == 2:  # Ambos os jogadores estão conectados
                 if self.reset_timer == False:
                     self.reset_timer = True
@@ -107,7 +106,7 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
                 elif self.score[PLAYER_LEFT] < self.score[PLAYER_RIGHT]:
                     winner = self.playersIds[PLAYER_RIGHT]
                 else:
-                    winner_username = "Ninguém, pois empatou. F"
+                    winner_username = "Draw"
                     winner = None
 
                 if winner:
@@ -116,11 +115,11 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
                     await sync_to_async(update_game_result)(self.room_id, self.score)
             else:
                 winner_username = None
-                await sync_to_async(delete_game)(self.room_id)
 
             event['data']['winner'] = winner_username
             game = await sync_to_async(Game.objects.get)(id=self.room_id)
             game.is_finish = True
+            game.winner = winner_user
             await sync_to_async(game.save)()
         await self.send(text_data=json.dumps(event['data']))
 

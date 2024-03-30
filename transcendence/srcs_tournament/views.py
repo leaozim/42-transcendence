@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from srcs_user.models import User
 from srcs_tournament.models import Tournament
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from srcs_message.services import add_tournament_message
 from django.contrib.auth.decorators import login_required
 
@@ -30,7 +30,7 @@ def create_tournament(request):
             called_players = request.session.get('called_players', [])
             if other_user_id and other_user_id not in called_players:
                 called_players.append(other_user_id)
-                add_tournament_message(other_user_id, f"You was invited to the tournament #{tournament_id}.<br> <span onClick=\"openOnModal('/tournament-alias/');\">Click here to change nickname</span> <br> Click here to accept: <span onClick=\"openOnModal\">{protocol}://{url}/tournament_player_invite/{tournament_id}/{other_user_id}</span>")
+                add_tournament_message(other_user_id, f"You was invited to the tournament #{tournament_id}.<br> <span class=\"clickable-link\" onClick=\"openOnModal('/tournament-alias/');\">Click here to change nickname</span> <br> <span class=\"clickable-link\" onClick=\"dontOpenOnModal('/tournament_player_invite/{tournament_id}/{other_user_id}/')\">Click here to accept</span>")
                 request.session['called_players'] = called_players
         return redirect('srcs_tournament:users_list', user_id=id)
     return render(request, 'tournament/create_tournament.html', {'user_id': -1})
@@ -48,7 +48,7 @@ def users_list(request, user_id):
 def user_accept(request, user_id, user_accept_id):
     tournament = Tournament.objects.get(pk=user_id)
     if tournament.open_to_subscription == False:
-        add_tournament_message(user.id, "Tournament registration deadline closed")
+        add_tournament_message(request.user.id, "Tournament registration deadline closed")
         return redirect('/')
     
     user_accept = User.objects.get(pk=user_accept_id)
@@ -62,12 +62,12 @@ def user_accept(request, user_id, user_accept_id):
         tournament.save()
         for user in users:
             add_tournament_message(user.id,
-                                f"{user_accept.username} have joined the tournament #{tournament.id}. The tournament #{tournament.id} will start soon.")
+                                f"{user_accept.tournament_alias} have joined the tournament #{tournament.id}. The tournament will start soon.")
         return redirect('/')
         
     for user in users:
         add_tournament_message(user.id,
-                               f"{user_accept.username} have joined the tournament #{tournament.id}. Wait for {4 - users_count} more players to start.")
+                               f"{user_accept.tournament_alias} have joined the tournament #{tournament.id}. Wait for {4 - users_count} more players to start.")
         
     return redirect('/')
 
