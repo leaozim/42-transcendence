@@ -31,27 +31,32 @@ class Tournament(models.Model):
         threading.Timer(60, self.close_tournament_subscription).start()
 
     def close_tournament_subscription(self):
+        true_instance = Tournament.objects.get(pk=self.id)
         self.open_to_subscription = False
-        users = self.users.all()
+        users = true_instance.users.all()
         users_count = users.count()
 
         if users_count < 4:
             for user in users:
                 add_tournament_message(user.id,
                     "The tournament was canceled because it didn't reach the required number of entries")
-                self.is_active = False
-                self.save()
+                true_instance.is_active = False
+                user.tournament_alias = user.username
+                user.save()
+                true_instance.save()
                 return
 
-        self.save()
+        true_instance.save()
         players = list(users)
         for player in players:
-            add_tournament_message(player.id, f"The games are about to start.<br>First games will be:<br>{players[0]} vs {players[1]}<br>and<br>{players[2]} vs {players[3]}")
+            add_tournament_message(player.id, f"The games are about to start.<br>First games will be:<br>{players[0].tournament_alias} vs {players[1].tournament_alias}<br>and<br>{players[2].tournament_alias} vs {players[3].tournament_alias}")
         
         create_a_tournament_game(self, players[0], players[1])
         create_a_tournament_game(self, players[2], players[3])
     
     def update_state(self):
+        if self.is_active is False:
+            return
         if len(self.games.all()) < 3 and all(game.is_finish for game in self.games.all()):
             winners = [game.winner for game in self.games.all()]
             if None in winners:

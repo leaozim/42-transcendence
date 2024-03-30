@@ -50,6 +50,12 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
             não devem interferir no começo ou encerramento do jogo.
         '''
         game = await sync_to_async(Game.objects.get)(pk=self.room_id)
+        if game.is_finish:
+            await self.close()
+            return
+        else:
+            game.has_started = True
+            await sync_to_async(game.save)()
         left_player = await sync_to_async(lambda: game.leftPlayer)()
         right_player = await sync_to_async(lambda: game.rightPlayer)()
         players_id = (left_player.id, right_player.id)
@@ -96,7 +102,7 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
         elapsed_time = time.time() - self.start_time
         if elapsed_time >= self.limit_time:
             winner_user = None
-            if len(self.connecteds) == 2:  # Ambos os jogadores estão conectados
+            if len(self.connecteds) == 2:
                 if self.reset_timer == False:
                     self.reset_timer = True
                     self.start_time = time.time()
@@ -117,7 +123,7 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
                 winner_username = None
 
             event['data']['winner'] = winner_username
-            game = await sync_to_async(Game.objects.get)(id=self.room_id)
+            game = await sync_to_async(Game.objects.get)(pk=self.room_id)
             game.is_finish = True
             game.winner = winner_user
             await sync_to_async(game.save)()

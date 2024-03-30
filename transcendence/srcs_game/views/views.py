@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from srcs_game.models import Game
 from srcs_game.services import create_game
 from srcs_user.models import User
@@ -21,6 +21,8 @@ def room(request, room_id):
     if not game:
         raise Http404
     game = game.first()
+    if game.is_finish:
+        return redirect('/')
     return render(request,
                   "game/index.html",
                   context={
