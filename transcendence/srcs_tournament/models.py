@@ -59,17 +59,13 @@ class Tournament(models.Model):
             return
         if len(self.games.all()) < 3 and all(game.is_finish for game in self.games.all()):
             winners = [game.winner for game in self.games.all()]
-            print("winners: ", winners)
             if None in winners:
                 not_null_winner = next((winner for winner in winners if winner is not None), None)
                 message = f"Tournament without winner due to connection problems"
-                print("not_null_winner", next((winner for winner in winners if winner is not None), None))
                 if not_null_winner is not None:
                     message = f"The winner of the tournament was:<br>{not_null_winner.tournament_alias}"        
                 for user in self.users.all():
                     add_tournament_message(user.id, message)
-                self.is_active = False
-                self.save()
                 return
             for player in self.users.all():
                 add_tournament_message(player.id, f"the winners of the first round and participants in the final to decide the winner are<br>{winners[0].tournament_alias}<br>and<br>{winners[1].tournament_alias}<br>")
@@ -86,8 +82,6 @@ class Tournament(models.Model):
                 for user in self.users.all():
                     add_tournament_message(user.id,
                                            message)
-                    user.tournament_alias = user.username
-                    user.save()
 
 @receiver(post_save, sender=Tournament)
 def schedule_tournament_close(sender, instance, created, **kwargs):
