@@ -9,8 +9,6 @@ from django.contrib.auth.decorators import login_required
 def create_tournament(request):
     
     id = request.user.id
-    url = request.META["HTTP_HOST"]
-    protocol = "https" if request.is_secure() else "http"
     if request.method == 'POST':
         query =  Tournament.objects.filter(creator__id=id, is_active=True)
         if id is not None and not query.exists():
