@@ -51,4 +51,5 @@ urlpatterns = [
             ]
         ),
     ),
+    path('is_chat_blocked/<int:chat_id>/', views.is_chat_blocked, name='is_chat_blocked'),
 ]

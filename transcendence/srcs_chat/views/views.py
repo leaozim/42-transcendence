@@ -156,3 +156,6 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         context.update({"username": username, "blocked_user": blocked_user})
 
         return context
+
+def is_chat_blocked(request, chat_id):
+    return JsonResponse({'blocked': services.is_chat_blocked(chat_id)})

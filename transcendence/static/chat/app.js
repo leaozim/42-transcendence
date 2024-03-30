@@ -53,6 +53,8 @@ const sockets = new Sockets();
 
 if (chatButton) {
   chatButton.addEventListener("click", function () {
+    closeChat()
+    sockets.close()
     chatModal.style.display = "block";
   });
 }

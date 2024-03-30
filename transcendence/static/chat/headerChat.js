@@ -5,14 +5,22 @@ function createButtonsContainer(buttonBlock, buttonPlay) {
   buttonsContainer.appendChild(buttonPlay);
   return buttonsContainer;
 }
-function createButtonBlock() {
+
+function createButtonBlock(blocked) {
   const buttonBlock = document.createElement("div");
   buttonBlock.className = "buttons-chat";
-  const img = createButtonImage(
-    "unblocked user",
-    "static/images/chat_button_unblocked.png",
-  );
-  buttonBlock.appendChild(img);
+  if (blocked) {
+    buttonBlock.appendChild(createButtonImage(
+      "blocked user",
+      "static/images/chat_button_blocked.png",
+    ));
+  } else {
+    buttonBlock.appendChild(createButtonImage(
+      "unblocked user",
+      "static/images/chat_button_unblocked.png",
+    ));
+  }
+  
   return buttonBlock;
 }
 
@@ -79,15 +87,21 @@ function createChatHeader() {
   return chatHeader;
 }
 
-function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
+async function isBlocked(current_user, other_user_id) {
+  return fetch(`/check_blocked_user/?blocked_by_id=${current_user}&blocked_user_id=${other_user_id}`)
+      .then(response => response.json())
+      .then(data => data.blocked)
+      .catch((e) => console.error(e))
+}
+
+function appendChatHeader(otherUserUsername, otherUserAvatar, blocked) {
   const chatHeader = createChatHeader();
 
   if (otherUserUsername) {
     const userPhoto = createUserPhoto(otherUserAvatar);
-
     divProfileElement = createUsernameElement(otherUserUsername, userPhoto);
     chatHeader.appendChild(divProfileElement);
-    const buttonBlock = createButtonBlock();
+    const buttonBlock = createButtonBlock(blocked);
     const buttonPlay = createButtonPlay();
     const buttonsContainer = createButtonsContainer(buttonBlock, buttonPlay);
     chatHeader.appendChild(buttonsContainer);

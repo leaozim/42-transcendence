@@ -81,3 +81,7 @@ def get_updated_user_list(id_user, username):
         update_list.append(user_data)
 
     return {"users_in_chats": update_list}
+
+def is_chat_blocked(chat_id):
+    chat = Chat.objects.get(pk=chat_id)
+    return chat.blocked

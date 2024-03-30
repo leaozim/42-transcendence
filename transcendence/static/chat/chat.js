@@ -1,22 +1,29 @@
 async function openChat(other_user_id, username = "") {
   const dataRoom = await getDataRoom(other_user_id);
   const dataChat = await getDataChat(dataRoom.room_id);
-  const oldChatInput = document.getElementById("chat-message-input");
+
   setupWebSocket(dataChat.room_id, dataChat.current_user);
-
+  
   clearChatLog();
-
+  
   if (dataChat.messages.length) {
     initializeChatLog(dataChat.current_username, dataChat.messages);
   }
-  appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar);
-
+  const blocked = await isBlocked(dataChat.current_user_id, other_user_id)
+  console.log(blocked)
+  appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar, blocked);
+  
   document.getElementById("no-chat-selected-message").style.display = "none";
   document.getElementById("message-input-container").style.display = "flex";
-
+  const oldChatInput = document.getElementById("chat-message-input");
+  if (blocked) {
+    oldChatInput.hidden = true;
+    return;
+  }
   const newChatInput = oldChatInput.cloneNode(true);
-
+  newChatInput.hidden = false;
   oldChatInput.parentNode.replaceChild(newChatInput, oldChatInput);
+
   oldChatInput.remove();
 
   newChatInput.addEventListener("keydown", function (event) {
@@ -121,24 +128,6 @@ async function getDataChat(roomId) {
   } catch (error) {
     console.error("Error during AJAX request:", error);
   }
-}
-
-function createButtonsContainer(buttonBlock, buttonPlay) {
-  const buttonsContainer = document.createElement("div");
-  buttonsContainer.id = "buttons-container";
-  buttonsContainer.appendChild(buttonBlock);
-  buttonsContainer.appendChild(buttonPlay);
-  return buttonsContainer;
-}
-function createButtonBlock() {
-  const buttonBlock = document.createElement("div");
-  buttonBlock.className = "buttons-chat";
-  const img = createButtonImage(
-    "unblocked user",
-    "static/images/chat_button_unblocked.png",
-  );
-  buttonBlock.appendChild(img);
-  return buttonBlock;
 }
 
 function createButtonPlay() {
@@ -253,22 +242,6 @@ function createChatHeader() {
   chatHeader.className = "chat-header";
   removeExistingChatHeader();
   return chatHeader;
-}
-
-function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
-  const chatHeader = createChatHeader();
-
-  if (otherUserUsername) {
-    const userPhoto = createUserPhoto(otherUserAvatar);
-
-    divProfileElement = createUsernameElement(otherUserUsername, userPhoto);
-    chatHeader.appendChild(divProfileElement);
-    const buttonBlock = createButtonBlock();
-    const buttonPlay = createButtonPlay();
-    const buttonsContainer = createButtonsContainer(buttonBlock, buttonPlay);
-    chatHeader.appendChild(buttonsContainer);
-  }
-  document.getElementById("header-container").appendChild(chatHeader);
 }
 
 function selectItem(item) {
