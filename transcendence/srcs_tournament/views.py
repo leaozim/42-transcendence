@@ -8,7 +8,7 @@ from django.views.generic.list import ListView
 
 @login_required
 def create_tournament(request):
-    
+
     id = request.user.id
     url = request.META["HTTP_HOST"]
     protocol = "https" if request.is_secure() else "http"
@@ -31,7 +31,7 @@ def create_tournament(request):
             called_players = request.session.get('called_players', [])
             if other_user_id and other_user_id not in called_players:
                 called_players.append(other_user_id)
-                add_tournament_message(other_user_id, f"You was invited to the tournament #{tournament_id}.<br> <span class=\"clickable-link\" onClick=\"openOnModal('/tournament-alias/');\">Click here to change nickname</span> <br> <span class=\"clickable-link\" onClick=\"dontOpenOnModal('/tournament_player_invite/{tournament_id}/{other_user_id}/')\">Click here to accept</span>")
+                add_tournament_message(other_user_id, f'You were invited to the tournament #{tournament_id}.<br> <span class="clickable-link" onClick="openOnModal(\'/tournament-alias/\');">Click here to change nickname</span> <br> <span class="clickable-link" onClick="dontOpenOnModal(\'/tournament_player_invite/{tournament_id}/{other_user_id}/\')">Click here to accept</span>')
                 request.session['called_players'] = called_players
         return redirect('srcs_tournament:users_list', user_id=id)
     return render(request, 'tournament/create_tournament.html', {'user_id': -1})
@@ -51,13 +51,13 @@ def user_accept(request, user_id, user_accept_id):
     if tournament.open_to_subscription == False:
         add_tournament_message(request.user.id, "Tournament registration deadline closed")
         return redirect('/')
-    
+
     user_accept = User.objects.get(pk=user_accept_id)
     tournament.users.add(user_accept)
-    
+
     users = tournament.users.all()
     users_count = users.count()
-    
+
     if users_count == 4:
         tournament.open_to_subscription = False
         tournament.save()
@@ -65,11 +65,11 @@ def user_accept(request, user_id, user_accept_id):
             add_tournament_message(user.id,
                                 f"{user_accept.tournament_alias} have joined the tournament #{tournament.id}. The tournament will start soon.")
         return redirect('/')
-        
+
     for user in users:
         add_tournament_message(user.id,
-                               f"{user_accept.tournament_alias} have joined the tournament #{tournament.id}. Wait for {4 - users_count} more players to start.")
-        
+                               f"{user_accept.tournament_alias} joined tournament #{tournament.id}. Wait for {4 - users_count} more players to start.")
+
     return redirect('/')
 
 
