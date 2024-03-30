@@ -6,6 +6,9 @@ body {
 .navbar-nav .dropdown-menu {
   background-color: transparent;
 }
+.user-info {
+  white-space: nowrap;
+}
 .dropdown-item:hover {
   color: #ffffff;
   background-color: #000012;
