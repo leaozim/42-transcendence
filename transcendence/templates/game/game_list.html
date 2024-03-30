@@ -15,9 +15,9 @@
                                         <button id="game-button"
                                                 class="btn-round bg-blue"
                                                 type="button"
-                                                data-toggle="modal"
-                                                data-target=""
-                                                onclick="onUserClick(`{{ user.id }}`, '{{ user.username }}')">
+												data-toggle="modal"
+												data-target="#chat-modal"
+												onclick="openChatScreen('{{ user.id }}', '{{ user.username }}')">
                                             <i class="bi bi-chat-left"></i>
                                         </button>
                                         <button id="game-button"

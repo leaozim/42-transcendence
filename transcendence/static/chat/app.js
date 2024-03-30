@@ -58,6 +58,7 @@ function openChatScreen(userId, username) {
 
   chatModal.style.display = "block";
 
+  closeModal();
   openChat(userId, username);
 }
 
