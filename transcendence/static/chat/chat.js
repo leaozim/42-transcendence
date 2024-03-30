@@ -9,7 +9,7 @@ async function openChat(other_user_id, username = "") {
   if (dataChat.messages.length) {
     initializeChatLog(dataChat.current_username, dataChat.messages);
   }
-  appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar);
+  appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar, dataChat.other_user_id);
 
   document.getElementById("no-chat-selected-message").style.display = "none";
   document.getElementById("message-input-container").style.display = "flex";
@@ -141,7 +141,7 @@ function createButtonBlock() {
   return buttonBlock;
 }
 
-function createButtonPlay() {
+function createButtonPlay(otherUserId) {
   const buttonPlay = document.createElement("div");
   buttonPlay.className = "buttons-chat";
   const img = createButtonImage(
@@ -150,7 +150,7 @@ function createButtonPlay() {
   );
   buttonPlay.appendChild(img);
   buttonPlay.addEventListener("click", function () {
-    onCreateGame(otherUser.other_user_id);
+    onCreateGame(otherUserId);
   });
   return buttonPlay;
 }
@@ -255,7 +255,7 @@ function createChatHeader() {
   return chatHeader;
 }
 
-function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
+function appendChatHeader(otherUserUsername, otherUserAvatar, otherUserId) {
   const chatHeader = createChatHeader();
 
   if (otherUserUsername) {
@@ -264,7 +264,7 @@ function appendChatHeader(otherUserUsername, otherUserAvatar, parentElement) {
     divProfileElement = createUsernameElement(otherUserUsername, userPhoto);
     chatHeader.appendChild(divProfileElement);
     const buttonBlock = createButtonBlock();
-    const buttonPlay = createButtonPlay();
+    const buttonPlay = createButtonPlay(otherUserId);
     const buttonsContainer = createButtonsContainer(buttonBlock, buttonPlay);
     chatHeader.appendChild(buttonsContainer);
   }
@@ -281,6 +281,7 @@ function selectItem(item) {
 }
 
 function onCreateGame(rightPlayerId) {
+  console.log(rightPlayerId)
   if (!rightPlayerId || isNaN(rightPlayerId)) {
     console.error("Invalid user ID for the right player:", rightPlayerId);
     return;
