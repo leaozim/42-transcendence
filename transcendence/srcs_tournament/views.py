@@ -4,6 +4,7 @@ from srcs_tournament.models import Tournament
 from django.http import Http404
 from srcs_message.services import add_tournament_message
 from django.contrib.auth.decorators import login_required
+from django.views.generic.list import ListView
 
 @login_required
 def create_tournament(request):
@@ -41,7 +42,7 @@ def users_list(request, user_id):
     users = User.objects.all()
     called_players = [int(player_id) for player_id in request.session.get('called_players', [])]
     users = [user for user in users if (user.id != user_id and user.id not in called_players)]
-    return render(request, 'tournament/users_list.html', {'users': users})
+    return render(request, 'tournament/tournament_list.html', {'users': users})
 
 
 @login_required
@@ -85,3 +86,11 @@ def create_tournament_alias(request):
 
     else:
         return render(request, template)
+
+class UserList(ListView):
+    model = User
+    template_name = "tournament/tournament_list.html"
+
+    def user_list(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context

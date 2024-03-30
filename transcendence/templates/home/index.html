@@ -150,9 +150,13 @@
           tournament.
           {% endblocktrans %}
         </p>
-        <button id="tournament-button" class="btn-round bg-pink" type="button" data-toggle="modal" data-target="">
-          <i class="bi bi-trophy"></i>
-        </button>
+        <form id="create_tournament_form" action="{% url 'srcs_tournament:create_tournament' %}" method="post">
+          {% csrf_token %}
+            <button  type="submit" Criar id="tournament-button" class="btn-round bg-pink" type="button" data-toggle="modal" data-target="">
+              <i class="bi bi-trophy"></i>
+            </button>
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+        </form> 
       </div>
       <!-- Profile page -->
       {% include "profile/modal.html" %}
@@ -190,4 +194,6 @@
 <script src="{% static 'chat/app.js' %}"></script>
 <script src="{% static 'chat/chatSocket.js' %}"></script>
 <script src="{% static 'game/game_list.js' %}"></script>
+<script src="{% static 'tournament/tournament_list.js' %}"></script>
+
 {% endblock scripts %}
