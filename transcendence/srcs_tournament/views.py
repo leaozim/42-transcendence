@@ -16,7 +16,7 @@ def create_tournament(request):
                 user = User.objects.get(id=id)
                 tournament = Tournament.objects.create(creator=user)
                 tournament.users.add(user.id)
-                add_tournament_message(id, "You created a tournament. Wait for 3 more players to start (invite them... duh).")
+                add_tournament_message(id, "You created a tournament. Wait for 3 more players to start (invite them... duh). <br> <span class=\"clickable-link\" onClick=\"openOnModal('/tournament-alias/');\">Click here to change your tournament nickname</span>")
             except User.DoesNotExist:
                 raise Http404("User not found")
         else:
@@ -28,7 +28,7 @@ def create_tournament(request):
             called_players = request.session.get('called_players', [])
             if other_user_id and other_user_id not in called_players:
                 called_players.append(other_user_id)
-                add_tournament_message(other_user_id, f"You was invited to the tournament #{tournament_id}.<br> <span class=\"clickable-link\" onClick=\"openOnModal('/tournament-alias/');\">Click here to change nickname</span> <br> <span class=\"clickable-link\" onClick=\"dontOpenOnModal('/tournament_player_invite/{tournament_id}/{other_user_id}/')\">Click here to accept</span>")
+                add_tournament_message(other_user_id, f"You was invited to the tournament #{tournament_id}.<br> <span class=\"clickable-link\" onClick=\"openOnModal('/tournament-alias/');\">Click here to change your tournament nickname</span> <br> <span class=\"clickable-link\" onClick=\"dontOpenOnModal('/tournament_player_invite/{tournament_id}/{other_user_id}/')\">Click here to accept</span>")
                 request.session['called_players'] = called_players
         return redirect('srcs_tournament:users_list', user_id=id)
     return render(request, 'tournament/create_tournament.html', {'user_id': -1})
