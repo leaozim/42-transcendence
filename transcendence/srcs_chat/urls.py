@@ -47,7 +47,7 @@ urlpatterns = [
             [
                 *blocked_urls,
                 *unblocked_url,
-                path("<slug:username>", views.ProfileView.as_view(), name="profile"),
+                path("<str:username>", views.ProfileView.as_view(), name="profile"),
             ]
         ),
     ),
