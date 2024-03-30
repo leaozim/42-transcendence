@@ -13,7 +13,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
         document.querySelector("#modal .modal-content").innerHTML = html;
         var myModal = new bootstrap.Modal(document.getElementById("modal"));
         myModal.show();
-      })
+
+		// Function to close the modal
+		window.closeModal = function() {
+			myModal.hide();
+		}
+	})
       .catch((error) => {
         console.error("Error loading the modal content: ", error);
       });
