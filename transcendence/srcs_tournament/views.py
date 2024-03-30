@@ -67,7 +67,6 @@ def user_accept(request, user_id, user_accept_id):
     for user in users:
         add_tournament_message(user.id,
                                f"{user_accept.tournament_alias} joined tournament #{tournament.id}. Wait for {4 - users_count} more players to start.")
-
     return redirect('/')
 
 

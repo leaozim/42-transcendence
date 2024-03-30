@@ -9,9 +9,13 @@
         <ul class="list-users">
           {% for user in users_in_chats %} {% if user.username != request.user.username %}
           <li class="item-user" data-user-id="{{ user.id }}" data-username="{{ user.username }}"
-            onclick="selectItem(this); openChat('{{ user.id }}', '{{ user.username }}')"> <img src="{{ user.avatar }}"
-              class="user-photo">
+            onclick="selectItem(this); openChat('{{ user.id }}', '{{ user.username }}'); popAlert({{ user.id }})">
+            <img src="{{ user.avatar }}" class="user-photo">
             <span class="botton_name"> {{ user.username }}</span>
+            <span id="alert-message-{{ user.id }}">
+              <img src="https://www.shareicon.net/data/128x128/2016/11/15/852842_alert_512x512.png"
+                alt="Alert New Message" width="15" height="15">
+            </span>
           </li>
           {% endif %} {% endfor %}
 
