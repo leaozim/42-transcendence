@@ -10,8 +10,6 @@ from django.views.generic.list import ListView
 def create_tournament(request):
 
     id = request.user.id
-    url = request.META["HTTP_HOST"]
-    protocol = "https" if request.is_secure() else "http"
     if request.method == 'POST':
         query =  Tournament.objects.filter(creator__id=id, is_active=True)
         if id is not None and not query.exists():
@@ -19,7 +17,7 @@ def create_tournament(request):
                 user = User.objects.get(id=id)
                 tournament = Tournament.objects.create(creator=user)
                 tournament.users.add(user.id)
-                add_tournament_message(id, "You created a tournament. Wait for 3 more players to start (invite them... duh).")
+                add_tournament_message(id, "You created a tournament. Wait for 3 more players to start (invite them... duh). <br> <span class=\"clickable-link\" onClick=\"openOnModal('/tournament-alias/');\">Click here to change your tournament nickname</span>")
             except User.DoesNotExist:
                 raise Http404("User not found")
         else:
@@ -31,7 +29,7 @@ def create_tournament(request):
             called_players = request.session.get('called_players', [])
             if other_user_id and other_user_id not in called_players:
                 called_players.append(other_user_id)
-                add_tournament_message(other_user_id, f'You were invited to the tournament #{tournament_id}.<br> <span class="clickable-link" onClick="openOnModal(\'/tournament-alias/\');">Click here to change nickname</span> <br> <span class="clickable-link" onClick="dontOpenOnModal(\'/tournament_player_invite/{tournament_id}/{other_user_id}/\')">Click here to accept</span>')
+                add_tournament_message(other_user_id, f'You were invited to tournament #{tournament_id}.<br> <span class="clickable-link" onClick="openOnModal(\'/tournament-alias/\');">Click here to change nickname</span> <br> <span class="clickable-link" onClick="dontOpenOnModal(\'/tournament_player_invite/{tournament_id}/{other_user_id}/\')">Click here to accept</span>')
                 request.session['called_players'] = called_players
         return redirect('srcs_tournament:users_list', user_id=id)
     return render(request, 'tournament/create_tournament.html', {'user_id': -1})
@@ -42,7 +40,7 @@ def users_list(request, user_id):
     users = User.objects.all()
     called_players = [int(player_id) for player_id in request.session.get('called_players', [])]
     users = [user for user in users if (user.id != user_id and user.id not in called_players)]
-    return render(request, 'tournament/tournament_list.html', {'users': users})
+    return render(request, 'tournament/users_list.html', {'users': users})
 
 
 @login_required

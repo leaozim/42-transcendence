@@ -52,6 +52,9 @@ body {
 .bg-light-blue {
   background-color: #52c0d7;
 }
+.text-blue {
+  color: #52c0d7;
+}
 .user-frame {
   background-image: url("../images/user_frame.png");
 }

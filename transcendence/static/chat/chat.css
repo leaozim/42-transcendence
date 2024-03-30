@@ -24,7 +24,7 @@
 .chats {
     display:flex;
     width: 100%;
-    height: 100%;   
+    height: 100%;
     border: 20px;
 }
 
@@ -103,10 +103,10 @@
 
 /* Styles for the chat container */
 #chat-container {
-    display: flex; 
+    display: flex;
     flex-direction: column;
     background-color: #000012;
-    overflow: hidden; 
+    overflow: hidden;
     width: 100%;
     height: 100%;
     max-height: 560px;
@@ -155,9 +155,9 @@
     flex-direction: column-reverse;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #6F077C #1E1E1E; 
+    scrollbar-color: #6F077C #1E1E1E;
     border-left: 1px solid #6F077C;
-    border-radius: 0 0 15px 0; 
+    border-radius: 0 0 15px 0;
     position: relative;
 }
 
@@ -172,7 +172,7 @@
 
 #message-container::-webkit-scrollbar-track {
     background-color: #1E1E1E;
-} 
+}
 
 #no-chat-selected-message {
     position: absolute;
@@ -185,15 +185,15 @@
 }
 /* Styles for the chat log */
 #chat-log {
-    display: flex; 
-    flex-direction: column; 
+    display: flex;
+    flex-direction: column;
     padding: 0px 10px;
 }
 
 /* Styles for messages */
 .sent-message {
     display: flex;
-    justify-content: flex-end; 
+    justify-content: flex-end;
     color: #000;
     margin-top: 5px;
 
@@ -206,7 +206,7 @@
     border-radius: 15px;
     display: inline-block;
     margin: 0;
-    word-wrap: break-word; 
+    word-wrap: break-word;
 }
 
 .sent-message > p.special-style {
@@ -227,7 +227,7 @@
     border-radius: 15px;
     display: inline-block;
     margin: 0;
-    word-wrap: break-word; 
+    word-wrap: break-word;
 }
 
 .received-message > p.special-style {
@@ -238,7 +238,7 @@
 .user-photo {
     border-radius: 50%;
     width: 30px;
-    height: 30px; 
+    height: 30px;
     margin-right: 8px;
 
     img {
@@ -253,7 +253,7 @@
     display: none;
     height: 80px;
     align-items: center;
-    justify-content: center; 
+    justify-content: center;
     background-color: #000012;
     border-radius:  0 0 15px 0px;
     border-left: 1px solid #6F077C;
@@ -265,9 +265,9 @@
     height: 50px;
     margin-top: 5px;
     margin-bottom: 5px;
-    resize: none; 
+    resize: none;
     background-color: #1E1E1E;
-    border-radius: 25px 25px 25px 25px; 
+    border-radius: 25px 25px 25px 25px;
     padding: 10px 10px;
     border: none;
     outline: none;
@@ -280,7 +280,6 @@
 }
 
 .clickable-link {
-    color: blue;
     text-decoration: underline;
     cursor: pointer;
 }
