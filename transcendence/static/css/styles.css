@@ -126,6 +126,11 @@ body {
   background: #1e1e1e !important;
   color: #ffffff !important;
 }
+.btn-blue {
+  color: #00000e;
+  border-radius: 15px;
+  background: #3fa9f5;
+}
 .main-content {
   display: flex;
   flex-flow: column;
