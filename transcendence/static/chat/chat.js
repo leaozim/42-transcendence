@@ -2,6 +2,7 @@ async function openChat(other_user_id, username = "") {
   const dataRoom = await getDataRoom(other_user_id);
   const dataChat = await getDataChat(dataRoom.room_id);
   const oldChatInput = document.getElementById("chat-message-input");
+
   setupWebSocket(dataChat.room_id, dataChat.current_user);
 
   clearChatLog();
@@ -36,6 +37,7 @@ function clearChatLog() {
 function closeChat() {
   const chatInputDiv = document.getElementById("message-input-container");
   const paragraphNoChat = document.getElementById("no-chat-selected-message");
+  const chatModal = document.getElementById("chat-modal");
 
   paragraphNoChat.style.display = "block";
   chatInputDiv.style.display = "none";
@@ -88,7 +90,7 @@ function createNewChatUser(id, username, avatar) {
   return newChatUser;
 }
 
-function renderUserWindow(id, username, avatar) {
+function renderUserWindow({ id, username, avatar }) {
   const user = document.querySelector(`li[data-user-id="${id}"]`);
 
   if (!user) {
@@ -181,42 +183,55 @@ function createUsernameElement(otherUserUsername, userPhoto) {
   return divProfileElement;
 }
 
+function dontOpenOnModal(url) {
+  fetch(url)
+    .then((response) => response.text())
+    .then((html) => {
+      console.log("Sucesso");
+    })
+    .catch((error) => {
+      console.error("Error loading the modal content: ", error);
+    });
+}
+
 function openOnModal(url) {
   fetch(url)
-      .then((response) => response.text())
-      .then((html) => {
-        document.querySelector("#tournament-alias").innerHTML = html;
-        initializeFormSubmission();
-      })
-      .catch((error) => {
-        console.error("Error loading the modal content: ", error);
-      });
+    .then((response) => response.text())
+    .then((html) => {
+      document.querySelector("#tournament-alias").innerHTML = html;
+      initializeFormSubmission();
+    })
+    .catch((error) => {
+      console.error("Error loading the modal content: ", error);
+    });
 }
 
 function initializeFormSubmission() {
-  document.querySelector('#tournament-alias-form').addEventListener('submit', function(e) {
+  document
+    .querySelector("#tournament-alias-form")
+    .addEventListener("submit", function (e) {
       e.preventDefault();
       const formData = new FormData(this);
 
       fetch(this.action, {
-          method: 'POST',
-          body: formData,
-          headers: {
-              'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
-          },
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+        },
       })
-      .then(response => {
+        .then((response) => {
           if (response.ok) {
-              return response.text();
+            return response.text();
           }
-          throw new Error('Form submission failed!');
-      })
-      .then(data => {
-          console.log('Form submitted successfully:', data);
+          throw new Error("Form submission failed!");
+        })
+        .then((data) => {
+          console.log("Form submitted successfully:", data);
           document.querySelector("#tournament-alias").innerHTML = data;
-      })
-      .catch(error => console.error('Error submitting the form:', error));
-  });
+        })
+        .catch((error) => console.error("Error submitting the form:", error));
+    });
 }
 
 function createUserPhoto(otherUserAvatar) {
