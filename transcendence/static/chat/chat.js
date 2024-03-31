@@ -144,8 +144,8 @@ function createButtonBlock() {
 }
 
 function createButtonPlay(otherUserId) {
-  const buttonPlay = document.createElement("div");
-  buttonPlay.className = "buttons-chat";
+  const buttonPlay = document.createElement("button");
+  buttonPlay.className = "button-init-game";
   const img = createButtonImage(
     "init game",
     "static/images/chat_button_play.png",
@@ -165,13 +165,14 @@ function createButtonImage(title, src) {
 }
 
 function createUsernameElement(otherUserUsername, userPhoto) {
-  const usernameElement = document.createElement("h2");
+  const usernameElement = document.createElement("span");
   usernameElement.textContent = otherUserUsername;
 
-  const divProfileElement = document.createElement("div");
+  const divProfileElement = document.createElement("button");
   const divImgElement = document.createElement("div");
   divImgElement.className = "user-photo";
   divProfileElement.id = "profile-element";
+  divProfileElement.className = "btn-profile-element"
 
   divProfileElement.addEventListener("click", function () {
     openUserModal(otherUserUsername);
