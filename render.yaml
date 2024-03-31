@@ -1,0 +1,66 @@
+services:
+  - name: db
+    image: postgres:13
+    env:
+      - key: POSTGRES_USER
+        from_secret: POSTGRES_USER
+      - key: POSTGRES_PASSWORD
+        from_secret: POSTGRES_PASSWORD
+      - key: POSTGRES_HOST
+        value: ${POSTGRES_HOST}
+      - key: POSTGRES_DB
+        from_secret: POSTGRES_DB
+      - key: POSTGRES_NAME
+        from_secret: POSTGRES_NAME
+    ports:
+      - 5432
+    healthcheck:
+      http_endpoint: http://localhost:5432
+      timeout_seconds: 5
+      check_interval_seconds: 10
+      unhealthy_threshold: 2
+      healthy_threshold: 2
+
+  - name: redis
+    image: redis:6
+    ports:
+      - 6379
+
+  - name: server
+    build:
+      dockerfile: Dockerfile
+      context: ./transcendence/
+    env:
+      - key: AUTH_URL_INTRA
+        from_secret: AUTH_URL_INTRA
+      - key: REDIRECT_URI
+        from_secret: REDIRECT_URI
+      - key: CLIENT_SECRET
+        from_secret: CLIENT_SECRET
+      - key: CLIENT_ID
+        from_secret: CLIENT_ID
+      - key: POSTGRES_USER
+        from_secret: POSTGRES_USER
+      - key: POSTGRES_NAME
+        from_secret: POSTGRES_NAME
+      - key: POSTGRES_PASSWORD
+        from_secret: POSTGRES_PASSWORD
+      - key: POSTGRES_HOST
+        value: db
+      - key: SECRET_KEY
+        from_secret: SECRET_KEY
+    ports:
+      - 8000
+    healthcheck:
+      http_endpoint: http://localhost:8000
+      timeout_seconds: 5
+      check_interval_seconds: 10
+      unhealthy_threshold: 2
+      healthy_threshold: 2
+
+volumes:
+  - name: postgres
+    mount_path: /var/lib/postgresql/data
+
+networks:
+  - name: sonarnet
