@@ -14,7 +14,7 @@
 					<form action="{% url 'srcs_tournament:create_tournament' %}" method="post">
 						{% csrf_token %}
 						<input type="hidden" name="user_id" value="{{ user.id }}">
-						<button id="game-button"
+						<button id="tournament-invite"
 						class="btn-round bg-blue"
 						type="button">
 							<i class="bi bi-trophy"></i>

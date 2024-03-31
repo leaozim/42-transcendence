@@ -5,7 +5,7 @@ var openModalButton = document.getElementById("tournament-button");
 
 	e.preventDefault()
 
-	
+
 	const xhr = new XMLHttpRequest();
 
         xhr.open("POST", "/create_tournament/");
@@ -17,16 +17,15 @@ var openModalButton = document.getElementById("tournament-button");
         xhr.onreadystatechange = () => {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
-				console.log( "aaaaaaaaaaaaaaa", xhr.responseText)
-				document.querySelector("#modal .modal-content").innerHTML = xhr.responseText;
-				var myModal = new bootstrap.Modal(document.getElementById("modal"));
-				myModal.show();
-			  
+				console.log("player invited")
+				/* MAYBE TODO: create to show the player was invited, maybe this
+				is not necessary if notifications are working in chat channel
+				or just show a message */
             } else {
               throw new Error(`${xhr.responseText}`);
             }
           }
         };
-	
-	
+
+
 });
