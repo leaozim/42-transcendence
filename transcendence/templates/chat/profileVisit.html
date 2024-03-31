@@ -1,12 +1,10 @@
 {% load static %}
 <div id="user-modal" class="modal" tabindex="-1" role="dialog">
   <div class="modal-content profile">
-
+    <div>
     <div class="nickname">
       <h1 class="profile-text" id="user-profile-username">{{ username }}</h1>
     </div>
-
-    <!-- Game buttons -->
     <div class="flex-center">
       {% if not blocked_user %}
       <button id="block-button" class="buttons-svg" type="button"><img src="{% static 'images/unblocked.png' %}" alt=""></button>
@@ -14,26 +12,6 @@
       <button id="unblock-button" class="buttons-svg" type="button"><img src="{% static 'images/blocked.png' %}" alt=""></button>
       {% endif %}
     </div>
-
-
-    <!--Statistics -->
-    <div class="statistics-box">
-      <h3 class="profile-text flex-center">Statistics</h3>
-      <div class="legend flex-center">
-        <div class="legend-svg">
-          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23" fill="none">
-            <circle cx="11.5894" cy="11.6208" r="11.1842" fill="#2E8632" />
-          </svg>
-          <label for="wins" class="profile-text">wins</label>
-        </div>
-        <div class="legend-svg">
-          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23" fill="none">
-            <circle cx="11.816" cy="11.6208" r="11.1842" fill="#B91B1B" />
-          </svg>
-          <label for="losses" class="profile-text">losses</label>
-        </div>
-      </div>
-      <div class="absolute-values-bar"></div>
     </div>
   </div>
 </div>

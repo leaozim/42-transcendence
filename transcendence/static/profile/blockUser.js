@@ -1,5 +1,8 @@
 async function fetchPage(url, username = "") {
-  return fetch(url + `${username}`)
+  console.log(username)
+  console.log(encodeURI(url + username))
+
+  return fetch(encodeURI(url + username))
     .then((response) => {
       if (!response.ok) {
         throw new Error(`fail to fetching ${url}`);
