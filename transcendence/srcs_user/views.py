@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render
 from srcs_auth.decorators import two_factor_required
-from srcs_user.models import User
+from srcs_user.models import User, BlockedUser
 
 
 @login_required
@@ -24,3 +24,19 @@ def users_list(request):
         "user/usersList.html",
         {"users": users, "caller": "caller_is_user_list"},
     )
+
+def check_blocked_user(request):
+    blocked_by_id = request.GET.get('blocked_by_id')
+    blocked_user_id = request.GET.get('blocked_user_id')
+    
+    blocked_user = BlockedUser.objects.filter(
+        blocked_by_id=blocked_by_id,
+        blocked_user_id=blocked_user_id
+    ).first()
+
+    if blocked_user:
+        blocked = True
+    else:
+        blocked = False
+        
+    return JsonResponse({'blocked': blocked})
