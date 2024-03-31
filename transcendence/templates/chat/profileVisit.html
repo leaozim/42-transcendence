@@ -3,7 +3,7 @@
     <div class="modal-content profile">
         <div>
             <div class="text-center">
-                <img src="{{ avatar }}"
+                <img src="{% if avatar %}{{ avatar }}{% else %}{% static "images/sloth.jpg" %}{% endif %}"
                      alt="image"
                      width="128"
                      height="128"
