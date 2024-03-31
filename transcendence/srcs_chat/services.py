@@ -85,3 +85,11 @@ def get_updated_user_list(id_user, username):
 def is_chat_blocked(chat_id):
     chat = Chat.objects.get(pk=chat_id)
     return chat.blocked
+
+def get_or_create_chat(user1, user2):
+    chat = Chat.objects.filter(users_on_chat=user1).filter(users_on_chat=user2).first()
+    
+    if not chat:
+        chat = open_chat(user1, user2)
+    
+    return chat

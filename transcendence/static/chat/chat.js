@@ -9,10 +9,12 @@ async function openChat(other_user_id, username = "") {
   if (dataChat.messages.length) {
     initializeChatLog(dataChat.current_username, dataChat.messages);
   }
+  const blocked = await isBlocked(dataChat.current_user_id, other_user_id)
   appendChatHeader(
     dataChat.other_user_username,
     dataChat.other_user_avatar,
     dataChat.other_user_id,
+    blocked
   );
 
   document.getElementById("no-chat-selected-message").style.display = "none";

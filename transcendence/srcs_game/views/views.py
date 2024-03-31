@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.http import JsonResponse
 from django.views.generic.list import ListView
+from srcs_message.services import add_tournament_message
 
 
 @login_required
@@ -14,6 +15,10 @@ def create_game_view(request, right_player_id):
     left_player = request.user
 
     game = create_game(left_player, right_player)
+    url = request.META["HTTP_HOST"]
+    protocol = "https" if request.is_secure() else "http"
+    message = f"{left_player.username} has challenge you to a game: {protocol}://{url}/game/{game.id}"
+    add_tournament_message(right_player, message)
     return JsonResponse({'room_id': game.id})
 
 def room(request, room_id):

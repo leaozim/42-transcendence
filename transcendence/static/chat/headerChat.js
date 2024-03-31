@@ -94,7 +94,7 @@ async function isBlocked(current_user, other_user_id) {
       .catch((e) => console.error(e))
 }
 
-function appendChatHeader(otherUserUsername, otherUserAvatar, blocked, otherUserId) {
+function appendChatHeader(otherUserUsername, otherUserAvatar, otherUserId, blocked) {
   const chatHeader = createChatHeader();
 
   if (otherUserUsername) {
