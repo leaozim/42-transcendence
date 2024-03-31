@@ -10,9 +10,9 @@ async function openChat(other_user_id, username = "") {
     initializeChatLog(dataChat.current_username, dataChat.messages);
   }
   const blocked = await isBlocked(dataChat.current_user_id, other_user_id)
-  console.log(blocked)
-  appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar, blocked);
-  
+  appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar, dataChat.other_user_id, blocked);
+
+
   document.getElementById("no-chat-selected-message").style.display = "none";
   document.getElementById("message-input-container").style.display = "flex";
   const oldChatInput = document.getElementById("chat-message-input");
@@ -43,6 +43,7 @@ function clearChatLog() {
 function closeChat() {
   const chatInputDiv = document.getElementById("message-input-container");
   const paragraphNoChat = document.getElementById("no-chat-selected-message");
+  const chatModal = document.getElementById("chat-modal");
 
   paragraphNoChat.style.display = "block";
   chatInputDiv.style.display = "none";
@@ -95,7 +96,7 @@ function createNewChatUser(id, username, avatar) {
   return newChatUser;
 }
 
-function renderUserWindow(id, username, avatar) {
+function renderUserWindow({ id, username, avatar }) {
   const user = document.querySelector(`li[data-user-id="${id}"]`);
 
   if (!user) {
@@ -130,118 +131,55 @@ async function getDataChat(roomId) {
   }
 }
 
-function createButtonPlay() {
-  const buttonPlay = document.createElement("div");
-  buttonPlay.className = "buttons-chat";
-  const img = createButtonImage(
-    "init game",
-    "static/images/chat_button_play.png",
-  );
-  buttonPlay.appendChild(img);
-  buttonPlay.addEventListener("click", function () {
-    onCreateGame(otherUser.other_user_id);
-  });
-  return buttonPlay;
-}
-
-function createButtonImage(title, src) {
-  const img = document.createElement("img");
-  img.title = title;
-  img.setAttribute("src", src);
-  return img;
-}
-
-function createUsernameElement(otherUserUsername, userPhoto) {
-  const usernameElement = document.createElement("h2");
-  usernameElement.textContent = otherUserUsername;
-
-  const divProfileElement = document.createElement("div");
-  const divImgElement = document.createElement("div");
-  divImgElement.className = "user-photo";
-  divProfileElement.id = "profile-element";
-
-  divProfileElement.addEventListener("click", function () {
-    openUserModal(otherUserUsername);
-  });
-
-  divImgElement.appendChild(userPhoto);
-  divProfileElement.appendChild(divImgElement);
-  divProfileElement.appendChild(usernameElement);
-  return divProfileElement;
-}
-
-
 function dontOpenOnModal(url) {
-  console.log(url)
   fetch(url)
-      .then((response) => response.text())
-      .then((html) => {
-        console.log("Sucesso")
-      })
-      .catch((error) => {
-        console.error("Error loading the modal content: ", error);
-      });
+    .then((response) => response.text())
+    .then((html) => {
+      console.log("Sucesso");
+    })
+    .catch((error) => {
+      console.error("Error loading the modal content: ", error);
+    });
 }
 
 function openOnModal(url) {
   fetch(url)
-      .then((response) => response.text())
-      .then((html) => {
-        document.querySelector("#tournament-alias").innerHTML = html;
-        initializeFormSubmission();
-      })
-      .catch((error) => {
-        console.error("Error loading the modal content: ", error);
-      });
+    .then((response) => response.text())
+    .then((html) => {
+      document.querySelector("#tournament-alias").innerHTML = html;
+      initializeFormSubmission();
+    })
+    .catch((error) => {
+      console.error("Error loading the modal content: ", error);
+    });
 }
 
 function initializeFormSubmission() {
-  document.querySelector('#tournament-alias-form').addEventListener('submit', function(e) {
+  document
+    .querySelector("#tournament-alias-form")
+    .addEventListener("submit", function (e) {
       e.preventDefault();
       const formData = new FormData(this);
 
       fetch(this.action, {
-          method: 'POST',
-          body: formData,
-          headers: {
-              'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
-          },
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+        },
       })
-      .then(response => {
+        .then((response) => {
           if (response.ok) {
-              return response.text();
+            return response.text();
           }
-          throw new Error('Form submission failed!');
-      })
-      .then(data => {
-          console.log('Form submitted successfully:', data);
+          throw new Error("Form submission failed!");
+        })
+        .then((data) => {
+          console.log("Form submitted successfully:", data);
           document.querySelector("#tournament-alias").innerHTML = data;
-      })
-      .catch(error => console.error('Error submitting the form:', error));
-  });
-}
-
-function createUserPhoto(otherUserAvatar) {
-  const userPhoto = document.createElement("img");
-  userPhoto.alt = "Avatar";
-  userPhoto.src = otherUserAvatar
-    ? otherUserAvatar
-    : "https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png";
-  return userPhoto;
-}
-
-function removeExistingChatHeader() {
-  const existingChatHeader = document.querySelector(".chat-header");
-  if (existingChatHeader) {
-    existingChatHeader.remove();
-  }
-}
-
-function createChatHeader() {
-  const chatHeader = document.createElement("header");
-  chatHeader.className = "chat-header";
-  removeExistingChatHeader();
-  return chatHeader;
+        })
+        .catch((error) => console.error("Error submitting the form:", error));
+    });
 }
 
 function selectItem(item) {
@@ -251,20 +189,4 @@ function selectItem(item) {
   });
 
   item.classList.add("selected");
-}
-
-function onCreateGame(rightPlayerId) {
-  if (!rightPlayerId || isNaN(rightPlayerId)) {
-    console.error("Invalid user ID for the right player:", rightPlayerId);
-    return;
-  }
-
-  fetch("/game/create_game/" + rightPlayerId)
-    .then((response) => response.json())
-    .then((data) => {
-      window.location.pathname = "/game/" + data.room_id + "/";
-    })
-    .catch((error) => {
-      console.error("Error creating game:", error);
-    });
 }

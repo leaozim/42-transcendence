@@ -6,6 +6,9 @@ body {
 .navbar-nav .dropdown-menu {
   background-color: transparent;
 }
+.user-info {
+  white-space: nowrap;
+}
 .dropdown-item:hover {
   color: #ffffff;
   background-color: #000012;
@@ -48,6 +51,9 @@ body {
 }
 .bg-light-blue {
   background-color: #52c0d7;
+}
+.text-blue {
+  color: #52c0d7;
 }
 .user-frame {
   background-image: url("../images/user_frame.png");
@@ -119,6 +125,11 @@ body {
   border: 1px solid #3fa9f5;
   background: #1e1e1e !important;
   color: #ffffff !important;
+}
+.btn-blue {
+  color: #00000e;
+  border-radius: 15px;
+  background: #3fa9f5;
 }
 .main-content {
   display: flex;

@@ -1,13 +1,19 @@
+{% load i18n %}
 {% if flag_tournament_created %}
 <p>
-	Nickname registered
+	{% translate "Nickname registered" %}
 </p>
 {% else %}
-<form method="post" id="tournament-alias-form" action="{% url "srcs_tournament:create_tournament_alias" %}">
+<form class="row py-3 g-3" method="post" id="tournament-alias-form" action="{% url "srcs_tournament:create_tournament_alias" %}">
 	{% csrf_token %}
-	<label for="name">Name:</label>
-	<input type="text" id="name" name="name" required>
-	<button type="submit">Submit</button>
+	<div class="col-md-2">
+		<label for="name ms-3">{% translate "Nickname" %}:</label>
+	</div>
+	<div class="col-md-6">
+		<input class="form-control" type="text" id="name" name="name" required>
+	</div>
+	<div class="col-md-4">
+		<button class="btn btn-blue" type="submit">{% translate "Change" %}</button>
+	</div>
 </form>
 {% endif %}
-  

@@ -1,7 +1,6 @@
 from django.contrib.auth.backends import BaseBackend
 from srcs_user.models import User
 from srcs_auth.jwt_token import verify_jwt_token
-import logging
 from srcs_chat.services import open_chat
 from srcs_message.services import add_message
 
@@ -17,7 +16,7 @@ class IntraAuthenticationBackend(BaseBackend):
             except User.DoesNotExist:
                 user = User.objects.create_new_intra_user(user_intra)
                 chat = open_chat(1, user.id)
-                add_message(chat.id, "Olá humano!", 1)    
+                add_message(chat.id, "Hello, human!", 1)    
             return user
         return None
 

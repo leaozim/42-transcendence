@@ -1,7 +1,7 @@
 {% load static i18n %}
 
             <div class="wrapper-user-list">
-                <div class="bg-common bg-title-pink mb-5">
+                <div class="bg-common bg-title-pink mt-0 mb-5">
                     <h2 class="title-center">{% translate "Players" %}</h2>
                 </div>
                 <ul class="user-list">
@@ -15,9 +15,9 @@
                                         <button id="game-button"
                                                 class="btn-round bg-blue"
                                                 type="button"
-                                                data-toggle="modal"
-                                                data-target=""
-                                                onclick="onUserClick(`{{ user.id }}`, '{{ user.username }}')">
+												data-toggle="modal"
+												data-target="#chat-modal"
+												onclick="openChatScreen('{{ user.id }}', '{{ user.username }}')">
                                             <i class="bi bi-chat-left"></i>
                                         </button>
                                         <button id="game-button"

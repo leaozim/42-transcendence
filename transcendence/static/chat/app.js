@@ -1,7 +1,13 @@
-const chatModal = document.getElementById("chat-modal");
-const chatButton = document.getElementById("chat-button");
-const profileElement = document.getElementById("profile-element");
+const sockets = new Sockets();
 const userModal = new UserModal();
+const chatButton = document.getElementById("chat-button");
+
+chatButton.addEventListener("click", function () {
+  const chatModal = document.getElementById("chat-modal");
+
+  chatModal.style.display = "block";
+  popAlert();
+});
 
 function Sockets() {
   this.chatSocket;
@@ -28,11 +34,9 @@ function Sockets() {
         parseNestedJson,
       ).data;
 
-      renderUserWindow(
-        userNotification.id,
-        userNotification.username,
-        userNotification.avatar,
-      );
+      alertOnMessage(userNotification);
+
+      renderUserWindow(userNotification);
     };
   }).call(this);
 }
@@ -49,7 +53,6 @@ Sockets.prototype.close = function () {
   }
 };
 
-const sockets = new Sockets();
 
 if (chatButton) {
   chatButton.addEventListener("click", function () {
@@ -60,12 +63,17 @@ if (chatButton) {
 }
 
 function openChatScreen(userId, username) {
+  const chatModal = document.getElementById("chat-modal");
+
   chatModal.style.display = "block";
 
+  closeModal();
   openChat(userId, username);
 }
 
 window.addEventListener("click", function (event) {
+  const chatModal = document.getElementById("chat-modal");
+
   if (event.target == chatModal) {
     closeChat();
     sockets.close();
@@ -124,6 +132,8 @@ function UserModal() {
 }
 
 async function openUserModal(username) {
+  const chatModal = document.getElementById("chat-modal");
+
   chatModal.style.display = "none";
   await userModal.open(username);
 }
