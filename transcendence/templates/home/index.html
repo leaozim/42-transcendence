@@ -79,7 +79,8 @@
         <h1 class="title-center bg-common">Transcendence</h1>
       </div>
       <div class="frame-image">
-        <img src="{% static 'images/avatar_frame.png' %}" alt="avatar" class="img-avatar-frame img-fluid" width="480" height="480" />
+        <img src="{% static 'images/avatar_frame.png' %}" alt="avatar" class="img-avatar-frame img-fluid" width="480"
+          height="480" />
         <img src="{{ user.avatar }}" alt="image" width="128" height="128" class="img-avatar img-fluid rounded-circle" />
       </div>
       <div id="instructions-card" class="text-card">
@@ -121,9 +122,15 @@
           or just chat.
           {% endblocktrans %}
         </p>
-        <button id="chat-button" class="btn-round bg-pink" type="button" data-toggle="modal" data-target="">
-          <i class="bi bi-chat-left"></i>
-        </button>
+        <div class="flex-center">
+          <button id="chat-button" class="btn-round bg-pink" type="button" data-toggle="modal" data-target="">
+            <i class="bi bi-chat-left"></i>
+          </button>
+          <span id="alerts-on-message-chat" hidden>
+            <img src="https://www.shareicon.net/data/128x128/2016/11/15/852842_alert_512x512.png"
+              alt="Alert New Message" width="30" height="30">
+          </span>
+        </div>
       </div>
       <div id="game-card" class="text-card">
         <h2>{% translate "game" %}</h2>
@@ -150,9 +157,14 @@
           tournament.
           {% endblocktrans %}
         </p>
-        <button id="tournament-button" class="btn-round bg-pink" type="button" data-toggle="modal" data-target="">
-          <i class="bi bi-trophy"></i>
-        </button>
+        <form id="create_tournament_form" action="{% url 'srcs_tournament:create_tournament' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" Criar id="tournament-button" class="btn-round bg-pink" type="button" data-toggle="modal"
+            data-target="">
+            <i class="bi bi-trophy"></i>
+          </button>
+          <input type="hidden" name="user_id" value="{{ user_id }}">
+        </form>
       </div>
       <!-- Profile page -->
       {% include "profile/modal.html" %}
@@ -183,6 +195,7 @@
 
 <script src="{% static 'profile/app.js' %}" type="module"></script>
 <script src="{% static 'profile/blockUser.js' %}"></script>
+<script src="{% static 'chat/notification.js' %}"></script>
 <script src="{% static 'chat/utilsChatUpdater.js' %}"></script>
 <script src="{% static 'chat/initialChatLog.js' %}"></script>
 <script src="{% static 'chat/headerChat.js' %}"></script>
@@ -190,4 +203,6 @@
 <script src="{% static 'chat/app.js' %}"></script>
 <script src="{% static 'chat/chatSocket.js' %}"></script>
 <script src="{% static 'game/game_list.js' %}"></script>
+<script src="{% static 'tournament/tournament_list.js' %}"></script>
+
 {% endblock scripts %}

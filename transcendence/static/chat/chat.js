@@ -9,10 +9,12 @@ async function openChat(other_user_id, username = "") {
   if (dataChat.messages.length) {
     initializeChatLog(dataChat.current_username, dataChat.messages);
   }
-  const blocked = await isBlocked(dataChat.current_user_id, other_user_id)
-  console.log(blocked)
-  appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar, blocked);
-  
+  appendChatHeader(
+    dataChat.other_user_username,
+    dataChat.other_user_avatar,
+    dataChat.other_user_id,
+  );
+
   document.getElementById("no-chat-selected-message").style.display = "none";
   document.getElementById("message-input-container").style.display = "flex";
   const oldChatInput = document.getElementById("chat-message-input");
@@ -43,6 +45,7 @@ function clearChatLog() {
 function closeChat() {
   const chatInputDiv = document.getElementById("message-input-container");
   const paragraphNoChat = document.getElementById("no-chat-selected-message");
+  const chatModal = document.getElementById("chat-modal");
 
   paragraphNoChat.style.display = "block";
   chatInputDiv.style.display = "none";
@@ -80,22 +83,27 @@ async function sendMessage() {
 function createNewChatUser(id, username, avatar) {
   const newChatUser = document.createElement("li");
 
-  newChatUser.className = "item-user";
+  newChatUser.classList.add("item-user");
   newChatUser.setAttribute("data-user-id", id);
   newChatUser.setAttribute("data-username", username);
   newChatUser.setAttribute(
     "onclick",
-    `selectItem(this); openChat('${id}', '${username}')`,
+    `selectItem(this); openChat('${id}', '${username}'); popAlert(${id})`,
   );
 
   newChatUser.innerHTML = `
       <img src="${avatar}" class="user-photo" onclick="selectItem(this.parentElement); openChat('${id}', '${username}')">
-      <span class="button_name">${username}</span>`;
+      <span class="button_name">${username}</span>
+      <span id="alert-message-${id}" hidden>
+        <img src="https://www.shareicon.net/data/128x128/2016/11/15/852842_alert_512x512.png"
+          alt="Alert New Message" width="15" height="15">
+      </span>
+  `;
 
   return newChatUser;
 }
 
-function renderUserWindow(id, username, avatar) {
+function renderUserWindow({ id, username, avatar }) {
   const user = document.querySelector(`li[data-user-id="${id}"]`);
 
   if (!user) {
@@ -130,7 +138,7 @@ async function getDataChat(roomId) {
   }
 }
 
-function createButtonPlay() {
+function createButtonPlay(otherUserId) {
   const buttonPlay = document.createElement("div");
   buttonPlay.className = "buttons-chat";
   const img = createButtonImage(
@@ -139,7 +147,7 @@ function createButtonPlay() {
   );
   buttonPlay.appendChild(img);
   buttonPlay.addEventListener("click", function () {
-    onCreateGame(otherUser.other_user_id);
+    onCreateGame(otherUserId);
   });
   return buttonPlay;
 }
@@ -170,55 +178,55 @@ function createUsernameElement(otherUserUsername, userPhoto) {
   return divProfileElement;
 }
 
-
 function dontOpenOnModal(url) {
-  console.log(url)
   fetch(url)
-      .then((response) => response.text())
-      .then((html) => {
-        console.log("Sucesso")
-      })
-      .catch((error) => {
-        console.error("Error loading the modal content: ", error);
-      });
+    .then((response) => response.text())
+    .then((html) => {
+      console.log("Sucesso");
+    })
+    .catch((error) => {
+      console.error("Error loading the modal content: ", error);
+    });
 }
 
 function openOnModal(url) {
   fetch(url)
-      .then((response) => response.text())
-      .then((html) => {
-        document.querySelector("#tournament-alias").innerHTML = html;
-        initializeFormSubmission();
-      })
-      .catch((error) => {
-        console.error("Error loading the modal content: ", error);
-      });
+    .then((response) => response.text())
+    .then((html) => {
+      document.querySelector("#tournament-alias").innerHTML = html;
+      initializeFormSubmission();
+    })
+    .catch((error) => {
+      console.error("Error loading the modal content: ", error);
+    });
 }
 
 function initializeFormSubmission() {
-  document.querySelector('#tournament-alias-form').addEventListener('submit', function(e) {
+  document
+    .querySelector("#tournament-alias-form")
+    .addEventListener("submit", function (e) {
       e.preventDefault();
       const formData = new FormData(this);
 
       fetch(this.action, {
-          method: 'POST',
-          body: formData,
-          headers: {
-              'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
-          },
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+        },
       })
-      .then(response => {
+        .then((response) => {
           if (response.ok) {
-              return response.text();
+            return response.text();
           }
-          throw new Error('Form submission failed!');
-      })
-      .then(data => {
-          console.log('Form submitted successfully:', data);
+          throw new Error("Form submission failed!");
+        })
+        .then((data) => {
+          console.log("Form submitted successfully:", data);
           document.querySelector("#tournament-alias").innerHTML = data;
-      })
-      .catch(error => console.error('Error submitting the form:', error));
-  });
+        })
+        .catch((error) => console.error("Error submitting the form:", error));
+    });
 }
 
 function createUserPhoto(otherUserAvatar) {
@@ -254,6 +262,7 @@ function selectItem(item) {
 }
 
 function onCreateGame(rightPlayerId) {
+  console.log(rightPlayerId);
   if (!rightPlayerId || isNaN(rightPlayerId)) {
     console.error("Invalid user ID for the right player:", rightPlayerId);
     return;

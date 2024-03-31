@@ -24,7 +24,7 @@ function createButtonBlock(blocked) {
   return buttonBlock;
 }
 
-function createButtonPlay() {
+function createButtonPlay(otherUserId) {
   const buttonPlay = document.createElement("div");
   buttonPlay.className = "buttons-chat";
   const img = createButtonImage(
@@ -33,7 +33,7 @@ function createButtonPlay() {
   );
   buttonPlay.appendChild(img);
   buttonPlay.addEventListener("click", function () {
-    onCreateGame(otherUser.other_user_id);
+    onCreateGame(otherUserId);
   });
   return buttonPlay;
 }
@@ -94,7 +94,7 @@ async function isBlocked(current_user, other_user_id) {
       .catch((e) => console.error(e))
 }
 
-function appendChatHeader(otherUserUsername, otherUserAvatar, blocked) {
+function appendChatHeader(otherUserUsername, otherUserAvatar, blocked, otherUserId) {
   const chatHeader = createChatHeader();
 
   if (otherUserUsername) {
@@ -102,7 +102,7 @@ function appendChatHeader(otherUserUsername, otherUserAvatar, blocked) {
     divProfileElement = createUsernameElement(otherUserUsername, userPhoto);
     chatHeader.appendChild(divProfileElement);
     const buttonBlock = createButtonBlock(blocked);
-    const buttonPlay = createButtonPlay();
+    const buttonPlay = createButtonPlay(otherUserId);
     const buttonsContainer = createButtonsContainer(buttonBlock, buttonPlay);
     chatHeader.appendChild(buttonsContainer);
   }
