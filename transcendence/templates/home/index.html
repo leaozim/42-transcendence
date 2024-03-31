@@ -81,7 +81,8 @@
       <div class="frame-image">
         <img src="{% static 'images/avatar_frame.png' %}" alt="avatar" class="img-avatar-frame img-fluid" width="480"
           height="480" />
-        <img src="{{ user.avatar }}" alt="image" width="128" height="128" class="img-avatar img-fluid rounded-circle" />
+        <img src="{% if user.avatar %}{{ user.avatar }}{% else %}{% static " images/sloth.jpg" %}{% endif %}"
+          alt="image" width="128" height="128" class="img-avatar img-fluid rounded-circle" />
       </div>
       <div id="instructions-card" class="text-card">
         <h2>{% translate "instructions" %}</h2>
@@ -196,7 +197,6 @@
 <script src="{% static 'profile/app.js' %}" type="module"></script>
 <script src="{% static 'profile/blockUser.js' %}"></script>
 <script src="{% static 'chat/notification.js' %}"></script>
-<script src="{% static 'chat/utilsChatUpdater.js' %}"></script>
 <script src="{% static 'chat/initialChatLog.js' %}"></script>
 <script src="{% static 'chat/headerChat.js' %}"></script>
 <script src="{% static 'chat/chat.js' %}"></script>

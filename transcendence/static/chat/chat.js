@@ -3,18 +3,18 @@ async function openChat(other_user_id, username = "") {
   const dataChat = await getDataChat(dataRoom.room_id);
 
   setupWebSocket(dataChat.room_id, dataChat.current_user);
-  
+
   clearChatLog();
-  
+
   if (dataChat.messages.length) {
     initializeChatLog(dataChat.current_username, dataChat.messages);
   }
-  const blocked = await isBlocked(dataChat.current_user_id, other_user_id)
+  const blocked = await isBlocked(dataChat.current_user_id, other_user_id);
   appendChatHeader(
     dataChat.other_user_username,
     dataChat.other_user_avatar,
     dataChat.other_user_id,
-    blocked
+    blocked,
   );
 
   document.getElementById("no-chat-selected-message").style.display = "none";
@@ -90,11 +90,11 @@ function createNewChatUser(id, username, avatar) {
   newChatUser.setAttribute("data-username", username);
   newChatUser.setAttribute(
     "onclick",
-    `selectItem(this); openChat('${id}', '${username}'); popAlert(${id})`,
+    `selectItem(${id}); openChat('${id}', '${username}'); popAlert(${id})`,
   );
 
   newChatUser.innerHTML = `
-      <img src="${avatar}" class="user-photo" onclick="selectItem(this.parentElement); openChat('${id}', '${username}')">
+      <img src="${avatar}" class="user-photo" onclick="selectItem(${id}); openChat('${id}', '${username}')">
       <span class="button_name">${username}</span>
       <span id="alert-message-${id}" hidden>
         <img src="https://www.shareicon.net/data/128x128/2016/11/15/852842_alert_512x512.png"
@@ -141,8 +141,8 @@ async function getDataChat(roomId) {
 }
 
 function createButtonPlay(otherUserId) {
-  const buttonPlay = document.createElement("div");
-  buttonPlay.className = "buttons-chat";
+  const buttonPlay = document.createElement("button");
+  buttonPlay.className = "button-init-game";
   const img = createButtonImage(
     "init game",
     "static/images/chat_button_play.png",
@@ -162,13 +162,14 @@ function createButtonImage(title, src) {
 }
 
 function createUsernameElement(otherUserUsername, userPhoto) {
-  const usernameElement = document.createElement("h2");
+  const usernameElement = document.createElement("span");
   usernameElement.textContent = otherUserUsername;
 
-  const divProfileElement = document.createElement("div");
+  const divProfileElement = document.createElement("button");
   const divImgElement = document.createElement("div");
   divImgElement.className = "user-photo";
   divProfileElement.id = "profile-element";
+  divProfileElement.className = "btn-profile-element";
 
   divProfileElement.addEventListener("click", function () {
     openUserModal(otherUserUsername);
@@ -252,15 +253,6 @@ function createChatHeader() {
   chatHeader.className = "chat-header";
   removeExistingChatHeader();
   return chatHeader;
-}
-
-function selectItem(item) {
-  var items = document.querySelectorAll(".item-user");
-  items.forEach(function (item) {
-    item.classList.remove("selected");
-  });
-
-  item.classList.add("selected");
 }
 
 function onCreateGame(rightPlayerId) {

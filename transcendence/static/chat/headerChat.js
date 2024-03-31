@@ -10,17 +10,21 @@ function createButtonBlock(blocked) {
   const buttonBlock = document.createElement("div");
   buttonBlock.className = "buttons-chat";
   if (blocked) {
-    buttonBlock.appendChild(createButtonImage(
-      "blocked user",
-      "static/images/chat_button_blocked.png",
-    ));
+    buttonBlock.appendChild(
+      createButtonImage(
+        "blocked user",
+        "static/images/chat_button_blocked.png",
+      ),
+    );
   } else {
-    buttonBlock.appendChild(createButtonImage(
-      "unblocked user",
-      "static/images/chat_button_unblocked.png",
-    ));
+    buttonBlock.appendChild(
+      createButtonImage(
+        "unblocked user",
+        "static/images/chat_button_unblocked.png",
+      ),
+    );
   }
-  
+
   return buttonBlock;
 }
 
@@ -88,13 +92,20 @@ function createChatHeader() {
 }
 
 async function isBlocked(current_user, other_user_id) {
-  return fetch(`/check_blocked_user/?blocked_by_id=${current_user}&blocked_user_id=${other_user_id}`)
-      .then(response => response.json())
-      .then(data => data.blocked)
-      .catch((e) => console.error(e))
+  return fetch(
+    `/check_blocked_user/?blocked_by_id=${current_user}&blocked_user_id=${other_user_id}`,
+  )
+    .then((response) => response.json())
+    .then((data) => data.blocked)
+    .catch((e) => console.error(e));
 }
 
-function appendChatHeader(otherUserUsername, otherUserAvatar, otherUserId, blocked) {
+function appendChatHeader(
+  otherUserUsername,
+  otherUserAvatar,
+  otherUserId,
+  blocked,
+) {
   const chatHeader = createChatHeader();
 
   if (otherUserUsername) {
@@ -116,9 +127,11 @@ function deSelectItens() {
   });
 }
 
-function selectItem(item) {
+function selectItem(id) {
+  const user = document.querySelector(`li[data-user-id="${id}"]`);
+
   deSelectItens();
-  item.classList.add("selected");
+  user.classList.add("selected");
 }
 
 function onCreateGame(rightPlayerId) {

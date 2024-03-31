@@ -22,7 +22,7 @@ function addReceivedMessage(data) {
   let lastMessage = getLastReceivedMessage();
 
   const resetLastMessage = () => {
-    const userPictureDiv = lastMessage.querySelector("div.user-photo");
+    const userPictureDiv = lastMessage.querySelector("img.user-photo");
     const lastMessageParagraph = lastMessage.querySelector("p.special-style");
 
     if (lastMessageParagraph) {
