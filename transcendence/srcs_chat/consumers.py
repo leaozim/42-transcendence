@@ -8,7 +8,7 @@ from srcs_auth.jwt_token import verify_jwt_token
 from srcs_chat.models import Chat
 from srcs_chat.services import get_validated_chat_and_user
 from srcs_message.models import Message
-from srcs_user.models import User
+from srcs_user.models import User, BlockedUser
 from srcs_user.services import find_one_intra
 
 
@@ -30,6 +30,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
         query = await sync_to_async(chat.users_on_chat.filter)(~Q(id=user_id))
 
         return await sync_to_async(query.first)()
+    
+    async def check_blocked_user(self, user_id, receiver_id):
+        blocked_user = await sync_to_async(BlockedUser.objects.filter)(
+            blocked_by_id=user_id,
+            blocked_user_id=receiver_id
+        )
+
+        blocked_by_user = await sync_to_async(BlockedUser.objects.filter)(
+            blocked_by_id=receiver_id,
+            blocked_user_id=user_id
+        )
+
+        return blocked_user, blocked_by_user
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -43,6 +56,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user = await sync_to_async(User.objects.get)(id=user_id)
         receiver = await self._get_receiver_id(chat_id, user_id)
 
+        blocked_user, blocked_by_user = await self.check_blocked_user(user.id, receiver.id)
+        b_user = await sync_to_async(blocked_user.first)()
+        b_b_user = await sync_to_async(blocked_by_user.first)()
+        if b_user or b_b_user:
+            return
+        
         await self.channel_layer.group_send(
             f"{self.room_prefix}_{receiver.id}",
             {

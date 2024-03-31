@@ -1,16 +1,16 @@
 from srcs_chat.services import get_validated_chat_and_user
 from srcs_message.models import Message
 from srcs_chat.models import Chat
+from srcs_user.models import BlockedUser
 
 BOT_ID = 1
 
 def add_message(chat_id, content, user_id):
     chat, user = get_validated_chat_and_user(chat_id, user_id)
-    
-    if len(content) > 500 or not content:
+    chat = Chat.objects.get(pk=chat_id)
+
+    if len(content) > 500 or not content or chat.blocked:
         return 
-    if chat.blocked:
-        return
     
     message = Message.objects.create(
         chat_id=chat.id,

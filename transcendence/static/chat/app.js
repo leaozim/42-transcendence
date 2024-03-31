@@ -53,6 +53,16 @@ Sockets.prototype.close = function () {
   }
 };
 
+
+if (chatButton) {
+  chatButton.addEventListener("click", function () {
+    const chatModal = document.getElementById("chat-modal");
+    closeChat()
+    sockets.close()
+    chatModal.style.display = "block";
+  });
+}
+
 function openChatScreen(userId, username) {
   const chatModal = document.getElementById("chat-modal");
 

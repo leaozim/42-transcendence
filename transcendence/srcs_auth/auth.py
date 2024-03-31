@@ -17,7 +17,7 @@ class IntraAuthenticationBackend(BaseBackend):
             except User.DoesNotExist:
                 user = User.objects.create_new_intra_user(user_intra)
                 chat = open_chat(1, user.id)
-                add_message(chat.id, "Olá humano!", 1)    
+                add_message(chat.id, "Hello, human!", 1)    
             return user
         return None
 
