@@ -1,5 +1,6 @@
 services:
-  - name: db
+  - type: web
+    name: db
     image: postgres:13
     env:
       - key: POSTGRES_USER
@@ -21,12 +22,14 @@ services:
       unhealthy_threshold: 2
       healthy_threshold: 2
 
-  - name: redis
+  - type: web
+    name: redis
     image: redis:6
     ports:
       - 6379
 
-  - name: server
+  - type: web
+    name: server
     build:
       dockerfile: Dockerfile
       context: ./transcendence/
