@@ -15,4 +15,6 @@ python $MANAGE_PATH migrate --settings=srcs_core.settings
 
 python $MANAGE_PATH create_superuser --settings=srcs_core.settings
 
-exec python $MANAGE_PATH runserver --settings=srcs_core.settings 0.0.0.0:8000
+python -m daphne srcs_core.asgi:application -p 8001 -b 0.0.0.0 &
+
+exec gunicorn srcs_core.wsgi --bind 0.0.0.0:8000 --workers 2
