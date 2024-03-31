@@ -33,7 +33,6 @@ class Scene2 extends Phaser.Scene {
 
       // Se o evento de dados indicar game over, direciona para Scene3
       if (this.eventData && this.eventData.winner) {
-        console.log("acabou")
         this.scene.start("GameOver");
         return;
       }
@@ -58,7 +57,6 @@ class Scene2 extends Phaser.Scene {
       };
 
       this.receiveSocket.onmessage = (event) => {
-        console.log('receive data: ', event.data)
         this.eventData = JSON.parse(event.data);
 
         // Troca para a próxima Scene, enviando nome do jogador vencedor para ser exibido na tela
