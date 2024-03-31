@@ -139,10 +139,12 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> Any:
         username: str
+        avatar: str
         blocked_user: bool
         context: Dict[str, Any]
 
         username = self.kwargs["username"]
+        avatar = User.objects.get(username=username).avatar
 
         blocked_user = (
             self.request.user.blocked_by.filter(
@@ -153,7 +155,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
         context = super().get_context_data(**kwargs)
 
-        context.update({"username": username, "blocked_user": blocked_user})
+        context.update({"username": username, "avatar": avatar, "blocked_user": blocked_user})
 
         return context
 

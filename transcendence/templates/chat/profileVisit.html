@@ -1,17 +1,28 @@
 {% load static %}
 <div id="user-modal" class="modal" tabindex="-1" role="dialog">
-  <div class="modal-content profile">
-    <div>
-    <div class="nickname">
-      <h1 class="profile-text" id="user-profile-username">{{ username }}</h1>
+    <div class="modal-content profile">
+        <div>
+            <div class="text-center">
+                <img src="{% if avatar %}{{ avatar }}{% else %}{% static "images/sloth.jpg" %}{% endif %}"
+                     alt="image"
+                     width="128"
+                     height="128"
+                     class="img-fluid rounded-circle" />
+            </div>
+            <div class="nickname">
+                <h1 class="profile-text" id="user-profile-username">{{ username }}</h1>
+            </div>
+            <div class="flex-center">
+                {% if not blocked_user %}
+                    <button id="block-button" class="buttons-svg" type="button">
+                        <img src="{% static 'images/unblocked.png' %}" alt="">
+                    </button>
+                {% else %}
+                    <button id="unblock-button" class="buttons-svg" type="button">
+                        <img src="{% static 'images/blocked.png' %}" alt="">
+                    </button>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    <div class="flex-center">
-      {% if not blocked_user %}
-      <button id="block-button" class="buttons-svg" type="button"><img src="{% static 'images/unblocked.png' %}" alt=""></button>
-      {% else %}
-      <button id="unblock-button" class="buttons-svg" type="button"><img src="{% static 'images/blocked.png' %}" alt=""></button>
-      {% endif %}
-    </div>
-    </div>
-  </div>
 </div>

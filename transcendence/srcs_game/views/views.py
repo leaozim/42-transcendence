@@ -3,6 +3,7 @@ from srcs_game.models import Game
 from srcs_game.services import create_game
 from srcs_user.models import User
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.http import JsonResponse
 from django.views.generic.list import ListView
@@ -36,10 +37,11 @@ def room(request, room_id):
                     "rightPlayer": game.rightPlayer.id})
 
 
-class UserList(ListView):
+class UserList(LoginRequiredMixin, ListView):
     model = User
     template_name = "game/game_list.html"
 
-    def user_list(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+    def get_queryset(self):
+        # Exclude the current logged-in user and the user with id=1
+        queryset = super().get_queryset().exclude(id__in=[self.request.user.id, 1])
+        return queryset

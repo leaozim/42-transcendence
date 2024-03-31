@@ -316,3 +316,9 @@ body {
   position: absolute;
   left: 8px;
 }
+.modal-content.block-user {
+  border: solid 1px #52c0d7;
+}
+.block-user .main-title {
+  order: unset;
+}

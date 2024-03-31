@@ -122,6 +122,22 @@
     align-items: center;
     cursor: pointer;
 }
+
+.btn-profile-element {
+  padding-left: 4px;
+  padding-right: 10px;
+  padding-top: 2px;
+  padding-bottom: 3px;
+  color: #d613f0;
+  background-color: #00000e;
+  border: solid 1px #6F077C;
+  border-radius: 17px;
+}
+
+.btn-profile-element:hover {
+  background-color: #1E1E1E;
+}
+
 #buttons-container {
     display: flex;
 }
@@ -132,10 +148,18 @@
     padding: 0;
     margin: 0px;
     img {
-        cursor: pointer;
         width: 75%;
     }
 
+}
+
+.button-init-game {
+  background: none;
+  border: none;
+}
+
+.button-init-game img {
+  width: 70%;
 }
 
 /* Styles for the message container */
