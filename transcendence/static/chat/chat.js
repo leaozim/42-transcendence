@@ -10,7 +10,11 @@ async function openChat(other_user_id, username = "") {
   if (dataChat.messages.length) {
     initializeChatLog(dataChat.current_username, dataChat.messages);
   }
-  appendChatHeader(dataChat.other_user_username, dataChat.other_user_avatar, dataChat.other_user_id);
+  appendChatHeader(
+    dataChat.other_user_username,
+    dataChat.other_user_avatar,
+    dataChat.other_user_id,
+  );
 
   document.getElementById("no-chat-selected-message").style.display = "none";
   document.getElementById("message-input-container").style.display = "flex";
@@ -75,17 +79,22 @@ async function sendMessage() {
 function createNewChatUser(id, username, avatar) {
   const newChatUser = document.createElement("li");
 
-  newChatUser.className = "item-user";
+  newChatUser.classList.add("item-user");
   newChatUser.setAttribute("data-user-id", id);
   newChatUser.setAttribute("data-username", username);
   newChatUser.setAttribute(
     "onclick",
-    `selectItem(this); openChat('${id}', '${username}')`,
+    `selectItem(this); openChat('${id}', '${username}'); popAlert(${id})`,
   );
 
   newChatUser.innerHTML = `
       <img src="${avatar}" class="user-photo" onclick="selectItem(this.parentElement); openChat('${id}', '${username}')">
-      <span class="button_name">${username}</span>`;
+      <span class="button_name">${username}</span>
+      <span id="alert-message-${id}" hidden>
+        <img src="https://www.shareicon.net/data/128x128/2016/11/15/852842_alert_512x512.png"
+          alt="Alert New Message" width="15" height="15">
+      </span>
+  `;
 
   return newChatUser;
 }
@@ -283,7 +292,7 @@ function selectItem(item) {
 }
 
 function onCreateGame(rightPlayerId) {
-  console.log(rightPlayerId)
+  console.log(rightPlayerId);
   if (!rightPlayerId || isNaN(rightPlayerId)) {
     console.error("Invalid user ID for the right player:", rightPlayerId);
     return;

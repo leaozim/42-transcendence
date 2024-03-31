@@ -34,9 +34,9 @@ function Sockets() {
         parseNestedJson,
       ).data;
 
-      alertOnMessage(userNotification);
-
       renderUserWindow(userNotification);
+
+      alertOnMessage(userNotification);
     };
   }).call(this);
 }
