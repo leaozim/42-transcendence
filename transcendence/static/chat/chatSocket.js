@@ -1,4 +1,4 @@
-async function setupWebSocket(roomId, currentUser) {
+async function setupWebSocket(roomId) {
   const response = await fetch("/user/");
   const { id: user_id } = await response.json();
   const base_url = `ws://${window.location.host}/ws/chat/${roomId}/${user_id}`;
