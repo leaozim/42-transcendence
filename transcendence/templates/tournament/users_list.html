@@ -1,28 +1,27 @@
 {% load static i18n %}
 <div class="wrapper-user-list">
-	<div class="bg-common bg-title-pink mt-0 mb-3">
-		<h2 class="title-center">{% translate "Players" %}</h2>
-	</div>
-	<p class="text-blue mb-3">{% translate "Click on button to invite player to tournament" %}</p>
-    <ul class="user-list">
-        {% for user in users %}
-            <li>
-				<img src="{% if user.avatar %}{{ user.avatar }}{% else %}{% static "images/sloth.jpg" %}{% endif %}" alt="image" width="48" height="48" class="avatar img-fluid rounded-circle" />
-			<div class="user-list-item user-frame">
-				<span>{{ user.username }}</span>
-				<div class="user-list-btns">
-					<form action="{% url 'srcs_tournament:create_tournament' %}" method="post">
-						{% csrf_token %}
-						<input type="hidden" name="user_id" value="{{ user.id }}">
-						<button id="tournament-invite"
-						class="btn-round bg-blue"
-						type="button">
-							<i class="bi bi-trophy"></i>
-						</button>
-					</form>
-				</div>
-			</div>
-        </li>
-        {% endfor %}
-    </ul>
+  <div class="bg-common bg-title-pink mt-0 mb-3">
+    <h2 class="title-center">{% translate "Players" %}</h2>
+  </div>
+  <p class="text-blue mb-3">{% translate "Click on button to invite player to tournament" %}</p>
+  <ul class="user-list">
+    {% for user in users %}
+    <li>
+      <img src="{% if user.avatar %}{{ user.avatar }}{% else %}{% static " images/sloth.jpg" %}{% endif %}" alt="image"
+        width="48" height="48" class="avatar img-fluid rounded-circle" />
+      <div class="user-list-item user-frame">
+        <span>{{ user.username }}</span>
+        <div class="user-list-btns">
+          <form method="post" id="form_tournament_{{user.id}}">
+            <input type="hidden" name="user_id" value="{{ user.id }}">
+            <button id="tournament-invite-{{ user.id }}" class="btn-round bg-blue" type="button"
+              onclick="handleButtonClick('{{ user.id }}')">
+              <i class="bi bi-trophy"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
 </div>
