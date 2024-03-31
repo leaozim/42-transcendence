@@ -53,23 +53,29 @@ Sockets.prototype.close = function () {
   }
 };
 
-
 if (chatButton) {
   chatButton.addEventListener("click", function () {
     const chatModal = document.getElementById("chat-modal");
-    closeChat()
-    sockets.close()
+    closeChat();
+    sockets.close();
     chatModal.style.display = "block";
   });
 }
 
-function openChatScreen(userId, username) {
+function openChatScreen(id, username, avatar) {
   const chatModal = document.getElementById("chat-modal");
+
+  closeChat();
+
+  closeModal();
+
+  renderUserWindow({ id, username, avatar });
+
+  selectItem(id);
 
   chatModal.style.display = "block";
 
-  closeModal();
-  openChat(userId, username);
+  openChat(id, username);
 }
 
 window.addEventListener("click", function (event) {
