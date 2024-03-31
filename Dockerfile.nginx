@@ -1,0 +1,10 @@
+FROM nginx:stable-alpine3.17
+
+COPY ./nginx/default.conf /etc/nginx/conf.d/
+COPY ./nginx/nginx.conf /etc/nginx/
+
+RUN mkdir -p /www/static
+
+COPY ./transcendence/static /www/static/
+
+ENTRYPOINT ["nginx", "-g", "daemon off;error_log /dev/stdout warn;"]
