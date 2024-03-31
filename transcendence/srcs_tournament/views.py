@@ -39,7 +39,7 @@ def create_tournament(request):
 def users_list(request, user_id):
     users = User.objects.all()
     called_players = [int(player_id) for player_id in request.session.get('called_players', [])]
-    users = [user for user in users if (user.id != user_id and user.id not in called_players)]
+    users = [user for user in users if (user.id != user_id and user.id != 1 and user.id not in called_players)]
     return render(request, 'tournament/users_list.html', {'users': users})
 
 
