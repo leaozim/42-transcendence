@@ -33,8 +33,6 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
-
 AUTH_USER_MODEL = "srcs_user.User"
 
 INSTALLED_APPS = [
@@ -191,4 +189,17 @@ CHANNEL_LAYERS = {
     },
 }
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]", "0.0.0.0"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "https://ft-transcendence.com",
+    "http://ft-transcendence.com",
+    "http://ft-immanence.me",
+    "https://ft-immanence.me",
+]
+
+ALLOWED_HOSTS = [
+    "localhost",
+    "0.0.0.0",
+    "ft-transcendence.com",
+    "ft-immanence.me",
+]
