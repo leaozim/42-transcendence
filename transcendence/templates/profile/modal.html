@@ -1,3 +1,4 @@
+{% load i18n %}
 <div id="profile-modal" class="modal" tabindex="-1" role="dialog">
     <div class="modal-content">
         <div class="nickname">
@@ -5,11 +6,11 @@
         </div>
         <!-- Two Factor -->
         <div id="two-factor-box" class="two-factor-box">
-            Two-factor authentication
+            {% translate "Two-factor authentication" %}
             <label class="switch">
                 <input type="checkbox">
                 <span class="slider round"></span>
             </label>
-        </div>    
+        </div>
     </div>
 </div>

@@ -1,14 +1,14 @@
 {% extends 'includes/base.html' %}
-{% load static %}
+{% load static i18n %}
 
 {% block title %}
-User List - Transcendence
+{% translate "User List - Transcendence" %}
 {% endblock %}
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'chat/chat.css' %}">
 {% endblock stylesheet %}
 {% block content %}
-<h1>User List</h1>
+<h1>{% translate "User List" %}</h1>
 <ul>
   {% for user in users %}
   {% if user != request.user %}

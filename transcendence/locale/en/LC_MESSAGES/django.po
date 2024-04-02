@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-02 01:59+0000\n"
+"POT-Creation-Date: 2024-04-02 13:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,8 +23,19 @@ msgid "User not authenticated"
 msgstr ""
 
 #: srcs_chat/form.py:15
-#, python-format
-msgid "%(value) isn't a valid user"
+msgid "{{ value }} isn't a valid user"
+msgstr ""
+
+#: templates/account/signup.html:6
+msgid "Signup - Transcendence"
+msgstr ""
+
+#: templates/account/signup.html:12
+msgid "Sign up"
+msgstr ""
+
+#: templates/account/signup.html:35
+msgid "sign up"
 msgstr ""
 
 #: templates/chat/chatModal.html:7
@@ -118,6 +129,42 @@ msgstr ""
 msgid "Welcome to Transcendence"
 msgstr ""
 
+#: templates/profile/modal.html:9
+msgid "Two-factor authentication"
+msgstr ""
+
+#: templates/registration/twoFactorModal.html:6
+#: templates/registration/verifyTwoFactorModal.html:7
+msgid "Two Factor"
+msgstr ""
+
+#: templates/registration/twoFactorModal.html:11
+msgid ""
+"\n"
+"          Scan the QR code with authenticator app.<br>\n"
+"          Or copy the code.\n"
+"\t\t"
+msgstr ""
+
+#: templates/registration/twoFactorModal.html:25
+#: templates/user/blockUserModal.html:24
+msgid "back"
+msgstr ""
+
+#: templates/registration/verifyTwoFactorModal.html:11
+msgid "Security Code:"
+msgstr ""
+
+#: templates/registration/verifyTwoFactorModal.html:17
+msgid ""
+"To verify your identity enter the 6-digit code from your authenticator app."
+msgstr ""
+
+#: templates/tournament/create_tournament.html:2
+#: templates/tournament/create_tournament.html:5
+msgid "Create tournament"
+msgstr ""
+
 #: templates/tournament/create_tournament_alias.html:4
 msgid "Nickname registered"
 msgstr ""
@@ -148,4 +195,12 @@ msgstr ""
 
 #: templates/user/blockUserModal.html:17
 msgid "Would you like to unblock "
+msgstr ""
+
+#: templates/user/usersList.html:5
+msgid "User List - Transcendence"
+msgstr ""
+
+#: templates/user/usersList.html:11
+msgid "User List"
 msgstr ""
