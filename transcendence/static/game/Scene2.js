@@ -15,7 +15,7 @@ class Scene2 extends Phaser.Scene {
   }
 
   async getThisUser() {
-    const response = await fetch(GET_AUTH_USER_ID);
+    const response = await fetch("/auth/user_id/");
     const data = await response.json();
     return data.user_id;
   }
@@ -136,4 +136,3 @@ class Scene2 extends Phaser.Scene {
     }
   }
 }
-
