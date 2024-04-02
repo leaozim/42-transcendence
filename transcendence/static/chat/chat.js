@@ -184,9 +184,7 @@ function createUsernameElement(otherUserUsername, userPhoto) {
 function dontOpenOnModal(url) {
   fetch(url)
     .then((response) => response.text())
-    .then((html) => {
-      console.log("Sucesso");
-    })
+    .then((html) => {})
     .catch((error) => {
       console.error("Error loading the modal content: ", error);
     });
@@ -225,7 +223,6 @@ function initializeFormSubmission() {
           throw new Error("Form submission failed!");
         })
         .then((data) => {
-          console.log("Form submitted successfully:", data);
           document.querySelector("#tournament-alias").innerHTML = data;
         })
         .catch((error) => console.error("Error submitting the form:", error));
@@ -256,7 +253,6 @@ function createChatHeader() {
 }
 
 function onCreateGame(rightPlayerId) {
-  console.log(rightPlayerId);
   if (!rightPlayerId || isNaN(rightPlayerId)) {
     console.error("Invalid user ID for the right player:", rightPlayerId);
     return;

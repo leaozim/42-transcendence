@@ -1,7 +1,4 @@
 async function fetchPage(url, username = "") {
-  console.log(username)
-  console.log(encodeURI(url + username))
-
   return fetch(encodeURI(url + username))
     .then((response) => {
       if (!response.ok) {
@@ -28,7 +25,7 @@ const _blockModal = {
     return blockModal;
   },
 
-  open: async function(url, userName, parentNode) {
+  open: async function (url, userName, parentNode) {
     let modalQuerySelector;
     let formQuerySelector;
 
@@ -42,7 +39,7 @@ const _blockModal = {
 
     blockModal = parseHtml(await fetchPage(url, userName), modalQuerySelector);
 
-    (function() {
+    (function () {
       const okButton = blockModal.querySelector("button#ok-button");
       const backButton = blockModal.querySelector("button#back-button");
 
@@ -77,7 +74,7 @@ const _blockModal = {
     _blockModal.modal.style.display = "block";
   },
 
-  close: function() {
+  close: function () {
     this.modal.remove();
   },
 };
