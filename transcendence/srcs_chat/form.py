@@ -12,7 +12,7 @@ class BlockForm(forms.Form):
             User.objects.get(username=value)
         except User.DoesNotExist:
             raise ValidationError(
-                _("%(value) isn't a valid user"), params={"value": value}
+                _("{{ value }} isn't a valid user"), params={"value": value}
             )
 
     blockedUserName = forms.CharField(

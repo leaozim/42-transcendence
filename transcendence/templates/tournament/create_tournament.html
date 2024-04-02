@@ -1,16 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Torneio</title>
-</head>
-<body>
-    <h1>Criar Torneio</h1>
+{% load i18n %}
+    <h1>{% translate "Create tournament" %}</h1>
     <form action="{% url 'srcs_tournament:create_tournament' %}" method="post">
         {% csrf_token %}
-        <button type="submit">Criar Torneio</button>
+        <button type="submit">{% translate "Create tournament" %}</button>
         <input type="hidden" name="user_id" value="{{ user_id }}">
     </form>
-</body>
-</html>

@@ -4,17 +4,17 @@
 
       <form id="testForm" method="dialog">
         <div class="bg-common bg-title-blue">
-          <h2 class="title-center">Two Factor</h2>
+          <h2 class="title-center">{% translate "Two Factor" %}</h2>
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Security Code:</label>
+          <label class="form-label">{% translate "Security Code:" %}</label>
           <br>
           <input type="text" class='form-control' id="token" name="token" maxlength="6" required>
         </div>
         <input type="submit" class="btn btn-primary" value="verify code">
 
-        <p class="info mb-3">To verify your identity enter the 6-digit code from your authenticator app.</p>
+        <p class="info mb-3">{% translate "To verify your identity enter the 6-digit code from your authenticator app." %}</p>
 
       </form>
 

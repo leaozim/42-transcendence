@@ -1,14 +1,15 @@
 
 {% extends 'includes/base.html' %}
+{% load static i18n %}
 
 {% block title %}
-Signup - Transcendence
+{% translate "Signup - Transcendence" %}
 {% endblock %}
 
 {% block content %}
 <div class="container popup-container">
 	<div class="bg-common bg-title-pink">
-        <h2 class="title-center">Sign Up</h2>
+        <h2 class="title-center">{% translate "Sign up" %}</h2>
     </div>
 
 	<form method="post">
@@ -29,7 +30,7 @@ Signup - Transcendence
 			{% endfor %}
 		</div>
 		{% endfor %}
-		<button type="submit" class="btn btn-primary">Sign up</button>
+		<button type="submit" class="btn btn-primary">{% translate "sign up" %}</button>
 
 	</form>
 </div>
