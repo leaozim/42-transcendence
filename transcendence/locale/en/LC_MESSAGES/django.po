@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-05 01:40+0000\n"
+"POT-Creation-Date: 2024-04-02 01:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,15 +22,32 @@ msgstr ""
 msgid "User not authenticated"
 msgstr ""
 
-#: templates/home/index.html:80
+#: srcs_chat/form.py:15
+#, python-format
+msgid "%(value) isn't a valid user"
+msgstr ""
+
+#: templates/chat/chatModal.html:7
+msgid "Chats"
+msgstr ""
+
+#: templates/chat/chatModal.html:35
+msgid "No chats selected!"
+msgstr ""
+
+#: templates/game/game_list.html:5 templates/tournament/users_list.html:4
+msgid "Players"
+msgstr ""
+
+#: templates/home/index.html:65
 msgid "Sign Out"
 msgstr ""
 
-#: templates/home/index.html:113
+#: templates/home/index.html:89
 msgid "instructions"
 msgstr ""
 
-#: templates/home/index.html:115
+#: templates/home/index.html:91
 msgid ""
 "\n"
 "          Use mouse to move around main screen.\n"
@@ -38,14 +55,14 @@ msgid ""
 "          Click on icon to enter specific section.\n"
 "          <br>\n"
 "          Have fun!\n"
-"        "
+"          "
 msgstr ""
 
-#: templates/home/index.html:125
+#: templates/home/index.html:101
 msgid "profile"
 msgstr ""
 
-#: templates/home/index.html:127
+#: templates/home/index.html:103
 msgid ""
 "\n"
 "          Configure your authentication.\n"
@@ -53,10 +70,10 @@ msgid ""
 "          View your statistics.\n"
 "          <br>\n"
 "          Create games or chat channels.\n"
-"        "
+"          "
 msgstr ""
 
-#: templates/home/index.html:147
+#: templates/home/index.html:119
 msgid ""
 "\n"
 "          Create chat channels,\n"
@@ -67,36 +84,68 @@ msgid ""
 "          "
 msgstr ""
 
-#: templates/home/index.html:164
+#: templates/home/index.html:138
 msgid "game"
 msgstr ""
 
-#: templates/home/index.html:166
+#: templates/home/index.html:140
 msgid ""
 "\n"
-"                        Use the arrow keys to move your paddle up or down to "
-"hit the ball on your side.<br>\n"
-"                        If the ball exists the screen on left or right, the "
-"player on the opposite side wins a point.<br>\n"
-"                        First player to reach 5 points win.\n"
-"                        "
+"          Use the arrow keys to move your paddle up or down to hit the ball "
+"on your side.<br>\n"
+"          If the ball exists the screen on left or right, the player on the "
+"opposite side wins a point.<br>\n"
+"          First player to reach 5 points win.\n"
+"          "
 msgstr ""
 
-#: templates/home/index.html:181
+#: templates/home/index.html:152
 msgid "tournament"
 msgstr ""
 
-#: templates/home/index.html:183
+#: templates/home/index.html:154
 msgid ""
 "\n"
-"                        Gather your friends\n"
-"                        <br>\n"
-"                        and create your own\n"
-"                        <br>\n"
-"                        tournament.\n"
-"                        "
+"          Gather your friends\n"
+"          <br>\n"
+"          and create your own\n"
+"          <br>\n"
+"          tournament.\n"
+"          "
 msgstr ""
 
 #: templates/includes/base.html:9
 msgid "Welcome to Transcendence"
+msgstr ""
+
+#: templates/tournament/create_tournament_alias.html:4
+msgid "Nickname registered"
+msgstr ""
+
+#: templates/tournament/create_tournament_alias.html:10
+msgid "Nickname"
+msgstr ""
+
+#: templates/tournament/create_tournament_alias.html:16
+msgid "Change"
+msgstr ""
+
+#: templates/tournament/users_list.html:6
+msgid "Click on button to invite player to tournament"
+msgstr ""
+
+#: templates/user/blockUserModal.html:9
+msgid "Block User"
+msgstr ""
+
+#: templates/user/blockUserModal.html:11
+msgid "Would you like to block "
+msgstr ""
+
+#: templates/user/blockUserModal.html:15
+msgid "Unblock User"
+msgstr ""
+
+#: templates/user/blockUserModal.html:17
+msgid "Would you like to unblock "
 msgstr ""
