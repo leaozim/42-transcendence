@@ -87,25 +87,22 @@
       <div id="instructions-card" class="text-card">
         <h2>{% translate "instructions" %}</h2>
         <p>
-          {% blocktrans %}
+          {% blocktranslate %}
           Use mouse to move around main screen.
           <br>
           Click on icon to enter specific section.
           <br>
           Have fun!
-          {% endblocktrans %}
+          {% endblocktranslate %}
         </p>
       </div>
       <div id="profile-card" class="text-card">
         <h2>{% translate "profile" %}</h2>
         <p>
-          {% blocktrans %}
+          {% blocktranslate %}
           Configure your authentication.
           <br>
-          View your statistics.
-          <br>
-          Create games or chat channels.
-          {% endblocktrans %}
+          {% endblocktranslate %}
           <br>
         </p>
         <button id="profile-button" class="btn-round bg-pink" type="button" data-toggle="modal" data-target="">
@@ -115,13 +112,11 @@
       <div id="chat-card" class="text-card">
         <h2>chat</h2>
         <p>
-          {% blocktrans %}
-          Create chat channels,
-          <br>
-          see your ongoing chats
+          {% blocktranslate %}
+          See your ongoing chats
           <br>
           or just chat.
-          {% endblocktrans %}
+          {% endblocktranslate %}
         </p>
         <div class="flex-center">
           <button id="chat-button" class="btn-round bg-pink" type="button" data-toggle="modal" data-target="">
@@ -136,11 +131,10 @@
       <div id="game-card" class="text-card">
         <h2>{% translate "game" %}</h2>
         <p>
-          {% blocktrans %}
+          {% blocktranslate %}
           Use the arrow keys to move your paddle up or down to hit the ball on your side.<br>
           If the ball exists the screen on left or right, the player on the opposite side wins a point.<br>
-          First player to reach 5 points win.
-          {% endblocktrans %}
+          {% endblocktranslate %}
         </p>
         <button id="game-button" class="btn-round bg-pink" type="button" data-bs-toggle="modal"
           data-bs-target="#game-modal">
@@ -150,13 +144,13 @@
       <div id="tournament-card" class="text-card">
         <h2>{% translate "tournament" %}</h2>
         <p>
-          {% blocktrans %}
+          {% blocktranslate %}
           Gather your friends
           <br>
           and create your own
           <br>
           tournament.
-          {% endblocktrans %}
+          {% endblocktranslate %}
         </p>
         <form id="create_tournament_form" action="{% url 'srcs_tournament:create_tournament' %}" method="post">
           {% csrf_token %}

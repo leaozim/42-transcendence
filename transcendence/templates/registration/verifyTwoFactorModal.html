@@ -1,3 +1,4 @@
+{% load i18n %}
 <div id="verify-two-factor-modal" class="modal" tabindex="-1" role="dialog">
   <div class="modal-content">
     <div class="container popup-container">
@@ -14,11 +15,7 @@
         </div>
         <input type="submit" class="btn btn-primary" value="verify code">
 
-        <p class="info mb-3">{% translate "To verify your identity enter the 6-digit code from your authenticator app." %}</p>
-
       </form>
-
-      <!-- <div id="result"></div> -->
     </div>
   </div>
 </div>

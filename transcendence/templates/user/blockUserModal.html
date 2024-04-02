@@ -3,19 +3,19 @@
 <div id="{% if not blocked_user %}block-user-modal{% else %}unblock-user-modal{% endif %}" class="modal" tabindex="-1"
   role="dialog">
   <div class="modal-content block-user">
-      {% if not blocked_user %}
-	  <div class="main-title">
-		<img src="{% static 'images/bg_title_blue.png' %}" alt="bg title" class="img-fluid" width="344" height="80" />
-		<h1 class="title-center bg-common">{% translate "Block User" %}</h1>
-	  </div>
-      <p class="profile-text">{% translate "Would you like to block " %}{{ username }} ?</p>
-      {% else %}
-	  <div class="main-title">
-		<img src="{% static 'images/bg_title_pink.png' %}" alt="bg title" class="img-fluid" width="344" height="80" />
-		<h1 class="bg-pink bg-common">{% translate "Unblock User" %}</h1>
-	  </div>
-      <p class="profile-text">{% translate "Would you like to unblock " %}{{ username }} ?</p>
-      {% endif %}
+    {% if not blocked_user %}
+    <div class="main-title">
+      <img src="{% static 'images/bg_title_blue.png' %}" alt="bg title" class="img-fluid" width="344" height="80" />
+      <h1 class="title-center bg-common">{% translate "Block User" %}</h1>
+    </div>
+    <p class="profile-text">{% translate "Would you like to block " %}{{ username }} ?</p>
+    {% else %}
+    <div class="main-title">
+      <img src="{% static 'images/bg_title_pink.png' %}" alt="bg title" class="img-fluid" width="344" height="80" />
+      <h1 class="title-center bg-common">{% translate "Unblock User" %}</h1>
+    </div>
+    <p class="profile-text">{% translate "Would you like to unblock " %}{{ username }} ?</p>
+    {% endif %}
     <form id="{% if not blocked_user %}block-form{% else %}unblock-form{% endif %}" method="post">
       {% csrf_token %}
       {{ form }}

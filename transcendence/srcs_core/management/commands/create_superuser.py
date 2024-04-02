@@ -1,8 +1,6 @@
 import os
 
 from django.core.management.base import BaseCommand
-from srcs_chat.services import open_chat
-from srcs_message.services import add_message
 from srcs_user.models import User
 
 
@@ -25,5 +23,3 @@ class Command(BaseCommand):
             self.stdout.write(
                 self.style.SUCCESS(f'Superusuário "{username}" criado com sucesso!')
             )
-        chat = open_chat(1, user.id)
-        add_message(chat.id, "Olá humano!", 1)

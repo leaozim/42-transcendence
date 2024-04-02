@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 AUTH_USER_MODEL = "srcs_user.User"
 
@@ -97,8 +97,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "srcs_core.wsgi.application"
 
-
-# Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
@@ -145,7 +143,7 @@ LANGUAGES = (
 
 LANGUAGE_CODE = "en-us"
 
-# LANGUAGE_CODE_TO_PATH = {"pt-br": "pt_BR", "en-us": "en_US"}
+LANGUAGE_CODE_TO_PATH = {"pt-br": "pt_BR", "en-us": "en_US"}
 
 TIME_ZONE = "UTC"
 
@@ -189,6 +187,10 @@ CHANNEL_LAYERS = {
     },
 }
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
+CSRF_TRUSTED_ORIGINS = ["https://ft-immanence.me"]
 
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "[::1]", "127.0.0.1"]
+ALLOWED_HOSTS = [
+    "localhost",
+    "0.0.0.0",
+    "ft-immanence.me",
+]

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-02 18:13+0000\n"
+"POT-Creation-Date: 2024-04-02 17:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,43 +20,43 @@ msgstr ""
 
 #: srcs_auth/views.py:41
 msgid "User not authenticated"
-msgstr ""
+msgstr "Usuário não autenticado"
 
 #: srcs_chat/form.py:15
 msgid "{{ value }} isn't a valid user"
-msgstr ""
+msgstr "{{ value }} não é um usuário válido"
 
 #: templates/account/signup.html:6
 msgid "Signup - Transcendence"
-msgstr ""
+msgstr "Cadastro - Transcendence"
 
 #: templates/account/signup.html:12
 msgid "Sign up"
-msgstr ""
+msgstr "Cadastrar"
 
 #: templates/account/signup.html:35
 msgid "sign up"
-msgstr ""
+msgstr "cadastrar"
 
 #: templates/chat/chatModal.html:7
 msgid "Chats"
-msgstr ""
+msgstr "Conversas"
 
 #: templates/chat/chatModal.html:35
 msgid "No chats selected"
-msgstr ""
+msgstr "Nenhuma conversa selecionada"
 
 #: templates/game/game_list.html:5 templates/tournament/users_list.html:4
 msgid "Players"
-msgstr ""
+msgstr "Jogadores"
 
 #: templates/home/index.html:65
 msgid "Sign Out"
-msgstr ""
+msgstr "Sair"
 
 #: templates/home/index.html:89
 msgid "instructions"
-msgstr ""
+msgstr "instruções"
 
 #: templates/home/index.html:91
 msgid ""
@@ -68,33 +68,51 @@ msgid ""
 "          Have fun!\n"
 "          "
 msgstr ""
+"\n"
+"          Use o mouse para se mover pela tela principal.\n"
+"          <br>\n"
+"          Clique no ícone para acessar uma seção específica.\n"
+"          <br>\n"
+"          Divirta-se!\n"
+"        "
 
 #: templates/home/index.html:101
 msgid "profile"
-msgstr ""
+msgstr "perfil"
 
 #: templates/home/index.html:103
 msgid ""
 "\n"
 "          Configure your authentication.\n"
-"          <br>\n"
 "          "
 msgstr ""
+"\n"
+"          Configure sua autenticação.\n"
+"        "
 
-#: templates/home/index.html:116
+#: templates/home/index.html:119
 msgid ""
 "\n"
-"          See your ongoing chats\n"
+"          Create chat channels,\n"
+"          <br>\n"
+"          see your ongoing chats\n"
 "          <br>\n"
 "          or just chat.\n"
 "          "
 msgstr ""
+"\n"
+"          Crie canais de conversa,\n"
+"          <br>\n"
+"          veja suas conversas em andamento\n"
+"          <br>\n"
+"          ou apenas converse.\n"
+"          "
 
-#: templates/home/index.html:133
+#: templates/home/index.html:138
 msgid "game"
-msgstr ""
+msgstr "jogo"
 
-#: templates/home/index.html:135
+#: templates/home/index.html:140
 msgid ""
 "\n"
 "          Use the arrow keys to move your paddle up or down to hit the ball "
@@ -103,12 +121,18 @@ msgid ""
 "opposite side wins a point.<br>\n"
 "          "
 msgstr ""
+"\n"
+"          Use as setas do teclado para mover sua raquete para cima ou para baixo para rebater a bola "
+"do seu lado.<br>\n"
+"          Se a bola sair da tela pela esquerda ou pela "
+"direita, o jogador do lado oposto ganha um ponto.<br>\n"
+"          "
 
-#: templates/home/index.html:146
+#: templates/home/index.html:151
 msgid "tournament"
-msgstr ""
+msgstr "torneio"
 
-#: templates/home/index.html:148
+#: templates/home/index.html:153
 msgid ""
 "\n"
 "          Gather your friends\n"
@@ -118,19 +142,26 @@ msgid ""
 "          tournament.\n"
 "          "
 msgstr ""
+"\n"
+"          Crie canais de conversa,\n"
+"          <br>\n"
+"          veja suas conversas em andamento\n"
+"          <br>\n"
+"          ou apenas converse.\n"
+"          "
 
 #: templates/includes/base.html:9
 msgid "Welcome to Transcendence"
-msgstr ""
+msgstr "Você está no Transcendence"
 
 #: templates/profile/modal.html:9
 msgid "Two-factor authentication"
-msgstr ""
+msgstr "Autenticação de 2 fatores"
 
 #: templates/registration/twoFactorModal.html:6
 #: templates/registration/verifyTwoFactorModal.html:8
 msgid "Two Factor"
-msgstr ""
+msgstr "2 fatores"
 
 #: templates/registration/twoFactorModal.html:11
 msgid ""
@@ -139,57 +170,61 @@ msgid ""
 "          Or copy the code.\n"
 "\t\t"
 msgstr ""
+"\n"
+"          Escaneie o código QR no aplicativa de autenticação.<br>\n"
+"          Ou copie o código.\n"
+"\t\t"
 
 #: templates/registration/twoFactorModal.html:25
 #: templates/user/blockUserModal.html:24
 msgid "back"
-msgstr ""
+msgstr "voltar"
 
 #: templates/registration/verifyTwoFactorModal.html:12
 msgid "Security Code:"
-msgstr ""
+msgstr "Código de segurança:"
 
 #: templates/tournament/create_tournament.html:2
 #: templates/tournament/create_tournament.html:5
 msgid "Create tournament"
-msgstr ""
+msgstr "Criar torneio"
 
 #: templates/tournament/create_tournament_alias.html:4
 msgid "Nickname registered"
-msgstr ""
+msgstr "Apelido cadastrado"
 
 #: templates/tournament/create_tournament_alias.html:10
 msgid "Nickname"
-msgstr ""
+msgstr "Apelido"
 
 #: templates/tournament/create_tournament_alias.html:16
 msgid "Change"
-msgstr ""
+msgstr "Mudar"
 
 #: templates/tournament/users_list.html:6
 msgid "Click on button to invite player to tournament"
-msgstr ""
+msgstr "Clique no botão para convidar um jogador ao torneio"
 
 #: templates/user/blockUserModal.html:9
 msgid "Block User"
-msgstr ""
+msgstr "Bloquear usuário"
 
 #: templates/user/blockUserModal.html:11
 msgid "Would you like to block "
-msgstr ""
+msgstr "Você deseja bloquear "
 
 #: templates/user/blockUserModal.html:15
 msgid "Unblock User"
-msgstr ""
+msgstr "Desbloquear usuário"
 
 #: templates/user/blockUserModal.html:17
 msgid "Would you like to unblock "
-msgstr ""
+msgstr "Você deseja desbloquear "
 
 #: templates/user/usersList.html:5
 msgid "User List - Transcendence"
-msgstr ""
+msgstr "Lista de usuários - Transcendence"
 
 #: templates/user/usersList.html:11
 msgid "User List"
-msgstr ""
+msgstr "Lista de usuários"
