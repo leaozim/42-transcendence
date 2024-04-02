@@ -16,7 +16,7 @@ function Sockets() {
   (async function () {
     const response = await fetch("/user/");
     const data = await response.json();
-    const url = `ws://${window.location.host}/ws/chat_update/${data.id}`;
+    const url = `wss://${window.location.host}/ws/chat_update/${data.id}`;
 
     this.infoSocket = new WebSocket(url);
 
