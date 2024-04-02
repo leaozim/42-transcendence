@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-02 13:44+0000\n"
+"POT-Creation-Date: 2024-04-02 18:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,11 +40,11 @@ msgstr "cadastrar"
 
 #: templates/chat/chatModal.html:7
 msgid "Chats"
-msgstr "Chats"
+msgstr "Conversas"
 
 #: templates/chat/chatModal.html:35
-msgid "No chats selected!"
-msgstr "Nenhum chat selecionado!"
+msgid "No chats selected"
+msgstr "Nenhuma conversa selecionada"
 
 #: templates/game/game_list.html:5 templates/tournament/users_list.html:4
 msgid "Players"
@@ -85,33 +85,23 @@ msgid ""
 "\n"
 "          Configure your authentication.\n"
 "          <br>\n"
-"          View your statistics.\n"
-"          <br>\n"
-"          Create games or chat channels.\n"
 "          "
 msgstr ""
 "\n"
 "          Configure sua autenticação.\n"
 "          <br>\n"
-"          Veja suas estatísticas.\n"
-"          <br>\n"
-"          Crie jogos ou canais de chat.\n"
-"        "
+"          "
 
-#: templates/home/index.html:119
+#: templates/home/index.html:116
 msgid ""
 "\n"
-"          Create chat channels,\n"
-"          <br>\n"
-"          see your ongoing chats\n"
+"          See your ongoing chats\n"
 "          <br>\n"
 "          or just chat.\n"
 "          "
 msgstr ""
 "\n"
-"          Crie canais de chat,\n"
-"          <br>\n"
-"          veja seus chats em andamento\n"
+"          Veja suas conversas em andamento\n"
 "          <br>\n"
 "          ou apenas converse.\n"
 "          "
@@ -127,24 +117,20 @@ msgid ""
 "on your side.<br>\n"
 "          If the ball exists the screen on left or right, the player on the "
 "opposite side wins a point.<br>\n"
-"          First player to reach 5 points win.\n"
 "          "
 msgstr ""
 "\n"
-"                        Use as setas do teclado para mover sua raquete para "
-"cima ou para baixo para rebater a bola do seu lado.\n"
-"                        <br>\n"
-"                        Se a bola sair da tela pela esquerda ou pela "
-"direita, o jogador do lado oposto ganha um ponto.\n"
-"                        <br>\n"
-"                        O primeiro jogador a alcançar 5 pontos vence.\n"
-"                        "
+"          Use as setas do teclado para mover sua raquete para cima ou para baixo para rebater a bola "
+"do seu lado.<br>\n"
+"          Se a bola sair da tela pela esquerda ou pela "
+"direita, o jogador do lado oposto ganha um ponto.<br>\n"
+"          "
 
-#: templates/home/index.html:152
+#: templates/home/index.html:151
 msgid "tournament"
 msgstr "torneio"
 
-#: templates/home/index.html:154
+#: templates/home/index.html:153
 msgid ""
 "\n"
 "          Gather your friends\n"
@@ -155,9 +141,9 @@ msgid ""
 "          "
 msgstr ""
 "\n"
-"          Crie canais de chat,\n"
+"          Crie canais de conversa,\n"
 "          <br>\n"
-"          veja seus chats em andamento\n"
+"          veja suas conversas em andamento\n"
 "          <br>\n"
 "          ou apenas converse.\n"
 "          "
@@ -171,7 +157,7 @@ msgid "Two-factor authentication"
 msgstr "Autenticação de 2 fatores"
 
 #: templates/registration/twoFactorModal.html:6
-#: templates/registration/verifyTwoFactorModal.html:7
+#: templates/registration/verifyTwoFactorModal.html:8
 msgid "Two Factor"
 msgstr "2 fatores"
 
@@ -192,16 +178,9 @@ msgstr ""
 msgid "back"
 msgstr "voltar"
 
-#: templates/registration/verifyTwoFactorModal.html:11
+#: templates/registration/verifyTwoFactorModal.html:12
 msgid "Security Code:"
 msgstr "Código de segurança:"
-
-#: templates/registration/verifyTwoFactorModal.html:17
-msgid ""
-"To verify your identity enter the 6-digit code from your authenticator app."
-msgstr ""
-"Para verificar sua identidade, digite o código de 6 dígitos do aplicativo de "
-"autenticação."
 
 #: templates/tournament/create_tournament.html:2
 #: templates/tournament/create_tournament.html:5
@@ -210,11 +189,11 @@ msgstr "Criar torneio"
 
 #: templates/tournament/create_tournament_alias.html:4
 msgid "Nickname registered"
-msgstr "Alias cadastrado"
+msgstr "Apelido cadastrado"
 
 #: templates/tournament/create_tournament_alias.html:10
 msgid "Nickname"
-msgstr "Alias"
+msgstr "Apelido"
 
 #: templates/tournament/create_tournament_alias.html:16
 msgid "Change"
@@ -230,7 +209,7 @@ msgstr "Bloquear usuário"
 
 #: templates/user/blockUserModal.html:11
 msgid "Would you like to block "
-msgstr "Vocêe quer bloquear "
+msgstr "Você deseja bloquear "
 
 #: templates/user/blockUserModal.html:15
 msgid "Unblock User"
@@ -238,7 +217,7 @@ msgstr "Desbloquear usuário"
 
 #: templates/user/blockUserModal.html:17
 msgid "Would you like to unblock "
-msgstr "Você quer desbloquear "
+msgstr "Você deseja desbloquear "
 
 #: templates/user/usersList.html:5
 msgid "User List - Transcendence"
