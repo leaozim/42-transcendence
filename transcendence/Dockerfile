@@ -13,17 +13,13 @@ COPY --from=builder /usr/local/bin/gunicorn /usr/local/bin/
 
 WORKDIR transcendence
 
-RUN apk add gettext && adduser -D app
+RUN apk add gettext
 
-COPY --chown=app:app . .
-
-CMD ["python", "-m", "daphne", "srcs_core.asgi:application", "-p", "8001", "-b", "0.0.0.0"]
+COPY . .
 
 RUN chmod +x ./entrypoint.sh
 
 EXPOSE 8000
 EXPOSE 8001
-
-USER app
 
 CMD ./entrypoint.sh
