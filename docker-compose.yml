@@ -47,6 +47,28 @@ services:
       db:
         condition: service_healthy
 
+  daphne:
+    image: transcendence
+    build: ./transcendence/
+    container_name: daphne
+    env_file:
+      - .env
+    networks:
+      - sonarnet
+    depends_on:
+      - server
+    command:
+      [
+        "python",
+        "-m",
+        "daphne",
+        "srcs_core.asgi:application",
+        "-p",
+        "8001",
+        "-b",
+        "0.0.0.0",
+      ]
+
   nginx:
     container_name: nginx
     build:
@@ -58,6 +80,7 @@ services:
       - sonarnet
     depends_on:
       - server
+      - daphne
 
 volumes:
   postgres:
