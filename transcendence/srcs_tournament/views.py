@@ -17,20 +17,37 @@ def create_tournament(request):
         query = Tournament.objects.filter(creator__id=id, is_active=True)
         if id is not None and not query.exists():
             try:
-                user = User.objects.get(id=id)
-                tournament = Tournament.objects.create(creator=user)
-                tournament.users.add(user.id)
-                add_tournament_message(
-                    id,
-                    'You created a tournament. Wait for 3 more players to start (invite them... duh). <br> <span class="clickable-link" onClick="openOnModal(\'/tournament-alias/\');">Click here to change your tournament nickname</span>',
-                )
+
+                if User.objects.count() < 5:
+                    return HttpResponse(
+                        "<p>You need await more users "
+                        "connected to play the tournament</p>",
+                        status=200,
+                    )
+
+                if Tournament.objects.filter(creator__id=id).count() < 1:
+                    user = User.objects.get(id=id)
+                    tournament = Tournament.objects.create(creator=user)
+                    tournament.users.add(user.id)
+                    add_tournament_message(
+                        id,
+                        'You created a tournament. Wait for 3 more players to start (invite them... duh). <br> <span class="clickable-link" onClick="openOnModal(\'/tournament-alias/\');">Click here to change your tournament nickname</span>',
+                    )
+                else:
+                    return HttpResponse(
+                        "<p>The tournament can only be created one time in the free subscription.</p>",
+                        status=200,
+                    )
             except User.DoesNotExist:
                 raise Http404("User not found")
-        else:
+        elif request.method == "GET":
             tournament_id = query.last().id
             if query.last().open_to_subscription is False:
                 add_tournament_message(id, "Tournament registration deadline closed")
-                return HttpResponse("<p>The tournament can only be created one time in the free subscription.</p>", status=200)
+                return HttpResponse(
+                    "<p>The tournament can only be created one time in the free subscription.</p>",
+                    status=200,
+                )
             other_user_id = request.POST.get("user_id")
             called_players = request.session.get("called_players", [])
             if other_user_id and other_user_id not in called_players:
@@ -56,8 +73,11 @@ def users_list(request, user_id):
         if (user.id != user_id and user.id != 1 and user.id not in called_players)
     ]
     if not len(users):
-        return HttpResponse("<p>The tournament can only be created one time in the free subscription.</p>", status=200)
-            
+        return HttpResponse(
+            "<p>The tournament can only be created one time in the free subscription.</p>",
+            status=200,
+        )
+
     return render(request, "tournament/users_list.html", {"users": users})
 
 
@@ -116,4 +136,3 @@ class UserList(ListView):
     def user_list(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
-
