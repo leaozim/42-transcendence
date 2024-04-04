@@ -40,7 +40,7 @@ def create_tournament(request):
                     )
             except User.DoesNotExist:
                 raise Http404("User not found")
-        elif request.method == "GET":
+        else:
             tournament_id = query.last().id
             if query.last().open_to_subscription is False:
                 add_tournament_message(id, "Tournament registration deadline closed")
