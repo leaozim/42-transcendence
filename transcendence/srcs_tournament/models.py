@@ -28,7 +28,7 @@ class Tournament(models.Model):
     register_date = models.DateTimeField(default=get_current_datetime)
 
     def schedule_tournament(self):
-        threading.Timer(60, self.close_tournament_subscription).start()
+        threading.Timer(45, self.close_tournament_subscription).start()
 
     def close_tournament_subscription(self):
         true_instance = Tournament.objects.get(pk=self.id)
@@ -61,7 +61,7 @@ class Tournament(models.Model):
             winners = [game.winner for game in self.games.all()]
             if None in winners:
                 not_null_winner = next((winner for winner in winners if winner is not None), None)
-                message = f"Tournament without winner due to connection problems"
+                message = "Tournament without winner due to connection problems or every match draw"
                 if not_null_winner is not None:
                     message = f"The winner of the tournament was:<br>{not_null_winner.tournament_alias}"        
                 for user in self.users.all():
@@ -78,7 +78,7 @@ class Tournament(models.Model):
                 self.is_active = False
                 self.save()
                 winner = final_game.winner
-                message = f"Tournament without winner due to connection problems"
+                message = "Tournament without winner due to connection problems or match draw"
                 if winner is not None:
                     message = f"The winner of the tournament was:<br>{winner.tournament_alias}"
                 for user in self.users.all():

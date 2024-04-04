@@ -106,7 +106,7 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
                 if self.reset_timer == False:
                     self.reset_timer = True
                     self.start_time = time.time()
-                    self.limit_time = 60
+                    self.limit_time = 100
                 if self.score[PLAYER_LEFT] > self.score[PLAYER_RIGHT]:
                     winner = self.playersIds[PLAYER_LEFT]
                 elif self.score[PLAYER_LEFT] < self.score[PLAYER_RIGHT]:
