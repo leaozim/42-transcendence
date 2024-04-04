@@ -36,8 +36,6 @@ class Game(models.Model):
 
 @receiver(post_save, sender=Game)
 def update_tournament(sender, instance, created, **kwargs):
-    if instance.is_finish is True:
-        return
     if not created and instance.has_started is True and instance.is_finish is True:
 
         tournament_id = instance.tournament_id
@@ -45,7 +43,8 @@ def update_tournament(sender, instance, created, **kwargs):
             from srcs_tournament.models import Tournament
             try:
                 tournament = Tournament.objects.get(pk=tournament_id)
-                tournament.update_state()
+                if tournament.is_active:
+                    tournament.update_state()
             except Tournament.DoesNotExist:
                 pass
 

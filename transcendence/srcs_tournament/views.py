@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic.list import ListView
@@ -28,9 +28,9 @@ def create_tournament(request):
                 raise Http404("User not found")
         else:
             tournament_id = query.last().id
-            if query.last().open_to_subscription == False:
+            if query.last().open_to_subscription is False:
                 add_tournament_message(id, "Tournament registration deadline closed")
-                return redirect("/")
+                return HttpResponse("<p>The tournament can only be created one time in the free subscription.</p>", status=200)
             other_user_id = request.POST.get("user_id")
             called_players = request.session.get("called_players", [])
             if other_user_id and other_user_id not in called_players:
@@ -55,6 +55,9 @@ def users_list(request, user_id):
         for user in users
         if (user.id != user_id and user.id != 1 and user.id not in called_players)
     ]
+    if not len(users):
+        return HttpResponse("<p>The tournament can only be created one time in the free subscription.</p>", status=200)
+            
     return render(request, "tournament/users_list.html", {"users": users})
 
 
