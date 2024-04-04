@@ -25,9 +25,3 @@ class Command(BaseCommand):
             self.stdout.write(
                 self.style.SUCCESS(f'Superusuário "{username}" criado com sucesso!')
             )
-        user = User.objects.create_superuser('cavalao', '', password)
-        chat = open_chat(1, user.id)
-        add_message(chat.id, "Olá humano!", 1)
-        user = User.objects.create_superuser('cavalord', '' , password)
-        chat = open_chat(1, user.id)
-        add_message(chat.id, "Olá humano!", 1)
