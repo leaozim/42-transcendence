@@ -66,6 +66,8 @@ class Tournament(models.Model):
                     message = f"The winner of the tournament was:<br>{not_null_winner.tournament_alias}"        
                 for user in self.users.all():
                     add_tournament_message(user.id, message)
+                self.is_active = False
+                self.save()
                 return
             for player in self.users.all():
                 add_tournament_message(player.id, f"the winners of the first round and participants in the final to decide the winner are<br>{winners[0].tournament_alias}<br>and<br>{winners[1].tournament_alias}<br>")

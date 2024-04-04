@@ -127,6 +127,7 @@ class BroadcastConsumer(AsyncWebsocketConsumer):
             game.is_finish = True
             game.winner = winner_user
             await sync_to_async(game.save)()
+
         await self.send(text_data=json.dumps(event['data']))
 
     '''
