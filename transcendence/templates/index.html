@@ -13,13 +13,23 @@
   <img src="{% static 'images/home_page.jpg' %}" width="1920" height="572">
 </div>
 
-<div class="container">
-  <button class="btn btn-primary">login</button>
+<div class="container d-flex justify-content-around">
+  <button class="btn btn-primary btn-sm m-2">Login 42</button> <!-- Botão Login 42 -->
+  <button id="django-login-btn" onclick="location.href='{% url 'srcs_auth:login-django' %}'" class="btn btn-primary btn-sm m-2">Login</Caminho></button> <!-- Botão Login -->
+  <button id="django-signup-btn" onclick="location.href='{% url 'srcs_auth:signup' %}'" class="btn btn-primary btn-sm m-2">Signup</button> <!-- Botão Signup -->
 </div>
+
 
 {% endblock content %}
 
 {% block scripts %}
 <script>const LOGIN_URL = "{% url 'srcs_auth:intra_login' %}";</script>
+<script>
+  const DJANGO_LOGIN_URL = "{% url 'srcs_auth:login-django' %}";
+  const DJANGO_SIGNUP = "{% url 'srcs_auth:signup' %}"
+
+
+</script>
+
 <script src="{% static 'index/js/app.js' %}"></script>
 {% endblock scripts %}

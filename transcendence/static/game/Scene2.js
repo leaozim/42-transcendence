@@ -1,7 +1,7 @@
 class Scene2 extends Phaser.Scene {
   constructor() {
     super("playGame");
-    const receiveSocketUrl = `wss://${window.location.host}/ws/game/broadcast/${room_id}/`;
+    const receiveSocketUrl = `ws=://${window.location.host}/ws/game/broadcast/${room_id}/`;
     this.receiveSocket = new WebSocket(receiveSocketUrl);
 
     const playerIds = {

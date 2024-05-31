@@ -2,24 +2,27 @@ FROM python:3.11-alpine as builder
 
 COPY ./requirements/local.txt ./requirements.txt
 
-RUN apk add gcc musl-dev libffi-dev && \
-    pip install -r requirements.txt --no-cache && \
-    pip install gunicorn
+RUN apk add gcc musl-dev libffi-dev; \
+    pip install -r requirements.txt --no-cache
 
 FROM python:3.11-alpine as final
 
 COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
-COPY --from=builder /usr/local/bin/gunicorn /usr/local/bin/
 
 WORKDIR transcendence
 
-RUN apk add gettext
+RUN apk add gettext; \
+    chmod -R 777 /transcendence/coverage ; \
+    adduser -D app
 
-COPY . .
+COPY --chown=app:app . .
+
+CMD ["daphne", "src_core.asgi:application", "-u", "transcendence/daphne.sock"]
 
 RUN chmod +x ./entrypoint.sh
 
 EXPOSE 8000
-EXPOSE 8001
 
-CMD ./entrypoint.sh
+USER app
+
+ENTRYPOINT ./entrypoint.sh

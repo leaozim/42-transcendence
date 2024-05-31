@@ -1,8 +1,10 @@
-version: "3.8"
+version: '3.8'
 services:
   db:
     image: postgres:13
     container_name: db_transcendence
+    ports:
+      - 5432:5432
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -22,6 +24,8 @@ services:
   redis:
     image: redis:6
     container_name: redis
+    ports:
+      - "6379:6379"
     networks:
       - sonarnet
 
@@ -41,46 +45,13 @@ services:
       SECRET_KEY: ${SECRET_KEY}
     volumes:
       - ./transcendence:/transcendence
+    ports:
+      - 8000:8000
     networks:
       - sonarnet
     depends_on:
       db:
         condition: service_healthy
-
-  daphne:
-    image: transcendence
-    build: ./transcendence/
-    container_name: daphne
-    env_file:
-      - .env
-    networks:
-      - sonarnet
-    depends_on:
-      - server
-    command:
-      [
-        "python",
-        "-m",
-        "daphne",
-        "srcs_core.asgi:application",
-        "-p",
-        "8001",
-        "-b",
-        "0.0.0.0",
-      ]
-
-  nginx:
-    container_name: nginx
-    build:
-      context: .
-      dockerfile: ./Dockerfile.nginx
-    ports:
-      - 8000:80
-    networks:
-      - sonarnet
-    depends_on:
-      - server
-      - daphne
 
 volumes:
   postgres:

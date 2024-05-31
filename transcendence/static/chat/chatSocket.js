@@ -1,7 +1,7 @@
 async function setupWebSocket(roomId) {
   const response = await fetch("/user/");
   const { id: user_id } = await response.json();
-  const base_url = `wss://${window.location.host}/ws/chat/${roomId}/${user_id}`;
+  const base_url = `ws://${window.location.host}/ws/chat/${roomId}/${user_id}`;
   const chatSocket = new WebSocket(base_url);
 
   chatSocket.onmessage = (event) => {
