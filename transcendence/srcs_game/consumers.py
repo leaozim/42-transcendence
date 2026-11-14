@@ -1,182 +1,214 @@
+import asyncio
 import json
+import logging
 import time
 
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.layers import get_channel_layer
 '''
     Note que essa bola e raquete são diferentes pro python e pro js.
-    O Js não possui lógica de jogo, apenas para exibir na tela e capturar input
-    enquanto este de python contém lógicas importantes, como detecção de colisão
+    O Js não possui lógica de jogo, apenas exibe o estado recebido e captura o input,
+    enquanto o python contém a lógica do jogo (srcs_game/session.py e physics.py).
 '''
-from static.game.scripts.Ball import Ball
-from static.game.scripts.Paddle import Paddle
-from static.game.scripts.constants import *
-from asgiref.sync import sync_to_async
+from srcs_auth.channels_auth import resolve_user_id
+from srcs_game.computer import ComputerPlayer
 from srcs_game.models import Game
-from srcs_user.models import User
-from srcs_game.services import update_game_result
+from srcs_game.notifications import lobby_group, notify_lobby
+from srcs_game.physics import PLAYER_LEFT
+from srcs_game.services import finish_game, mark_game_started
+from srcs_game.session import FINISHED, PLAYING, WAITING, GameSession
+
+logger = logging.getLogger(__name__)
 
 '''
-    Dicionário global que armazena todas as informações de todos os jogos.
-    Manter na key o room_group_name e como value um outro dicionário com as infos.
-    Exemplo:
-    game_69_broadcast: {
-        ball: Ball(),
-        left_paddle: Paddle(...),
-        ...
-    }
-''' 
+    Games being played in this process: group name -> GameSession.
+    Kept in memory, so the server must run as a single process.
+'''
 games = {}
 
+# The game loop runs at this rate and, during play, sends the state this often.
+TICK_SECONDS = 1 / 60
+# Longest simulated step: if the server stalls, the game slows down a little
+# instead of the ball jumping.
+MAX_STEP_SECONDS = 0.05
+# Outside play the state is sent when it changes, and at least this often
+# (for the countdown).
+IDLE_BROADCAST_SECONDS = 0.25
+
+
+def group_name(game_id):
+    return f"game_{game_id}_broadcast"
+
+
+async def broadcast(session, game_id, now):
+    data = session.state(now)
+    if "winner_id" in data:
+        data["winner"] = session.names.get(data["winner_id"])
+    await get_channel_layer().group_send(group_name(game_id), {"type": "game_update", "data": data})
+
+
+async def run_game(game_id, session):
+    """
+    Game loop of one game: advances it in real time, saves when it starts and
+    ends, and sends its state to the game room. It stops (and the game is
+    forgotten) when the game is over or canceled, or when everybody left
+    before it began. A game whose players leave during play still ends on
+    time, and its result is saved.
+    """
+    key = group_name(game_id)
+    last = time.time()
+    last_broadcast = float("-inf")
+    try:
+        while games.get(key) is session:
+            await asyncio.sleep(TICK_SECONDS)
+            if games.get(key) is not session:
+                break
+            now = time.time()
+            dt = min(max(now - last, 0.0), MAX_STEP_SECONDS)
+            last = now
+
+            if session.update(now, dt):
+                await database_sync_to_async(mark_game_started)(game_id)
+            if session.phase == FINISHED:
+                games.pop(key, None)
+                side = session.winner_side
+                winner_id = None if side is None else session.players[side]
+                await database_sync_to_async(finish_game)(game_id, session.score, winner_id)
+                await broadcast(session, game_id, now)
+                break
+            if session.phase == PLAYING or session.changed or now - last_broadcast >= IDLE_BROADCAST_SECONDS:
+                session.changed = False
+                last_broadcast = now
+                await broadcast(session, game_id, now)
+            if session.sockets == 0 and session.phase == WAITING:
+                games.pop(key, None)  # everybody left before the game began
+                break
+    except asyncio.CancelledError:
+        raise
+    except Exception:
+        logger.exception("Game loop of game %s stopped", game_id)
+        games.pop(key, None)
+
+
+def _direction(value):
+    try:
+        value = float(value)
+    except (TypeError, ValueError):
+        return 0
+    return (value > 0) - (value < 0)
+
+
 class BroadcastConsumer(AsyncWebsocketConsumer):
+    """
+    One connection to a game room (players and spectators).
 
-    '''
-        Após capturar o nome do grupo e o id, verifica se o nome do grupo existe como key na variavel
-        global games. Caso exista, não precisa criar de novo, então só atribui os valores para
-        as variáveis da classe (self.ball, self.paddle, ...). No caso de não existir,
-        então ele cria uma nova chave com uma nova bola, novos paddles e um score zerado.
-    '''
+    Clients send {"type": "ready"} when the player presses Ready and
+    {"type": "input", "direction": -1 | 0 | 1} when they press or release an
+    arrow key. The game loop (run_game) sends them the state of the game.
+    """
+
     async def connect(self):
-        await self.accept()
-        self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
-        self.room_group_name = f"game_{self.room_id}_broadcast"
+        self.session = None
+        self.room_id = int(self.scope["url_route"]["kwargs"]["room_id"])
+        self.room_group_name = group_name(self.room_id)
 
-        '''
-            Role desgraçado pra pegar o id dos jogadores que jogam neste game.
-            Será usado para contar o número de conexões e começar o jogo
-            apenas quando os 2 jogadores necessários estiverem conectados.
-            Os únicos players que devem ser contados tanto no connect quanto
-            no disconnect são esses dois. Os demais vão conseguir assistir
-            o jogo mas não interagir com os paddles e ao entrarem ou saírem
-            não devem interferir no começo ou encerramento do jogo.
-        '''
-        game = await sync_to_async(Game.objects.get)(pk=self.room_id)
-        if game.is_finish:
-            await self.close()
+        game = await database_sync_to_async(
+            Game.objects.select_related("leftPlayer", "rightPlayer").filter(pk=self.room_id).first
+        )()
+        if game is None or game.is_finish:
+            await self.close()  # refuses the connection
             return
-        else:
+        self.user_id = await resolve_user_id(self.scope)
+        if not game.has_started:
+            # Someone opened the room: the game is not a no-show (see Game.check_connection).
             game.has_started = True
-            await sync_to_async(game.save)()
-        left_player = await sync_to_async(lambda: game.leftPlayer)()
-        right_player = await sync_to_async(lambda: game.rightPlayer)()
-        players_id = (left_player.id, right_player.id)
-        
+            await database_sync_to_async(game.save)(update_fields=["has_started"])
 
-        if self.room_group_name not in games:  # verifica se os dados do game não existe
-            games[self.room_group_name] = {  # caso não exista, cria uma nova chave para armazenar os dados
-                'ball': Ball(),
-                'left_paddle': Paddle(LEFT_PADDLE_START_POSITION[0], LEFT_PADDLE_START_POSITION[1]),
-                'right_paddle': Paddle(RIGHT_PADDLE_START_POSITION[0], RIGHT_PADDLE_START_POSITION[1]),
-                'score': [0, 0],
-                'start_time': time.time(),
-                'left_player_id': players_id[PLAYER_LEFT],
-                'right_player_id': players_id[PLAYER_RIGHT],
-                'reset_timer': False,
-                'limit_time': 30,
-                'connected': []  # Essa lista serve para dizer quais entre os dois players acima estão conectados
-                # o que serve para definir início do game e interrupções por desconexão
-                }
-        # passa todas as variáveis do game para uma variável específica dessa instância, para facilitar o acesso depois
-        self.ball = games[self.room_group_name]['ball']
-        self.left_paddle = games[self.room_group_name]['left_paddle']
-        self.right_paddle = games[self.room_group_name]['right_paddle']
-        self.score = games[self.room_group_name]['score']
-        self.playersIds = [games[self.room_group_name]['left_player_id'], games[self.room_group_name]['right_player_id']]
-        self.connecteds = games[self.room_group_name]['connected']
-        self.start_time = games[self.room_group_name]['start_time']
-        self.reset_timer = games[self.room_group_name]['reset_timer']
-        self.limit_time = games[self.room_group_name]['limit_time']
+        # No await between the lookup and the insertion: one session (and one
+        # game loop) per game.
+        self.session = games.get(self.room_group_name)
+        if self.session is None:
+            self.session = games[self.room_group_name] = self._new_session(game)
+            self.session.task = asyncio.ensure_future(run_game(self.room_id, self.session))
+        self.session.connect(self.user_id)
 
+        # Accept only once the session is set up, so no message is lost.
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+        await self.accept()
+        if self.session.side(self.user_id) is not None:
+            await notify_lobby(*self.session.players)
 
-        # vai servir no futuro para enviar informações de começar jogo ou não
-        # vamos precisar criar a lógica de marcar connect dos players jogadores
-        await self.send(text_data=json.dumps({"type": "playerId", "playerId": 'cavalinho'}))
-
-    # aqui vamos precisar criar a lógica de marcar disconect dos players jogadores
-    async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(
-            self.room_group_name, self.channel_name
+    @staticmethod
+    def _new_session(game):
+        computer = ComputerPlayer() if game.against_computer else None
+        session = GameSession(
+            game.leftPlayer_id,
+            game.rightPlayer_id,
+            game.duration_minutes * 60,
+            game.target_score,
+            computer,
         )
+        session.names = {game.leftPlayer_id: game.leftPlayer.username, game.rightPlayer_id: game.rightPlayer.username}
+        return session
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+        if self.session is None or games.get(self.room_group_name) is not self.session:
+            return
+        self.session.disconnect(self.user_id)
+        if self.session.side(self.user_id) is not None:
+            await notify_lobby(*self.session.players)
+
+    async def receive(self, text_data):
+        session = self.session
+        if session is None or session.phase == FINISHED:
+            return
+        try:
+            data = json.loads(text_data)
+        except ValueError:
+            return
+        if not isinstance(data, dict):
+            return
+
+        kind = data.get("type")
+        if kind == "ready":
+            session.set_ready(self.user_id, time.time())
+        elif kind == "input":
+            session.set_direction(self.user_id, _direction(data.get("direction")))
+        elif kind == "frame":
+            # Page loaded before the game loop existed (cached script): it sends
+            # its paddle velocity on every frame.
+            key = "left_player_velocity" if session.side(self.user_id) == PLAYER_LEFT else "right_player_velocity"
+            velocity = data.get(key) if isinstance(data.get(key), dict) else {}
+            session.set_direction(self.user_id, _direction(velocity.get("y")))
 
     async def game_update(self, event):
-        elapsed_time = time.time() - self.start_time
-        if elapsed_time >= self.limit_time:
-            winner_user = None
-            if len(self.connecteds) == 2:
-                if self.reset_timer == False:
-                    self.reset_timer = True
-                    self.start_time = time.time()
-                    self.limit_time = 100
-                if self.score[PLAYER_LEFT] > self.score[PLAYER_RIGHT]:
-                    winner = self.playersIds[PLAYER_LEFT]
-                elif self.score[PLAYER_LEFT] < self.score[PLAYER_RIGHT]:
-                    winner = self.playersIds[PLAYER_RIGHT]
-                else:
-                    winner_username = "Draw"
-                    winner = None
+        await self.send(text_data=json.dumps(event["data"]))
 
-                if winner:
-                    winner_user = await sync_to_async(User.objects.get)(id=winner)
-                    winner_username = winner_user.username
-                    await sync_to_async(update_game_result)(self.room_id, self.score)
-            else:
-                winner_username = None
+    async def game_canceled(self, event):
+        # Sent by the cancel view: a player canceled or declined the game.
+        games.pop(self.room_group_name, None)
+        self.session = None
+        await self.send(text_data=json.dumps({"phase": "canceled", "result": "annulled"}))
 
-            event['data']['winner'] = winner_username
-            game = await sync_to_async(Game.objects.get)(pk=self.room_id)
-            game.is_finish = True
-            game.winner = winner_user
-            await sync_to_async(game.save)()
 
-        await self.send(text_data=json.dumps(event['data']))
+class LobbyConsumer(AsyncWebsocketConsumer):
+    """Home page: tells the logged-in user when their open games change."""
 
-    '''
-        Toda vez que recebe alguma informação do frontend, essa informação é processada e enviada de volta
-        apenas as posições dos objetos da cena e o score.
-        É basicamente o loop do jogo, porém quem controla o timedelta do loop é o phaser pelo frontend.
-        Lá, acontece a mesma coisa: Recebe infos, atualiza a tela e envia info pra cá, porém o frontend
-        não depende de receber dados para funcionar, ele possui o loop do phaser através do update,
-        então ele continua "correndo" mesmo com aqui engasgado.
-    '''
-    async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        logged_player_id = text_data_json.get("logged_player")
-        if logged_player_id in self.playersIds:
-            if logged_player_id not in self.connecteds:
-                self.connecteds.append(logged_player_id)
+    async def connect(self):
+        self.group = None
+        user_id = await resolve_user_id(self.scope)
+        if user_id is None:
+            await self.close()
+            return
+        self.group = lobby_group(user_id)
+        await self.channel_layer.group_add(self.group, self.channel_name)
+        await self.accept()
 
-        if len(self.connecteds) == 2:
-            await self.ball.move()
+    async def disconnect(self, close_code):
+        if self.group:
+            await self.channel_layer.group_discard(self.group, self.channel_name)
 
-            # pega informação de input dos paddles e processa as infos pra trazer nova posição dos paddles
-            left_player_velocity = text_data_json.get("left_player_velocity", {})
-            right_player_velocity = text_data_json.get("right_player_velocity", {})
-            await self.right_paddle.set_paddle_velocity(right_player_velocity.get('x', 0), right_player_velocity.get('y', 0))
-            await self.right_paddle.move()
-            await self.left_paddle.set_paddle_velocity(left_player_velocity.get('x', 0), left_player_velocity.get('y', 0))
-            await self.left_paddle.move()
-
-            # checa colisão com raquete ou ponto. atualiza o score se necessário
-            self.ball.checkPaddleCollision(self.left_paddle.position.x, self.left_paddle.position.y, PLAYER_LEFT)
-            self.ball.checkPaddleCollision(self.right_paddle.position.x, self.right_paddle.position.y, PLAYER_RIGHT)
-            
-            if (self.ball.position.x > CANVAS_WIDTH):
-                self.score[PLAYER_LEFT] += 1
-                await self.ball.resetBall()
-            if (self.ball.position.x < 0):
-                self.score[PLAYER_RIGHT] += 1
-                await self.ball.resetBall()
-
-        await self.channel_layer.group_send(self.room_group_name, {
-            "type": "game_update",
-            "data": {
-                "ball_x": self.ball.position.x,
-                "ball_y": self.ball.position.y,
-                "left_player_position_x": self.left_paddle.position.x,
-                "left_player_position_y": self.left_paddle.position.y,
-                "right_player_position_x": self.right_paddle.position.x,
-                "right_player_position_y": self.right_paddle.position.y,
-                "score": self.score,
-                "connected": self.connecteds
-            }
-        })
+    async def lobby_changed(self, event):
+        await self.send(text_data=json.dumps({"type": "games_changed"}))

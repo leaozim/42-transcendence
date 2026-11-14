@@ -1,0 +1,40 @@
+{% extends 'includes/base.html' %}
+{% load static i18n %}
+
+{% block title %}{% translate "Two-Factor" %} - Transcendence{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'index/css/styles.css' %}">
+{% endblock stylesheet %}
+
+{% block content %}
+<header class="page-header">
+  {% include "includes/language_menu.html" %}
+</header>
+
+<div class="container">
+  <form method="post" action="{% url 'srcs_auth:login-2fa' %}" class="login-form">
+    {% csrf_token %}
+    <div class="bg-common bg-title-blue">
+      <h2 class="title-center">{% translate "Two-Factor" %}</h2>
+    </div>
+
+    <p class="login-help">
+      {% blocktranslate with app=app_name %}Open <strong>{{ app }}</strong> and enter the 6-digit code shown for Transcendence.{% endblocktranslate %}
+    </p>
+
+    <div class="mb-4">
+      <label for="{{ form.token.id_for_label }}" class="form-label">{{ form.token.label }}</label>
+      {{ form.token }}
+      {% for error in form.token.errors %}
+      <div class="alert-message error" role="alert">{{ error }}</div>
+      {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">{% translate "verify" %}</button>
+
+    <p class="login-links">
+      <a href="{% url 'srcs_home:home' %}">{% translate "Back to login" %}</a>
+    </p>
+  </form>
+</div>
+{% endblock content %}

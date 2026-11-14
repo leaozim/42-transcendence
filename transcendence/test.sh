@@ -1,5 +1,9 @@
+#!/usr/bin/env bash
+# Runs the test suite with coverage (requires >= 80%).
+# Uses $PYTHON if set, otherwise python3 from PATH (the Makefile puts .venv/bin first).
+
 coverage() {
-	python -m coverage $@
+	"${PYTHON:-python3}" -m coverage "$@"
 }
 
 coverage erase

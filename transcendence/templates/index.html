@@ -1,25 +1,45 @@
 {% extends 'includes/base.html' %}
-{% load static %}
-
-{% block content %}
-{% csrf_token %}
-
+{% load static i18n %}
 
 {% block stylesheet %}
 <link rel="stylesheet" href="{% static 'index/css/styles.css' %}">
 {% endblock stylesheet %}
 
+{% block content %}
+<header class="page-header">
+  {% include "includes/language_menu.html" %}
+</header>
+
 <div class="background-image">
-  <img src="{% static 'images/home_page.jpg' %}" width="1920" height="572">
+  <img src="{% static 'images/home_page.jpg' %}" width="1920" height="572" alt="Transcendence">
 </div>
 
 <div class="container">
-  <button class="btn btn-primary">login</button>
+  <form method="post" action="{% url 'srcs_auth:login-django' %}" class="login-form">
+    {% csrf_token %}
+    {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+
+    {% for message in messages %}
+    <div class="alert-message {{ message.tags }}" role="alert">{{ message }}</div>
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+    <div class="alert-message error" role="alert">{{ error }}</div>
+    {% endfor %}
+
+    <div class="mb-3">
+      <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
+      {{ form.username }}
+    </div>
+    <div class="mb-4">
+      <label for="{{ form.password.id_for_label }}" class="form-label">{{ form.password.label }}</label>
+      {{ form.password }}
+    </div>
+    <button type="submit" class="btn btn-primary">{% translate "log in" %}</button>
+
+    <p class="login-links">
+      {% translate "No account yet?" %}
+      <a href="{% url 'srcs_auth:signup' %}">{% translate "Sign up" %}</a>
+    </p>
+  </form>
 </div>
-
 {% endblock content %}
-
-{% block scripts %}
-<script>const LOGIN_URL = "{% url 'srcs_auth:intra_login' %}";</script>
-<script src="{% static 'index/js/app.js' %}"></script>
-{% endblock scripts %}

@@ -1,0 +1,541 @@
+# Brazilian Portuguese translation of Transcendence.
+msgid ""
+msgstr ""
+"Project-Id-Version: Transcendence\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-04-02 18:13+0000\n"
+"PO-Revision-Date: 2026-11-12 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Brazilian Portuguese\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: srcs_auth/views.py
+msgid "User not authenticated"
+msgstr "Usuário não autenticado"
+
+#: templates/account/signup.html templates/index.html
+msgid "Sign up"
+msgstr "Cadastre-se"
+
+#: templates/account/signup.html
+msgid "sign up"
+msgstr "cadastrar"
+
+#: templates/chat/chatModal.html
+msgid "Chats"
+msgstr "Conversas"
+
+#: templates/tournament/users_list.html
+msgid "Players"
+msgstr "Jogadores"
+
+#: templates/home/index.html
+msgid "Sign Out"
+msgstr "Sair"
+
+#: templates/home/index.html
+msgid "instructions"
+msgstr "instruções"
+
+#: templates/home/index.html
+msgid "profile"
+msgstr "perfil"
+
+#: templates/home/index.html
+msgid ""
+"\n"
+"          See your ongoing chats\n"
+"          <br>\n"
+"          or just chat.\n"
+"          "
+msgstr ""
+"\n"
+"          Veja suas conversas em andamento\n"
+"          <br>\n"
+"          ou apenas converse.\n"
+"          "
+
+#: templates/home/index.html
+msgid "game"
+msgstr "jogo"
+
+#: templates/home/index.html
+msgid "tournament"
+msgstr "torneio"
+
+#: templates/home/index.html
+msgid ""
+"\n"
+"          Gather your friends\n"
+"          <br>\n"
+"          and create your own\n"
+"          <br>\n"
+"          tournament.\n"
+"          "
+msgstr ""
+"\n"
+"          Reúna seus amigos\n"
+"          <br>\n"
+"          e crie seu próprio\n"
+"          <br>\n"
+"          torneio.\n"
+"          "
+
+#: templates/includes/base.html
+msgid "Welcome to Transcendence"
+msgstr "Boas-vindas ao Transcendence"
+
+#: templates/profile/modal.html
+msgid "Two-factor authentication"
+msgstr "Autenticação de dois fatores"
+
+#: templates/registration/twoFactorModal.html templates/user/blockUserModal.html
+msgid "back"
+msgstr "voltar"
+
+#: templates/registration/verifyTwoFactorModal.html
+msgid "Security Code:"
+msgstr "Código de segurança:"
+
+#: templates/tournament/create_tournament.html
+msgid "Create tournament"
+msgstr "Criar torneio"
+
+#: templates/tournament/create_tournament_alias.html
+msgid "Nickname registered"
+msgstr "Apelido cadastrado"
+
+#: templates/tournament/create_tournament_alias.html
+msgid "Nickname"
+msgstr "Apelido"
+
+#: templates/tournament/create_tournament_alias.html
+msgid "Change"
+msgstr "Alterar"
+
+#: templates/user/blockUserModal.html
+msgid "Block User"
+msgstr "Bloquear usuário"
+
+#: templates/user/blockUserModal.html
+msgid "Unblock User"
+msgstr "Desbloquear usuário"
+
+#: templates/user/usersList.html
+msgid "User List - Transcendence"
+msgstr "Lista de usuários - Transcendence"
+
+#: templates/user/usersList.html
+msgid "User List"
+msgstr "Lista de usuários"
+
+#: templates/account/signup.html
+msgid "Sign up - Transcendence"
+msgstr "Cadastre-se - Transcendence"
+
+#: templates/account/signup.html
+msgid "Optional. JPEG, PNG, GIF or WebP, up to 5 MB."
+msgstr "Opcional. JPEG, PNG, GIF ou WebP, até 5 MB."
+
+#: templates/account/signup.html
+msgid "Already have an account?"
+msgstr "Já tem uma conta?"
+
+#: templates/account/signup.html
+msgid "Log in"
+msgstr "Entrar"
+
+#: templates/chat/chatModal.html templates/home/index.html
+msgid "New message"
+msgstr "Nova mensagem"
+
+#: templates/chat/chatModal.html
+msgid "No chat selected"
+msgstr "Nenhuma conversa selecionada"
+
+#: templates/game/game_list.html
+msgid "New game"
+msgstr "Novo jogo"
+
+#: templates/game/game_list.html srcs_game/forms.py
+msgid "Time (minutes)"
+msgstr "Tempo (minutos)"
+
+#: templates/game/game_list.html srcs_game/forms.py
+msgid "Points to win"
+msgstr "Pontos para vencer"
+
+#: templates/game/game_list.html
+msgid "No limit"
+msgstr "Sem limite"
+
+#: templates/game/game_list.html
+msgid "The game ends when the time is up or a player reaches the points, whichever comes first."
+msgstr "O jogo termina quando o tempo acaba ou quando um jogador atinge os pontos, o que acontecer primeiro."
+
+#: templates/game/game_list.html
+msgid "Play against the computer"
+msgstr "Jogar contra o computador"
+
+#: templates/game/game_list.html
+msgid "Or challenge a player:"
+msgstr "Ou desafie um jogador:"
+
+#: templates/game/game_list.html
+msgid "No other players have signed up yet."
+msgstr "Nenhum outro jogador se cadastrou ainda."
+
+#: templates/game/open_games.html
+msgid "Open games"
+msgstr "Jogos em aberto"
+
+#: templates/game/open_games.html
+#, python-format
+msgid "Playing against %(name)s"
+msgstr "Jogando contra %(name)s"
+
+#: templates/game/open_games.html
+#, python-format
+msgid "Tournament game against %(name)s"
+msgstr "Partida de torneio contra %(name)s"
+
+#: templates/game/open_games.html
+#, python-format
+msgid "%(name)s challenged you!"
+msgstr "%(name)s desafiou você!"
+
+#: templates/game/open_games.html
+#, python-format
+msgid "You challenged %(name)s"
+msgstr "Você desafiou %(name)s"
+
+#: templates/game/open_games.html
+#, python-format
+msgid "%(name)s is in the game room."
+msgstr "%(name)s está na sala do jogo."
+
+#: templates/game/open_games.html
+#, python-format
+msgid "%(name)s is not in the game room."
+msgstr "%(name)s não está na sala do jogo."
+
+#: templates/game/open_games.html
+msgid "Rejoin"
+msgstr "Voltar ao jogo"
+
+#: templates/game/open_games.html
+msgid "Join"
+msgstr "Entrar"
+
+#: templates/game/open_games.html
+msgid "Open"
+msgstr "Abrir"
+
+#: templates/game/open_games.html
+msgid "Decline"
+msgstr "Recusar"
+
+#: templates/game/open_games.html
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: templates/home/index.html
+msgid ""
+"\n"
+"          Use the mouse to move around the main screen.\n"
+"          <br>\n"
+"          Click an icon to open its section.\n"
+"          <br>\n"
+"          Have fun!\n"
+"          "
+msgstr ""
+"\n"
+"          Use o mouse para navegar pela tela principal.\n"
+"          <br>\n"
+"          Clique em um ícone para abrir a seção correspondente.\n"
+"          <br>\n"
+"          Divirta-se!\n"
+"          "
+
+#: templates/home/index.html
+msgid ""
+"\n"
+"          Configure your avatar and authentication.\n"
+"          <br>\n"
+"          "
+msgstr ""
+"\n"
+"          Configure seu avatar e sua autenticação.\n"
+"          <br>\n"
+"          "
+
+#: templates/home/index.html
+msgid ""
+"\n"
+"          Play against a friend or the computer.<br>\n"
+"          Use the arrow keys (or W and S) to move your paddle and hit the ball.<br>\n"
+"          If the ball leaves the screen on the left or right, the player on the opposite side scores a point.<br>\n"
+"          "
+msgstr ""
+"\n"
+"          Jogue contra um amigo ou contra o computador.<br>\n"
+"          Use as setas do teclado (ou W e S) para mover sua raquete e rebater a bola.<br>\n"
+"          Se a bola sair da tela pela esquerda ou pela direita, o jogador do lado oposto marca um ponto.<br>\n"
+"          "
+
+#: templates/includes/language_menu.html
+msgid "Language"
+msgstr "Idioma"
+
+#: templates/index.html
+msgid "log in"
+msgstr "entrar"
+
+#: templates/index.html
+msgid "No account yet?"
+msgstr "Ainda não tem conta?"
+
+#: templates/profile/modal.html
+msgid "Uploading…"
+msgstr "Enviando…"
+
+#: templates/profile/modal.html
+msgid "Avatar updated."
+msgstr "Avatar atualizado."
+
+#: templates/profile/modal.html
+msgid "Upload failed. Please try again."
+msgstr "Falha no envio. Tente novamente."
+
+#: templates/profile/modal.html srcs_user/forms.py
+msgid "Avatar"
+msgstr "Avatar"
+
+#: templates/registration/login_2fa.html templates/registration/twoFactorModal.html templates/registration/verifyTwoFactorModal.html
+msgid "Two-Factor"
+msgstr "Dois fatores"
+
+#: templates/registration/login_2fa.html
+#, python-format
+msgid "Open <strong>%(app)s</strong> and enter the 6-digit code shown for Transcendence."
+msgstr "Abra o <strong>%(app)s</strong> e digite o código de 6 dígitos exibido para Transcendence."
+
+#: templates/registration/login_2fa.html
+msgid "verify"
+msgstr "verificar"
+
+#: templates/registration/login_2fa.html
+msgid "Back to login"
+msgstr "Voltar ao login"
+
+#: templates/registration/twoFactorModal.html
+msgid "Which authenticator app do you want to use?"
+msgstr "Qual aplicativo autenticador você quer usar?"
+
+#: templates/registration/twoFactorModal.html
+#, python-format
+msgid "Don't have %(name)s yet? Get it for"
+msgstr "Ainda não tem o %(name)s? Baixe para"
+
+#: templates/registration/twoFactorModal.html
+msgid "Setup key"
+msgstr "Chave de configuração"
+
+#: templates/registration/verifyTwoFactorModal.html srcs_auth/views.py
+msgid "Invalid code. Please try again."
+msgstr "Código inválido. Tente novamente."
+
+#: templates/registration/verifyTwoFactorModal.html srcs_auth/forms.py
+msgid "Enter the 6-digit code from your app."
+msgstr "Digite o código de 6 dígitos do seu aplicativo."
+
+#: templates/tournament/users_list.html
+msgid "Click the button to invite a player to the tournament."
+msgstr "Clique no botão para convidar um jogador para o torneio."
+
+#: templates/user/blockUserModal.html
+#, python-format
+msgid "Would you like to block %(username)s?"
+msgstr "Você deseja bloquear %(username)s?"
+
+#: templates/user/blockUserModal.html
+#, python-format
+msgid "Would you like to unblock %(username)s?"
+msgstr "Você deseja desbloquear %(username)s?"
+
+#: srcs_auth/forms.py
+msgid "Security code"
+msgstr "Código de segurança"
+
+#: srcs_auth/services.py
+msgid "Open Google Authenticator, tap \"+\" and choose \"Scan a QR code\". Or choose \"Enter a setup key\" and type the key below."
+msgstr "Abra o Google Authenticator, toque em \"+\" e escolha \"Ler código QR\". Ou escolha \"Inserir chave de configuração\" e digite a chave abaixo."
+
+#: srcs_auth/services.py
+msgid "Open Authy, tap \"+\" (Add account) and choose \"Scan QR code\". Or choose \"Enter key manually\" and type the key below."
+msgstr "Abra o Authy, toque em \"+\" (Adicionar conta) e escolha \"Escanear código QR\". Ou escolha \"Inserir chave manualmente\" e digite a chave abaixo."
+
+#: srcs_auth/views.py
+msgid "Account created. You can log in now."
+msgstr "Conta criada. Agora você já pode entrar."
+
+#: srcs_auth/views.py
+msgid "Your login attempt expired. Please log in again."
+msgstr "Sua tentativa de login expirou. Faça login novamente."
+
+#: srcs_auth/views.py
+msgid "Could not refresh the token."
+msgstr "Não foi possível atualizar o token."
+
+#: srcs_auth/views.py
+msgid "your authenticator app"
+msgstr "seu aplicativo autenticador"
+
+#: srcs_auth/views.py
+#, python-format
+msgid "Too many failed attempts. Try again in %(seconds)s second."
+msgid_plural "Too many failed attempts. Try again in %(seconds)s seconds."
+msgstr[0] "Muitas tentativas inválidas. Tente novamente em %(seconds)s segundo."
+msgstr[1] "Muitas tentativas inválidas. Tente novamente em %(seconds)s segundos."
+
+#: srcs_auth/views.py
+#, python-format
+msgid "This code was already used. Wait for the next code in %(app)s."
+msgstr "Este código já foi usado. Aguarde o próximo código no %(app)s."
+
+#: srcs_chat/form.py
+#, python-format
+msgid "%(value)s is not a valid user."
+msgstr "%(value)s não é um usuário válido."
+
+#: srcs_game/models.py
+#, python-format
+msgid "%(minutes)s minute"
+msgid_plural "%(minutes)s minutes"
+msgstr[0] "%(minutes)s minuto"
+msgstr[1] "%(minutes)s minutos"
+
+#: srcs_game/models.py
+msgid "no point limit"
+msgstr "sem limite de pontos"
+
+#: srcs_game/models.py
+#, python-format
+msgid "first to %(points)s point"
+msgid_plural "first to %(points)s points"
+msgstr[0] "vence quem fizer %(points)s ponto"
+msgstr[1] "vence quem fizer %(points)s pontos"
+
+#: srcs_game/views/views.py
+msgid "Computer"
+msgstr "Computador"
+
+#: srcs_game/views/views.py
+msgid "Loading the game…"
+msgstr "Carregando o jogo…"
+
+#: srcs_game/views/views.py
+msgid "Ready"
+msgstr "Pronto"
+
+#: srcs_game/views/views.py
+msgid "Cancel game"
+msgstr "Cancelar jogo"
+
+#: srcs_game/views/views.py
+msgid "not in the room yet"
+msgstr "ainda não está na sala"
+
+#: srcs_game/views/views.py
+msgid "in the room"
+msgstr "na sala"
+
+#: srcs_game/views/views.py
+msgid "ready"
+msgstr "pronto"
+
+#: srcs_game/views/views.py
+#, python-format
+msgid "Waiting for %(name)s to join…"
+msgstr "Aguardando %(name)s entrar…"
+
+#: srcs_game/views/views.py
+msgid "Press Ready when you want to start."
+msgstr "Clique em Pronto quando quiser começar."
+
+#: srcs_game/views/views.py
+#, python-format
+msgid "Waiting for %(name)s to press Ready…"
+msgstr "Aguardando %(name)s clicar em Pronto…"
+
+#: srcs_game/views/views.py
+#, python-format
+msgid "%(name)s is ready. Press Ready to start!"
+msgstr "%(name)s está pronto. Clique em Pronto para começar!"
+
+#: srcs_game/views/views.py
+msgid "Waiting for the players to be ready…"
+msgstr "Aguardando os jogadores ficarem prontos…"
+
+#: srcs_game/views/views.py
+#, python-format
+msgid "The game starts in %(seconds)s…"
+msgstr "O jogo começa em %(seconds)s…"
+
+#: srcs_game/views/views.py
+msgid "Game over"
+msgstr "Fim de jogo"
+
+#: srcs_game/views/views.py
+#, python-format
+msgid "The winner is %(name)s!"
+msgstr "%(name)s venceu!"
+
+#: srcs_game/views/views.py
+msgid "It's a draw!"
+msgstr "Empate!"
+
+#: srcs_game/views/views.py
+msgid "The game was canceled."
+msgstr "A partida foi cancelada."
+
+#: srcs_game/views/views.py
+msgid "Play again"
+msgstr "Jogar novamente"
+
+#: srcs_game/views/views.py
+msgid "Back to home"
+msgstr "Voltar ao início"
+
+#: srcs_game/views/views.py
+msgid "This game can no longer be canceled."
+msgstr "Este jogo não pode mais ser cancelado."
+
+#: srcs_tournament/views.py
+msgid "There are no more players to invite."
+msgstr "Não há mais jogadores para convidar."
+
+#: srcs_tournament/views.py
+msgid "With the free subscription, you can only create one tournament."
+msgstr "Com a assinatura gratuita, você só pode criar um torneio."
+
+#: srcs_tournament/views.py
+msgid "A tournament needs at least 4 players. Wait for more users to join."
+msgstr "Um torneio precisa de pelo menos 4 jogadores. Aguarde mais usuários entrarem."
+
+#: srcs_user/forms.py
+msgid "Use a JPEG, PNG, GIF or WebP image."
+msgstr "Use uma imagem JPEG, PNG, GIF ou WebP."
+
+#: srcs_user/forms.py
+msgid "The image dimensions are too large."
+msgstr "As dimensões da imagem são grandes demais."
+
+#: srcs_user/forms.py
+#, python-format
+msgid "The image is too large (maximum %(size)s MB)."
+msgstr "A imagem é grande demais (máximo de %(size)s MB)."

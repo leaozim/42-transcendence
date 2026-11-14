@@ -1,0 +1,30 @@
+{% load i18n %}
+{% comment %}
+  Language switcher, shared by the landing page, sign-up, two-factor and home pages.
+  Each option posts to Django's set_language view and comes back to the current page.
+{% endcomment %}
+{% get_current_language as CURRENT_LANGUAGE %}
+{% get_available_languages as AVAILABLE_LANGUAGES %}
+{% get_language_info_list for AVAILABLE_LANGUAGES as languages %}
+<div class="dropdown language-menu">
+  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+    aria-expanded="false" aria-label="{% translate 'Language' %}">
+    <i class="bi bi-translate" aria-hidden="true"></i>
+    <b>{{ CURRENT_LANGUAGE|upper }}</b>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    {% for language in languages %}
+    <li>
+      <form action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.get_full_path }}">
+        <button type="submit" name="language" value="{{ language.code }}"
+          class="dropdown-item{% if CURRENT_LANGUAGE == language.code %} active{% endif %}"
+          lang="{{ language.code }}">
+          {{ language.name_local|capfirst }} ({{ language.code|upper }})
+        </button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+</div>

@@ -1,17 +1,25 @@
 {% extends  "includes/base.html" %}
 
-{% load static %}
+{% load static i18n %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'game/game.css' %}">
+{% endblock stylesheet %}
 
 {% block scripts %} 
+    {{ game_texts|json_script:"game-texts" }}
     <script type="text/javascript">const room_id = "{{ room_id|escapejs }}";</script>
     <script type="text/javascript">const leftPlayer = "{{ leftPlayer|escapejs }}";</script>
     <script type="text/javascript">const rightPlayer = "{{ rightPlayer|escapejs }}";</script>
+    <script type="text/javascript">const VS_COMPUTER = {{ vs_computer|yesno:"true,false" }};</script>
+    <script type="text/javascript">const GAME_TEXTS = JSON.parse(document.getElementById("game-texts").textContent);</script>
     <script type="text/javascript" src="{% static 'game/lib/phaser.min.js' %}" ></script>
     <script type="text/javascript" src="{% static 'game/scripts/Vector2.js' %}" defer ></script>
     <script type="text/javascript" src="{% static 'game/scripts/constants.js' %}" defer ></script>
     <script type="text/javascript" src="{% static 'game/scripts/Ball.js' %}" defer ></script>
     <script type="text/javascript" src="{% static 'game/scripts/Paddle.js' %}" defer ></script>
     <script type="text/javascript" src="{% static 'game/scripts/Player.js' %}" defer ></script>
+    <script type="text/javascript" src="{% static 'game/GameLobby.js' %}" defer ></script>
     <script type="text/javascript" src="{% static 'game/Scene1.js' %}" defer ></script>
     <script type="text/javascript" src="{% static 'game/Scene2.js' %}" defer ></script>
     <script type="text/javascript" src="{% static 'game/Scene3.js' %}" defer ></script>
@@ -20,5 +28,30 @@
 {% endblock scripts %}
 
 {% block content %} 
-
+{# Shown over the game until play begins: who is here, who is ready, countdown. #}
+<div id="game-lobby" class="game-lobby" aria-live="polite">
+  <h2 class="game-lobby-title">{{ game_texts.leftPlayer }} <span>vs</span> {{ game_texts.rightPlayer }}</h2>
+  <p class="game-lobby-settings">{{ game_texts.settings }}</p>
+  <ul class="game-lobby-players">
+    <li data-player="{{ leftPlayer }}"><span class="name">{{ game_texts.leftPlayer }}</span> <span class="status"></span></li>
+    <li data-player="{{ rightPlayer }}"><span class="name">{{ game_texts.rightPlayer }}</span> <span class="status"></span></li>
+  </ul>
+  <p class="game-lobby-hint"></p>
+  <p class="game-lobby-countdown" hidden></p>
+  <div class="game-lobby-actions">
+    <button type="button" id="ready-button" class="btn btn-primary" hidden>{{ game_texts.ready }}</button>
+    {% if can_cancel %}
+    <button type="button" id="cancel-game-button" class="btn btn-primary-back"
+      data-url="{% url 'srcs_game:cancel' room_id %}">{{ game_texts.cancel }}</button>
+    {% endif %}
+  </div>
+</div>
+{% if vs_computer %}
+{# Submitted by the "Play again" button of the game-over screen (Scene3.js), with the same settings. #}
+<form id="play-again-form" method="post" action="{% url 'srcs_game:computer' %}" hidden>
+  {% csrf_token %}
+  <input type="hidden" name="minutes" value="{{ game.duration_minutes }}">
+  <input type="hidden" name="score" value="{{ game.target_score|default_if_none:'' }}">
+</form>
+{% endif %}
 {% endblock content %}

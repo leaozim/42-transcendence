@@ -15,6 +15,14 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from srcs_core.env import (
+    channel_layers_config,
+    database_config,
+    env_bool,
+    env_list,
+    media_root,
+)
+
 env_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 env_path = os.path.join(env_dir, ".env")
 
@@ -101,16 +109,7 @@ WSGI_APPLICATION = "srcs_core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.getenv("POSTGRES_NAME"),
-        "USER": os.getenv("POSTGRES_USER"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": os.getenv("POSTGRES_HOST"),
-        "PORT": os.getenv("POSTGRES_PORT"),
-    }
-}
+DATABASES = {"default": database_config()}
 
 
 # Password validation
@@ -138,9 +137,11 @@ USE_I18N = True
 
 LOCALE_PATHS = [os.path.join(BASE_DIR, "locale")]
 
+# Portuguese is Brazilian Portuguese (translations in locale/pt_BR). Browsers and
+# cookies asking for plain "pt" (or pt-PT) fall back to it.
 LANGUAGES = (
     ("en", "English"),
-    ("pt", "Portuguese"),
+    ("pt-br", "Brazilian Portuguese"),
 )
 
 LANGUAGE_CODE = "en-us"
@@ -167,28 +168,38 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
+# User uploads (avatars). Served by the app unless SERVE_MEDIA=false.
+MEDIA_URL = "/media/"
+
+MEDIA_ROOT = media_root()
+
 LOGIN_REDIRECT_URL = "/auth/user"
 
 LOGOUT_REDIRECT_URL = "/"
 
-LOGIN_URL = "srcs_auth:intra_login"
+# Pages that need a logged-in user send visitors to the login form on the landing page.
+LOGIN_URL = "srcs_home:home"
 
-SESSION_COOKIE_SECURE = True
+# Account name shown in Google Authenticator / Authy ("Transcendence: <username>").
+OTP_TOTP_ISSUER = "Transcendence"
 
-SESSION_COOKIE_SAMESITE = "None"
+# Secure cookies are only sent over HTTPS. Leave this off when the app is
+# reached over plain HTTP (e.g. http://<vm-ip>:8000), or login will not work.
+SESSION_COOKIE_SECURE = env_bool("SECURE_COOKIES", False)
+
+# Browsers reject SameSite=None cookies that are not also Secure.
+SESSION_COOKIE_SAMESITE = "None" if SESSION_COOKIE_SECURE else "Lax"
 
 # Channels
 ASGI_APPLICATION = "srcs_core.asgi.application"
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("redis", 6379)],
-        },
-    },
-}
+CHANNEL_LAYERS = channel_layers_config()
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
+CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS", ["http://localhost:8000"])
 
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "[::1]", "127.0.0.1"]
+ALLOWED_HOSTS = env_list(
+    "ALLOWED_HOSTS", ["localhost", "0.0.0.0", "[::1]", "127.0.0.1"]
+)
+
+# Public base URL, used to build absolute links (e.g. tournament invitations).
+SITE_URL = os.getenv("SITE_URL", "http://localhost:8000").rstrip("/")

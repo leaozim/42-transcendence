@@ -8,13 +8,13 @@
       <img src="{% static 'images/bg_title_blue.png' %}" alt="bg title" class="img-fluid" width="344" height="80" />
       <h1 class="title-center bg-common">{% translate "Block User" %}</h1>
     </div>
-    <p class="profile-text">{% translate "Would you like to block " %}{{ username }} ?</p>
+    <p class="profile-text">{% blocktranslate %}Would you like to block {{ username }}?{% endblocktranslate %}</p>
     {% else %}
     <div class="main-title">
       <img src="{% static 'images/bg_title_pink.png' %}" alt="bg title" class="img-fluid" width="344" height="80" />
       <h1 class="title-center bg-common">{% translate "Unblock User" %}</h1>
     </div>
-    <p class="profile-text">{% translate "Would you like to unblock " %}{{ username }} ?</p>
+    <p class="profile-text">{% blocktranslate %}Would you like to unblock {{ username }}?{% endblocktranslate %}</p>
     {% endif %}
     <form id="{% if not blocked_user %}block-form{% else %}unblock-form{% endif %}" method="post">
       {% csrf_token %}

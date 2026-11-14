@@ -1,5 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
+from django.utils.html import format_html
+from django.utils.translation import gettext as _
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic.list import ListView
@@ -20,8 +22,7 @@ def create_tournament(request):
 
                 if User.objects.count() < 5:
                     return HttpResponse(
-                        "<p>You need await more users "
-                        "connected to play the tournament</p>",
+                        format_html("<p>{}</p>", _("A tournament needs at least 4 players. Wait for more users to join.")),
                         status=200,
                     )
 
@@ -31,11 +32,11 @@ def create_tournament(request):
                     tournament.users.add(user.id)
                     add_tournament_message(
                         id,
-                        'You created a tournament. Wait for 3 more players to start (invite them... duh). <br> <span class="clickable-link" onClick="openOnModal(\'/tournament-alias/\');">Click here to change your tournament nickname</span>',
+                        'You created a tournament. It will start when 3 more players join (invite them... duh).<br> <span class="clickable-link" onClick="openOnModal(\'/tournament-alias/\');">Click here to change your tournament nickname</span>',
                     )
                 else:
                     return HttpResponse(
-                        "<p>The tournament can only be created one time in the free subscription.</p>",
+                        format_html("<p>{}</p>", _("With the free subscription, you can only create one tournament.")),
                         status=200,
                     )
             except User.DoesNotExist:
@@ -43,9 +44,9 @@ def create_tournament(request):
         else:
             tournament_id = query.last().id
             if query.last().open_to_subscription is False:
-                add_tournament_message(id, "Tournament registration deadline closed")
+                add_tournament_message(id, "The tournament registration deadline has passed.")
                 return HttpResponse(
-                    "<p>The tournament can only be created one time in the free subscription.</p>",
+                    format_html("<p>{}</p>", _("With the free subscription, you can only create one tournament.")),
                     status=200,
                 )
             other_user_id = request.POST.get("user_id")
@@ -54,7 +55,7 @@ def create_tournament(request):
                 called_players.append(other_user_id)
                 add_tournament_message(
                     other_user_id,
-                    f'You were invited to tournament #{tournament_id}.<br> <span class="clickable-link" onClick="openOnModal(\'/tournament-alias/\');">Click here to change nickname</span> <br> <span class="clickable-link" onClick="dontOpenOnModal(\'/tournament_player_invite/{tournament_id}/{other_user_id}/\')">Click here to accept</span>',
+                    f'You were invited to tournament #{tournament_id}.<br> <span class="clickable-link" onClick="openOnModal(\'/tournament-alias/\');">Click here to change your nickname</span> <br> <span class="clickable-link" onClick="dontOpenOnModal(\'/tournament_player_invite/{tournament_id}/{other_user_id}/\')">Click here to accept</span>',
                 )
                 request.session["called_players"] = called_players
         return redirect("srcs_tournament:users_list", user_id=id)
@@ -74,7 +75,7 @@ def users_list(request, user_id):
     ]
     if not len(users):
         return HttpResponse(
-            "<p>The tournament can only be created one time in the free subscription.</p>",
+            format_html("<p>{}</p>", _("There are no more players to invite.")),
             status=200,
         )
 
@@ -86,7 +87,7 @@ def user_accept(request, user_id, user_accept_id):
     tournament = Tournament.objects.get(pk=user_id)
     if tournament.open_to_subscription == False:
         add_tournament_message(
-            request.user.id, "Tournament registration deadline closed"
+            request.user.id, "The tournament registration deadline has passed."
         )
         return redirect("/")
 
@@ -102,14 +103,16 @@ def user_accept(request, user_id, user_accept_id):
         for user in users:
             add_tournament_message(
                 user.id,
-                f"{user_accept.tournament_alias} have joined the tournament #{tournament.id}. The tournament will start soon.",
+                f"{user_accept.tournament_alias} has joined tournament #{tournament.id}. The tournament will start soon.",
             )
         return redirect("/")
 
+    missing = 4 - users_count
     for user in users:
         add_tournament_message(
             user.id,
-            f"{user_accept.tournament_alias} joined tournament #{tournament.id}. Wait for {4 - users_count} more players to start.",
+            f"{user_accept.tournament_alias} has joined tournament #{tournament.id}. "
+            f"Waiting for {missing} more {'player' if missing == 1 else 'players'} before it starts.",
         )
     return redirect("/")
 

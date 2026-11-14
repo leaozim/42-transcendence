@@ -1,0 +1,43 @@
+{% load i18n static %}
+{% comment %}
+  "Open games" panel of the home page: challenges waiting to be accepted and
+  games in progress. Reloaded by static/game/lobby.js when something changes.
+{% endcomment %}
+{% if open_games %}
+<div class="open-games-panel">
+  <h3 class="open-games-title">{% translate "Open games" %}</h3>
+  <ul class="open-games-list">
+    {% for item in open_games %}
+    {% with name=item.opponent.username game=item.game %}
+    <li class="open-game" data-game-id="{{ game.id }}">
+      <img src="{% if item.opponent.avatar %}{{ item.opponent.avatar }}{% else %}{% static 'images/sloth.jpg' %}{% endif %}"
+        alt="" width="40" height="40" class="open-game-avatar">
+      <div class="open-game-text">
+        <strong>
+          {% if item.in_progress %}{% blocktranslate %}Playing against {{ name }}{% endblocktranslate %}
+          {% elif item.tournament %}{% blocktranslate %}Tournament game against {{ name }}{% endblocktranslate %}
+          {% elif item.challenged_me %}{% blocktranslate %}{{ name }} challenged you!{% endblocktranslate %}
+          {% else %}{% blocktranslate %}You challenged {{ name }}{% endblocktranslate %}{% endif %}
+        </strong>
+        <span class="open-game-settings">{{ game.settings_label }}</span>
+        <span class="open-game-presence{% if item.opponent_in_room %} online{% endif %}">
+          {% if item.opponent_in_room %}{% blocktranslate %}{{ name }} is in the game room.{% endblocktranslate %}
+          {% else %}{% blocktranslate %}{{ name }} is not in the game room.{% endblocktranslate %}{% endif %}
+        </span>
+      </div>
+      <div class="open-game-actions">
+        <a class="btn btn-blue" href="{% url 'srcs_game:room' game.id %}">
+          {% if item.in_progress %}{% translate "Rejoin" %}{% elif item.challenged_me or item.tournament %}{% translate "Join" %}{% else %}{% translate "Open" %}{% endif %}
+        </a>
+        {% if item.can_cancel %}
+        <button type="button" class="btn btn-primary-back" data-cancel-game="{% url 'srcs_game:cancel' game.id %}">
+          {% if item.challenged_me %}{% translate "Decline" %}{% else %}{% translate "Cancel" %}{% endif %}
+        </button>
+        {% endif %}
+      </div>
+    </li>
+    {% endwith %}
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}

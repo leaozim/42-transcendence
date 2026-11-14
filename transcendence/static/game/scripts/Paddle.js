@@ -1,51 +1,56 @@
-class Paddle extends Phaser.GameObjects.Image  {
+class Paddle extends Phaser.GameObjects.Image {
     constructor(scene, x, y, texture, i_move) {
         super(scene, x, y, texture);
-        this.velocity = new Vector2(0, 0);
         scene.add.existing(this);
+        // -1 (up), 0 or +1 (down); the server moves the paddle.
+        this.direction = 0;
+        // Called with the new direction when the player presses or releases a key.
+        this.onDirectionChange = null;
         if (i_move) {
             this.setupInputHandler();
         }
     }
-    
+
     move(x, y) {
         this.x = x;
         this.y = y;
     }
 
     setupInputHandler() {
-        document.addEventListener('keydown', (event) => {
-            let velocity = { x: 0, y: 0 };
+        const upKeys = new Set(["arrowup", "w"]);
+        const downKeys = new Set(["arrowdown", "s"]);
+        const held = new Set();
 
-            switch (event.key) {
-                case 'w':
-                    velocity.y = -5;
-                    break;
-                case 's':
-                    velocity.y = 5;
-                    break;
-                case 'ArrowUp':
-                    velocity.y = -5;
-                    break;
-                case 'ArrowDown':
-                    velocity.y = 5;
-                    break;
+        const update = () => {
+            const keys = [...held];
+            const direction = (keys.some((k) => downKeys.has(k)) ? 1 : 0) - (keys.some((k) => upKeys.has(k)) ? 1 : 0);
+            if (direction !== this.direction) {
+                this.direction = direction;
+                if (this.onDirectionChange) {
+                    this.onDirectionChange(direction);
+                }
             }
+        };
 
-            this.setPaddleVelocity(velocity);
+        document.addEventListener('keydown', (event) => {
+            const key = event.key.toLowerCase();
+            if (!upKeys.has(key) && !downKeys.has(key)) {
+                return;
+            }
+            event.preventDefault(); // arrow keys would scroll the page
+            held.add(key);
+            update();
         });
 
-        document.addEventListener('keyup', () => {
-            this.setPaddleVelocity({ x: 0, y: 0 });
+        document.addEventListener('keyup', (event) => {
+            held.delete(event.key.toLowerCase());
+            update();
+        });
+
+        // Keys released while the window is not focused never send "keyup".
+        window.addEventListener('blur', () => {
+            held.clear();
+            update();
         });
     }
-
-    setPaddleVelocity(velocity) {
-        this.velocity = velocity;
-    }
-
-    velocity_to_dict() {
-        return {x: this.velocity.x, y: this.velocity.y}
-    }
-
 }

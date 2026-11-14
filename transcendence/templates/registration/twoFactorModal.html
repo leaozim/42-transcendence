@@ -3,21 +3,38 @@
   <div class="modal-content">
     <div class="container popup-container">
       <div class="bg-common bg-title-pink">
-        <h2 class="title-center">{% translate "Two Factor" %}</h2>
+        <h2 class="title-center">{% translate "Two-Factor" %}</h2>
       </div>
-      <div class="mb-3">
 
-        <label for="token" class="description mb-3">
-		{% blocktrans %}
-          Scan the QR code with authenticator app.<br>
-          Or copy the code.
-		{% endblocktrans %}
-        </label>
+      <!-- Step 1: pick the authenticator app -->
+      <div class="two-factor-step" data-step="choose-app">
+        <p class="description mb-4">{% translate "Which authenticator app do you want to use?" %}</p>
+        {% for app_id, app in authenticator_apps.items %}
+        <button type="button" class="btn btn-primary mb-3 two-factor-app-button" data-app="{{ app_id }}">
+          {{ app.name }}
+        </button>
+        {% endfor %}
+        <button type="button" id="cancel-two-factor-button" class="btn btn-primary-back mt-2">{% translate "back" %}</button>
+      </div>
+
+      <!-- Step 2: add the account to the chosen app -->
+      <div class="two-factor-step mb-3" data-step="scan" hidden>
+        {% for app_id, app in authenticator_apps.items %}
+        <div class="two-factor-instructions mb-3" data-app="{{ app_id }}" hidden>
+          <p class="mb-2">
+            {% blocktranslate with name=app.name %}Don't have {{ name }} yet? Get it for{% endblocktranslate %}
+            <a href="{{ app.android }}" target="_blank" rel="noopener">Android</a> /
+            <a href="{{ app.ios }}" target="_blank" rel="noopener">iOS</a>.
+          </p>
+          <p class="mb-0">{{ app.instructions }}</p>
+        </div>
+        {% endfor %}
         <div class="mb-4">
           <div class="two-factor-qrcode-container">
           </div>
         </div>
 
+        <label class="form-label">{% translate "Setup key" %}</label>
         <div class="mb-5 two-factor-code">
         </div>
         <div class="row">

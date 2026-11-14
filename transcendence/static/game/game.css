@@ -1,0 +1,71 @@
+/* Waiting room shown over the game canvas until play begins (GameLobby.js). */
+.game-lobby {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 440px;
+  max-width: calc(100vw - 32px);
+  padding: 24px 28px;
+  text-align: center;
+  color: #52c0d7;
+  background-color: rgba(0, 0, 18, 0.92);
+  border: 1px solid #d613f0;
+  border-radius: 17px;
+}
+.game-lobby[hidden] {
+  display: none;
+}
+.game-lobby-title {
+  color: #ffffff;
+  font-size: 26px;
+  overflow-wrap: anywhere;
+}
+.game-lobby-title span {
+  color: #d613f0;
+  font-size: 18px;
+}
+.game-lobby-settings {
+  color: rgba(82, 192, 215, 0.8);
+}
+.game-lobby-players {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+.game-lobby-players li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 14px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  background-color: #1e1e1e;
+}
+.game-lobby-players .name {
+  color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.game-lobby-players .status[data-state="absent"] {
+  color: rgba(255, 255, 255, 0.5);
+}
+.game-lobby-players .status[data-state="ready"] {
+  color: #3fdf8f;
+  font-weight: 700;
+}
+.game-lobby-hint {
+  min-height: 1.5em;
+}
+.game-lobby-countdown {
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 700;
+}
+.game-lobby-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

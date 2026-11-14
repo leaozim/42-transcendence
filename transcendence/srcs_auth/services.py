@@ -1,11 +1,40 @@
 import base64
 import os
+import time
 from io import BytesIO
 from urllib.parse import parse_qs, urlparse
 
 import qrcode
 import requests
+from django.utils.translation import gettext_lazy as _
+from django_otp.oath import TOTP
 from django_otp.plugins.otp_totp.models import TOTPDevice
+
+# Authenticator apps offered when enabling two-factor authentication.
+# Both implement standard TOTP (RFC 6238), so the same QR code / setup key works
+# in either; the choice selects the setup instructions and is remembered (as the
+# device name) to tell the user which app to open when logging in.
+AUTHENTICATOR_APPS = {
+    "google": {
+        "name": "Google Authenticator",
+        "instructions": _(
+            'Open Google Authenticator, tap "+" and choose "Scan a QR code". '
+            'Or choose "Enter a setup key" and type the key below.'
+        ),
+        "android": "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2",
+        "ios": "https://apps.apple.com/app/google-authenticator/id388497605",
+    },
+    "authy": {
+        "name": "Authy",
+        "instructions": _(
+            'Open Authy, tap "+" (Add account) and choose "Scan QR code". '
+            'Or choose "Enter key manually" and type the key below.'
+        ),
+        "android": "https://play.google.com/store/apps/details?id=com.authy.authy",
+        "ios": "https://apps.apple.com/app/twilio-authy/id494168017",
+    },
+}
+DEFAULT_AUTHENTICATOR_APP = "google"
 
 
 def get_access_token(code: str):
@@ -45,11 +74,17 @@ def exchange_code(code: str):
 
 
 class TOTPService:
-    def create_totp_code(self, user):
+    def create_totp_code(self, user, app=DEFAULT_AUTHENTICATOR_APP):
+        if app not in AUTHENTICATOR_APPS:
+            raise ValueError(f"Unknown authenticator app: {app}")
+        app_name = AUTHENTICATOR_APPS[app]["name"]
         device = self.get_user_totp_device(user)
 
         if not device:
-            device = TOTPDevice.objects.create(user=user, confirmed=False)
+            device = TOTPDevice.objects.create(user=user, name=app_name, confirmed=False)
+        elif device.name != app_name:
+            device.name = app_name
+            device.save(update_fields=["name"])
 
         url = device.config_url
         totp_code = self.parse_totp_secret(url)
@@ -69,6 +104,20 @@ class TOTPService:
             return True
 
         return False
+
+    def is_reused_token(self, device, token) -> bool:
+        """True if ``token`` is correct for the current time but was already used.
+
+        django_otp refuses to accept the same code twice (replay protection), which
+        users hit when they log in right after enabling two-factor authentication.
+        """
+        try:
+            token = int(token)
+        except (TypeError, ValueError):
+            return False
+        totp = TOTP(device.bin_key, device.step, device.t0, device.digits, device.drift)
+        totp.time = time.time()
+        return totp.verify(token, device.tolerance) and totp.t() <= device.last_t
 
     def delete_totp_devices(self, user):
         devices = self.get_user_totp_devices(user)
