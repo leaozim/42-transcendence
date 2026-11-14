@@ -1,17 +1,19 @@
+// Remaining time as m:ss.
+function formatClock(seconds) {
+  if (seconds === null || seconds === undefined) {
+    return "";
+  }
+  const total = Math.ceil(seconds);
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
+}
+
 class Scene2 extends Phaser.Scene {
   constructor() {
     super("playGame");
-    const receiveSocketUrl = `wss://${window.location.host}/ws/game/broadcast/${room_id}/`;
+    const receiveSocketUrl = `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/ws/game/broadcast/${room_id}/`;
     this.receiveSocket = new WebSocket(receiveSocketUrl);
-
-    const playerIds = {
-      leftPlayerId: leftPlayer,
-      rightPlayerId: rightPlayer,
-    };
-
-    this.receiveSocket.onopen = () => {
-      this.receiveSocket.send(JSON.stringify(playerIds));
-    };
+    // Waiting room (Ready button, countdown) shown over the game until play begins.
+    this.lobby = new GameLobby(this.receiveSocket);
   }
 
   async getThisUser() {
@@ -23,25 +25,7 @@ class Scene2 extends Phaser.Scene {
   async create() {
     // descobre quem é o usuário para fazer verificações sobre ser leftPlayer, rightPlayer ou só espectador
     this.i_am = await this.getThisUser();
-
-    // Mensagem para indicar que o jogo está parado pois precisa de todos os jogadores conectados
-    this.waitingText = this.add
-      .text(
-        this.cameras.main.centerX,
-        this.cameras.main.centerY - 50,
-        "Waiting for all the players to connect",
-        {
-          font: "24px Arial",
-          fill: "#ffffff",
-        },
-      )
-      .setOrigin(0.5);
-
-    // Se o evento de dados indicar game over, direciona para Scene3
-    if (this.eventData && this.eventData.winner) {
-      this.scene.start("GameOver");
-      return;
-    }
+    this.lobby.setMe(this.i_am);
 
     // instancia todos os objetos
     this.left_paddle = new Paddle(
@@ -73,8 +57,23 @@ class Scene2 extends Phaser.Scene {
 
     this.ball = new Ball(this, CENTER_OF_SCREEN.x, CENTER_OF_SCREEN.y, "ball");
 
+    // The server runs the game: send the paddle direction only when it changes.
+    const sendDirection = (direction) => {
+      if (this.receiveSocket.readyState === WebSocket.OPEN) {
+        this.receiveSocket.send(JSON.stringify({ type: "input", direction }));
+      }
+    };
+    this.left_paddle.onDirectionChange = sendDirection;
+    this.right_paddle.onDirectionChange = sendDirection;
+
+    // Time left, in the middle between the two scores.
+    this.clockText = this.add
+      .text(CENTER_OF_SCREEN.x, 50, "", { fontFamily: "Arial", fontSize: "28px", color: "#ffffff" })
+      .setOrigin(0.5);
+
     // prepara um eventData zerado. Conforme o backend processar as informações, este eventData será atualizado
     this.eventData = {
+      phase: "waiting",
       ball_x: this.ball.x,
       ball_y: this.ball.y,
       left_player_position_x: this.left_paddle.x,
@@ -82,57 +81,38 @@ class Scene2 extends Phaser.Scene {
       right_player_position_x: this.right_paddle.x,
       right_player_position_y: this.right_paddle.y,
       score: [0, 0],
+      time_left: null,
     };
 
     this.receiveSocket.onmessage = (event) => {
       this.eventData = JSON.parse(event.data);
+      this.lobby.update(this.eventData);
 
-      // Troca para a próxima Scene, enviando nome do jogador vencedor para ser exibido na tela
-      if (this.eventData.winner !== undefined) {
-        this.scene.start("GameOver", { winner: this.eventData.winner });
-      }
-
-      // Após 2 jogadores se conectarem, o jogo começa então essa mensagem é removida da tela
-      if (this.eventData.connected && this.eventData.connected.length === 2) {
-        this.waitingText.destroy();
+      // Troca para a próxima Scene, enviando o resultado para ser exibido na tela
+      if (this.eventData.phase === "finished" || this.eventData.phase === "canceled") {
+        this.over = true;
+        this.scene.start("GameOver", {
+          winner: this.eventData.winner,
+          result: this.eventData.result,
+          winnerId: this.eventData.winner_id,
+        });
       }
     };
   }
 
-  async update() {
-    if (this.eventData && this.eventData.winner === undefined) {
-      // Ele sempre tenta atualizar o score, mesmo quando não há novos pontos
-      // O motivo disso é que tentar atualizar só quando existe um ponto pode causar
-      // pontos que demoram para serem atualizados ou que só são atualizados
-      // após mais alguns pontos
-      this.player_left.score = this.eventData.score[PLAYER_LEFT];
-      this.player_left.updateScoreText();
-      this.player_right.score = this.eventData.score[PLAYER_RIGHT];
-      this.player_right.updateScoreText();
-
-      // Move todos os objetos da cena conforme os dados que foram recebidos do back
-      this.ball.move(this.eventData.ball_x, this.eventData.ball_y);
-      this.left_paddle.move(
-        this.eventData.left_player_position_x,
-        this.eventData.left_player_position_y,
-      );
-      this.right_paddle.move(
-        this.eventData.right_player_position_x,
-        this.eventData.right_player_position_y,
-      );
-
-      // Envia dados de input pro backend. Ficará repetindo os mesmos resultados acima até que receba uma nova resposta
-      // Ou seja, se demorar muitos ticks do update para receber uma resposta, todas as linhas acima
-      // vão ficar se repetindo, garantindo que o jogo não quebre, mas como usa position e não velocity,
-      // a tela vai apresentar lag
-      this.receiveSocket.send(
-        JSON.stringify({
-          type: "end_loop",
-          left_player_velocity: this.left_paddle.velocity_to_dict(),
-          right_player_velocity: this.right_paddle.velocity_to_dict(),
-          logged_player: this.i_am,
-        }),
-      );
+  update() {
+    if (!this.eventData || this.over) {
+      return;
     }
+    this.player_left.score = this.eventData.score[PLAYER_LEFT];
+    this.player_left.updateScoreText();
+    this.player_right.score = this.eventData.score[PLAYER_RIGHT];
+    this.player_right.updateScoreText();
+    this.clockText.setText(formatClock(this.eventData.time_left));
+
+    // Move todos os objetos da cena conforme os dados que foram recebidos do back
+    this.ball.move(this.eventData.ball_x, this.eventData.ball_y);
+    this.left_paddle.move(this.eventData.left_player_position_x, this.eventData.left_player_position_y);
+    this.right_paddle.move(this.eventData.right_player_position_x, this.eventData.right_player_position_y);
   }
 }

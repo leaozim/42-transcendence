@@ -11,7 +11,8 @@ class IntraUserOAuth2Manager(models.UserManager):
         
         avatar_link = user['image'].get('link')
         if avatar_link is None:
-            avatar_link = 'https://res.cloudinary.com/dw9xon1xs/image/upload/v1699535128/nico_nk9vdi.jpg' 
+            from srcs_user.models import default_avatar
+            avatar_link = default_avatar()
             
         new_user = self.create(
             id_42=user['id'],

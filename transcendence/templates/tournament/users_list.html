@@ -3,11 +3,11 @@
   <div class="bg-common bg-title-pink mt-0 mb-3">
     <h2 class="title-center">{% translate "Players" %}</h2>
   </div>
-  <p class="text-blue mb-3">{% translate "Click on button to invite player to tournament" %}</p>
+  <p class="text-blue mb-3">{% translate "Click the button to invite a player to the tournament." %}</p>
   <ul class="user-list">
     {% for user in users %}
     <li>
-      <img src="{% if user.avatar %}{{ user.avatar }}{% else %}{% static " images/sloth.jpg" %}{% endif %}" alt="image"
+      <img src="{% if user.avatar %}{{ user.avatar }}{% else %}{% static 'images/sloth.jpg' %}{% endif %}" alt="image"
         width="48" height="48" class="avatar img-fluid rounded-circle" />
       <div class="user-list-item user-frame">
         <span>{{ user.username }}</span>

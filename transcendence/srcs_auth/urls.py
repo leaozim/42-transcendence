@@ -5,7 +5,8 @@ app_name = "srcs_auth"
 
 urlpatterns = [
     path("signup/", views.SignUpView.as_view(), name="signup"),
-    path("login/", views.CustomLoginView.as_view(), name="login-django"),
+    path("login/", views.PasswordLoginView.as_view(), name="login-django"),
+    path("login/verify/", views.LoginTwoFactorView.as_view(), name="login-2fa"),
     path("auth/user/", views.get_authenticated_user, name="get_authenticated_user"),
     path("oauth2/login/", views.intra_login, name="intra_login"),
     path(

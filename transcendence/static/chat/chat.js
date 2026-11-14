@@ -97,8 +97,8 @@ function createNewChatUser(id, username, avatar) {
       <img src="${avatar}" class="user-photo" onclick="selectItem(${id}); openChat('${id}', '${username}')">
       <span class="button_name">${username}</span>
       <span id="alert-message-${id}" hidden>
-        <img src="https://www.shareicon.net/data/128x128/2016/11/15/852842_alert_512x512.png"
-          alt="Alert New Message" width="15" height="15">
+        <img src="/static/images/alert.svg"
+          alt="New message" width="15" height="15">
       </span>
   `;
 
@@ -234,7 +234,7 @@ function createUserPhoto(otherUserAvatar) {
   userPhoto.alt = "Avatar";
   userPhoto.src = otherUserAvatar
     ? otherUserAvatar
-    : "https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png";
+    : "/static/images/sloth.jpg";
   return userPhoto;
 }
 
@@ -252,18 +252,3 @@ function createChatHeader() {
   return chatHeader;
 }
 
-function onCreateGame(rightPlayerId) {
-  if (!rightPlayerId || isNaN(rightPlayerId)) {
-    console.error("Invalid user ID for the right player:", rightPlayerId);
-    return;
-  }
-
-  fetch("/game/create_game/" + rightPlayerId)
-    .then((response) => response.json())
-    .then((data) => {
-      window.location.pathname = "/game/" + data.room_id + "/";
-    })
-    .catch((error) => {
-      console.error("Error creating game:", error);
-    });
-}

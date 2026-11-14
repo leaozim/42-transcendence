@@ -86,7 +86,7 @@ class BlockedFormView(LoginRequiredMixin, FormView):
         return super().render_to_response(context, **response_kwargs)
 
     def form_invalid(self, form: BlockForm) -> HttpResponse:
-        return HttpResponse(content="User not exist", status=404)
+        return HttpResponse(content="User does not exist", status=404)
 
     def form_valid(self, form: BlockForm) -> HttpResponse:
         blocked_user_name: str = form.cleaned_data.get("blockedUserName")
@@ -119,7 +119,7 @@ class UnblockedFormView(LoginRequiredMixin, FormView):
         return super().render_to_response(context, **response_kwargs)
 
     def form_invalid(self, form: BlockForm) -> HttpResponse:
-        return HttpResponse(content="User not exist", status=404)
+        return HttpResponse(content="User does not exist", status=404)
 
     def form_valid(self, form: BlockForm) -> HttpResponse:
         blocked_user_id: int

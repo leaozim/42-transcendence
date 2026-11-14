@@ -73,7 +73,7 @@ function createUserPhoto(otherUserAvatar) {
   userPhoto.alt = "Avatar";
   userPhoto.src = otherUserAvatar
     ? otherUserAvatar
-    : "https://res.cloudinary.com/dw9xon1xs/image/upload/v1706288572/arya2_lr9qcd.png";
+    : "/static/images/sloth.jpg";
   return userPhoto;
 }
 
@@ -134,18 +134,3 @@ function selectItem(id) {
   user.classList.add("selected");
 }
 
-function onCreateGame(rightPlayerId) {
-  if (!rightPlayerId || isNaN(rightPlayerId)) {
-    console.error("Invalid user ID for the right player:", rightPlayerId);
-    return;
-  }
-
-  fetch("/game/create_game/" + rightPlayerId)
-    .then((response) => response.json())
-    .then((data) => {
-      window.location.pathname = "/game/" + data.room_id + "/";
-    })
-    .catch((error) => {
-      console.error("Error creating game:", error);
-    });
-}

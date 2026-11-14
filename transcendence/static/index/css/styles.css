@@ -22,10 +22,26 @@ img {
   padding-top: 5%;
 }
 
+.login-form {
+  width: 360px;
+  max-width: 100%;
+}
+
+.login-help {
+  color: #52c0d7;
+  text-align: center;
+}
+
 .btn.btn-primary {
-  width: 50%;
+  width: 100%;
   border: 1px solid rgba(63, 169, 245, 1);
   border-radius: 15px;
   background: rgba(0, 0, 0, 0);
   color: rgba(63, 169, 245, 1);
+}
+
+.btn.btn-primary:hover,
+.btn.btn-primary:focus {
+  background: rgba(63, 169, 245, 1);
+  color: #00000e;
 }

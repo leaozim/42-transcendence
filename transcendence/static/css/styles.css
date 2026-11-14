@@ -169,26 +169,34 @@ body {
     margin: 210px auto 0;
   }
 }
-.img-avatar-frame {
-  width: 410px;
+.avatar-circle {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
   margin-left: -3px;
+}
+.img-avatar-frame {
+  display: block;
+  width: 410px;
 }
 @media (min-width: 1440px) {
   .img-avatar-frame {
     width: 480px;
   }
 }
+/* The avatar fills the inner hole of avatar_frame.png. Measured on the image
+   (481px): hole centre at (241.5, 240), diameter ~124px (26%). Percentages keep
+   it centred at every frame width; 26.6% slightly overlaps the ring's edge. */
 .img-avatar {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 105px;
+  top: 49.9%;
+  left: 50.2%;
+  width: 26.6%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 50%;
   transform: translate(-50%, -50%);
-}
-@media (min-width: 1440px) {
-  .img-avatar {
-    width: 128px;
-  }
 }
 .btn-round {
   display: flex;
@@ -321,4 +329,172 @@ body {
 }
 .block-user .main-title {
   order: unset;
+}
+
+/* Login / sign-up forms */
+.alert-message {
+  border-radius: 15px;
+  padding: 8px 14px;
+  margin-bottom: 16px;
+  border: 1px solid #d613f0;
+  color: #ffffff;
+  background-color: rgba(214, 19, 240, 0.15);
+}
+.alert-message.success {
+  border-color: #52c0d7;
+  background-color: rgba(82, 192, 215, 0.15);
+}
+.login-links {
+  text-align: center;
+  margin-top: 16px;
+  color: rgba(82, 192, 215, 0.7);
+}
+.login-links a {
+  color: #d613f0;
+}
+
+.form-control:focus {
+  color: #ffffff;
+  background-color: #1e1e1e;
+  border-color: #d613f0;
+  box-shadow: 0 0 0 0.2rem rgba(214, 19, 240, 0.25);
+}
+
+/* Language menu (includes/language_menu.html) */
+.page-header {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  z-index: 1030;
+}
+.language-menu .dropdown-toggle .bi {
+  margin-right: 4px;
+}
+.language-menu .dropdown-menu {
+  background-color: #000012;
+  border: 1px solid #52c0d7;
+  border-radius: 12px;
+  padding: 6px;
+}
+.language-menu .dropdown-item {
+  color: #52c0d7;
+  border-radius: 8px;
+}
+.language-menu .dropdown-item:hover,
+.language-menu .dropdown-item:focus {
+  color: #ffffff;
+  background-color: #1e1e1e;
+}
+.language-menu .dropdown-item.active {
+  color: #000012;
+  background-color: #52c0d7;
+}
+
+/* Avatar picker (sign-up form and profile card) */
+.avatar-picker {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.avatar-preview {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #52c0d7;
+  background-color: #1e1e1e;
+}
+.avatar-status {
+  min-height: 1.5em;
+  margin-top: 8px;
+  color: #52c0d7;
+  text-align: center;
+}
+.avatar-status.error {
+  color: #d613f0;
+}
+.avatar-help {
+  color: rgba(82, 192, 215, 0.6);
+}
+
+/* Game settings in the "new game" modal */
+.game-settings-help {
+  color: rgba(82, 192, 215, 0.7);
+  font-size: 14px;
+}
+
+/* Open games panel of the home page (templates/game/open_games.html) */
+.open-games {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 560px;
+  max-width: calc(100vw - 32px);
+}
+.open-games-panel {
+  padding: 12px 16px;
+  background-color: rgba(0, 0, 18, 0.95);
+  border: 1px solid #d613f0;
+  border-radius: 17px;
+  box-shadow: 0 0 18px rgba(214, 19, 240, 0.35);
+}
+.open-games-title {
+  margin: 0 0 8px;
+  color: #d613f0;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.open-games-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+.open-game {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid rgba(82, 192, 215, 0.2);
+}
+.open-game:first-child {
+  border-top: none;
+}
+.open-game-avatar {
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #52c0d7;
+}
+.open-game-text {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+  color: #ffffff;
+}
+.open-game-text strong {
+  overflow-wrap: anywhere;
+}
+.open-game-settings,
+.open-game-presence {
+  color: rgba(82, 192, 215, 0.8);
+  font-size: 14px;
+}
+.open-game-presence.online {
+  color: #3fdf8f;
+}
+.open-game-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.open-game-actions .btn {
+  width: auto;
+  padding: 6px 14px;
 }

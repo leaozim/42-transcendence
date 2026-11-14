@@ -1,9 +1,27 @@
-{% load i18n %}
+{% load i18n static %}
 <div id="profile-modal" class="modal" tabindex="-1" role="dialog">
     <div class="modal-content">
         <div class="nickname">
             <h1 class="profile-text">{{ user.username }}</h1>
         </div>
+        <!-- Avatar: uploaded as soon as a file is chosen (profile/app.js) -->
+        <form id="avatar-form" class="avatar-box mb-3" action="{% url 'srcs_user:avatar' %}" method="post"
+            enctype="multipart/form-data"
+            data-uploading-message="{% translate 'Uploading…' %}"
+            data-success-message="{% translate 'Avatar updated.' %}"
+            data-error-message="{% translate 'Upload failed. Please try again.' %}">
+            {% csrf_token %}
+            <div class="avatar-picker">
+                <img src="{% if user.avatar %}{{ user.avatar }}{% else %}{% static 'images/sloth.jpg' %}{% endif %}"
+                    alt="" width="72" height="72" class="avatar-preview" data-user-avatar>
+                <div class="flex-grow-1">
+                    <label for="avatar-input" class="form-label">{% translate "Avatar" %}</label>
+                    <input type="file" id="avatar-input" name="avatar" class="form-control"
+                        accept="image/jpeg,image/png,image/gif,image/webp">
+                </div>
+            </div>
+            <div class="avatar-status" data-role="avatar-status" role="status" aria-live="polite"></div>
+        </form>
         <!-- Two Factor -->
         <div id="two-factor-box" class="two-factor-box">
             {% translate "Two-factor authentication" %}

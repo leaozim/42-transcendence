@@ -49,7 +49,7 @@ class Tournament(models.Model):
         true_instance.save()
         players = list(users)
         for player in players:
-            add_tournament_message(player.id, f"The games are about to start.<br>First games will be:<br>{players[0].tournament_alias} vs {players[1].tournament_alias}<br>and<br>{players[2].tournament_alias} vs {players[3].tournament_alias}")
+            add_tournament_message(player.id, f"The games are about to start.<br>The first games will be:<br>{players[0].tournament_alias} vs {players[1].tournament_alias}<br>and<br>{players[2].tournament_alias} vs {players[3].tournament_alias}")
         
         create_a_tournament_game(self, players[0], players[1])
         create_a_tournament_game(self, players[2], players[3])
@@ -61,7 +61,7 @@ class Tournament(models.Model):
             winners = [game.winner for game in self.games.all()]
             if None in winners:
                 not_null_winner = next((winner for winner in winners if winner is not None), None)
-                message = "Tournament without winner due to connection problems or every match draw"
+                message = "The tournament ended without a winner because of connection problems or drawn matches."
                 if not_null_winner is not None:
                     message = f"The winner of the tournament was:<br>{not_null_winner.tournament_alias}"        
                 for user in self.users.all():
@@ -70,7 +70,7 @@ class Tournament(models.Model):
                 self.save()
                 return
             for player in self.users.all():
-                add_tournament_message(player.id, f"the winners of the first round and participants in the final to decide the winner are<br>{winners[0].tournament_alias}<br>and<br>{winners[1].tournament_alias}<br>")
+                add_tournament_message(player.id, f"The winners of the first round, who will play the final, are:<br>{winners[0].tournament_alias}<br>and<br>{winners[1].tournament_alias}")
             create_a_tournament_game(self, winners[0], winners[1])
         if len(self.games.all()) == 3 and all(game.is_finish for game in self.games.all()):
             final_game = list(self.games.all())[2]
@@ -78,7 +78,7 @@ class Tournament(models.Model):
                 self.is_active = False
                 self.save()
                 winner = final_game.winner
-                message = "Tournament without winner due to connection problems or match draw"
+                message = "The tournament ended without a winner because of connection problems or a drawn final."
                 if winner is not None:
                     message = f"The winner of the tournament was:<br>{winner.tournament_alias}"
                 for user in self.users.all():

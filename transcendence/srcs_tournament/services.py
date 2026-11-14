@@ -1,3 +1,4 @@
+from django.conf import settings
 from srcs_game.models import Game
 from srcs_message.services import add_tournament_message
 
@@ -10,5 +11,5 @@ def create_a_tournament_game(tournament, left_player, right_player):
         tournament_id=tournament.id
         )
     tournament.games.add(game)
-    add_tournament_message(left_player.id, f'Click here for your next game against {right_player.tournament_alias}: http://localhost:8000/game/{game.id}/')
-    add_tournament_message(right_player.id, f'Click here for your next game against {left_player.tournament_alias}: http://localhost:8000/game/{game.id}/')
+    add_tournament_message(left_player.id, f'Click here for your next game against {right_player.tournament_alias}: {settings.SITE_URL}/game/{game.id}/')
+    add_tournament_message(right_player.id, f'Click here for your next game against {left_player.tournament_alias}: {settings.SITE_URL}/game/{game.id}/')

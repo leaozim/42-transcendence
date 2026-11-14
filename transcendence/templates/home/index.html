@@ -23,35 +23,8 @@
       <div class="collapse navbar-collapse w-100" id="navigation">
         <ul class="navbar-nav ms-auto align-items-center">
           <!-- Language Dropdown -->
-          {% get_current_language as LANGUAGE_CODE %}
-          {% get_available_languages as LANGUAGES %}
-          {% get_language_info_list for LANGUAGES as languages %}
           <li class="nav-item">
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                <b>
-                  {% if LANGUAGE_CODE == "pt-br" %}
-                  PT
-                  {% else %}
-                  {{ LANGUAGE_CODE }}
-                  {% endif %}
-                </b>
-              </button>
-              <ul class="dropdown-menu">
-                {% for language in languages %}
-                <li class="dropdown-item">
-                  <form action="{% url 'set_language' %}" method="post" class="mt-1 mx-2">
-                    {% csrf_token %}
-                    <input name="next" type="hidden" value="{{ request.get_full_path }}" />
-                    <input name="language" type="hidden" value="{{ language.code }}" />
-                    <input type="submit" name="submit" class="btn btn-dark" value="{% if language.code == " pt-br" %} PT
-                      {% else %} {{ language.code }} {% endif %}" />
-                  </form>
-                </li>
-                {% endfor %}
-              </ul>
-            </div>
+            {% include "includes/language_menu.html" %}
           </li>
           <!-- Sign Out -->
           {% if user.is_authenticated %}
@@ -79,18 +52,20 @@
         <h1 class="title-center bg-common">Transcendence</h1>
       </div>
       <div class="frame-image">
-        <img src="{% static 'images/avatar_frame.png' %}" alt="avatar" class="img-avatar-frame img-fluid" width="480"
-          height="480" />
-        <img src="{% if user.avatar %}{{ user.avatar }}{% else %}{% static " images/sloth.jpg" %}{% endif %}"
-          alt="image" width="128" height="128" class="img-avatar img-fluid rounded-circle" />
+        <div class="avatar-circle">
+          <img src="{% static 'images/avatar_frame.png' %}" alt="" class="img-avatar-frame img-fluid" width="480"
+            height="480" />
+          <img src="{% if user.avatar %}{{ user.avatar }}{% else %}{% static 'images/sloth.jpg' %}{% endif %}"
+            alt="{{ user.username }}" width="128" height="128" class="img-avatar" data-user-avatar />
+        </div>
       </div>
       <div id="instructions-card" class="text-card">
         <h2>{% translate "instructions" %}</h2>
         <p>
           {% blocktranslate %}
-          Use mouse to move around main screen.
+          Use the mouse to move around the main screen.
           <br>
-          Click on icon to enter specific section.
+          Click an icon to open its section.
           <br>
           Have fun!
           {% endblocktranslate %}
@@ -100,7 +75,7 @@
         <h2>{% translate "profile" %}</h2>
         <p>
           {% blocktranslate %}
-          Configure your authentication.
+          Configure your avatar and authentication.
           <br>
           {% endblocktranslate %}
           <br>
@@ -123,8 +98,8 @@
             <i class="bi bi-chat-left"></i>
           </button>
           <span id="alerts-on-message-chat" hidden>
-            <img src="https://www.shareicon.net/data/128x128/2016/11/15/852842_alert_512x512.png"
-              alt="Alert New Message" width="30" height="30">
+            <img src="{% static 'images/alert.svg' %}"
+              alt="{% translate 'New message' %}" width="30" height="30">
           </span>
         </div>
       </div>
@@ -132,12 +107,12 @@
         <h2>{% translate "game" %}</h2>
         <p>
           {% blocktranslate %}
-          Use the arrow keys to move your paddle up or down to hit the ball on your side.<br>
-          If the ball exists the screen on left or right, the player on the opposite side wins a point.<br>
+          Play against a friend or the computer.<br>
+          Use the arrow keys (or W and S) to move your paddle and hit the ball.<br>
+          If the ball leaves the screen on the left or right, the player on the opposite side scores a point.<br>
           {% endblocktranslate %}
         </p>
-        <button id="game-button" class="btn-round bg-pink" type="button" data-bs-toggle="modal"
-          data-bs-target="#game-modal">
+        <button id="game-button" class="btn-round bg-pink" type="button">
           <i class="bi bi-controller"></i>
         </button>
       </div>
@@ -171,6 +146,10 @@
       {% include "chat/chatModal.html" %}
       <!-- Modal component -->
       {% include "includes/modal.html" %}
+      <!-- Open games (challenges and games in progress), kept up to date by game/lobby.js -->
+      <section id="open-games" class="open-games" data-url="{% url 'srcs_game:open_games' %}" aria-live="polite">
+        {% include "game/open_games.html" %}
+      </section>
 
     </div>
   </div>
@@ -197,6 +176,7 @@
 <script src="{% static 'chat/app.js' %}"></script>
 <script src="{% static 'chat/chatSocket.js' %}"></script>
 <script src="{% static 'game/game_list.js' %}"></script>
+<script src="{% static 'game/lobby.js' %}"></script>
 <script src="{% static 'tournament/tournament_list.js' %}"></script>
 
 {% endblock scripts %}

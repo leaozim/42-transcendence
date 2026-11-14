@@ -145,3 +145,17 @@ input:checked + .slider:before {
   margin: 30px auto;
 }
 
+
+.two-factor-instructions {
+  color: #52c0d7;
+  text-align: center;
+}
+.two-factor-instructions a {
+  color: #d613f0;
+}
+
+.avatar-box {
+  background-color: #1e1e1e;
+  border-radius: 22px;
+  padding: 12px 15px 4px;
+}

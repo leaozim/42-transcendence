@@ -43,20 +43,32 @@ function TwoFactorModal() {
   (function () {
     const twoFactorModalContent = this.modal.querySelector("div.modal-content");
     twoFactorModalContent.style.width = "450px";
-    twoFactorModalContent.style.height = "700px";
+    twoFactorModalContent.style.minHeight = "700px";
   }).call(this);
 
   (function () {
     const okButton = document.getElementById("ok-button");
     const backButton = document.getElementById("back-button");
+    const cancelButton = document.getElementById("cancel-two-factor-button");
     const profileModal = document.getElementById("profile-modal");
     const slideInputTag = document.querySelector("label.switch > input");
 
-    backButton.addEventListener("click", () => {
-      this.removeQRCodeContent();
+    // Step 1: choosing an app creates (or reuses) the TOTP secret and shows it.
+    this.modal.querySelectorAll("button[data-app]").forEach((button) => {
+      button.addEventListener("click", () => this.showApp(button.dataset.app));
+    });
+
+    // Leaving without finishing the setup: back to the profile, switch off.
+    cancelButton.addEventListener("click", () => {
+      this.close();
       slideInputTag.checked = false;
       profileModal.style.display = DisplayStyleEnum.BLOCK;
-      this.displayStyle = DisplayStyleEnum.NONE;
+    });
+
+    // Step 2 "back" returns to the app choice.
+    backButton.addEventListener("click", () => {
+      this.removeQRCodeContent();
+      this.showStep("choose-app");
     });
 
     okButton.addEventListener("click", () => {
@@ -65,6 +77,24 @@ function TwoFactorModal() {
     });
   }).call(this);
 }
+
+TwoFactorModal.prototype.showStep = function (step) {
+  this.modal.querySelectorAll("[data-step]").forEach((element) => {
+    element.hidden = element.dataset.step !== step;
+  });
+};
+
+TwoFactorModal.prototype.showApp = async function (app) {
+  const responseContent = await this.fetchQRCode(app);
+
+  this.removeQRCodeContent();
+  this.modal.querySelectorAll(".two-factor-instructions").forEach((element) => {
+    element.hidden = element.dataset.app !== app;
+  });
+  this.totpCodeDiv = responseContent.totp_code;
+  this.imgQRCodeDiv = responseContent.qrcode;
+  this.showStep("scan");
+};
 
 TwoFactorModal.prototype.removeQRCodeContent = function () {
   this.imgQRCodeDiv.querySelectorAll("img").forEach((element) => {
@@ -75,8 +105,9 @@ TwoFactorModal.prototype.removeQRCodeContent = function () {
   });
 };
 
-TwoFactorModal.prototype.fetchQRCode = async function () {
-  const response = await fetch(CREATE_TWO_FACTOR_URL);
+TwoFactorModal.prototype.fetchQRCode = async function (app) {
+  const url = `${CREATE_TWO_FACTOR_URL}?app=${encodeURIComponent(app)}`;
+  const response = await fetch(url);
   return response.json();
 };
 
@@ -96,11 +127,9 @@ window.addEventListener("click", (event) => {
 });
 
 export default {
-  open: async function () {
-    const responseContent = await twoFactorModal.fetchQRCode();
-
-    twoFactorModal.totpCodeDiv = responseContent.totp_code;
-    twoFactorModal.imgQRCodeDiv = responseContent.qrcode;
+  open: function () {
+    twoFactorModal.removeQRCodeContent();
+    twoFactorModal.showStep("choose-app");
     twoFactorModal.displayStyle = DisplayStyleEnum.BLOCK;
   },
 };

@@ -1,18 +1,22 @@
 {% load i18n %}
-<div id="verify-two-factor-modal" class="modal" tabindex="-1" role="dialog">
+<div id="verify-two-factor-modal" class="modal" tabindex="-1" role="dialog"
+  data-invalid-code-message="{% translate 'Invalid code. Please try again.' %}"
+  data-invalid-format-message="{% translate 'Enter the 6-digit code from your app.' %}">
   <div class="modal-content">
     <div class="container popup-container">
 
       <form id="testForm" method="dialog">
         <div class="bg-common bg-title-blue">
-          <h2 class="title-center">{% translate "Two Factor" %}</h2>
+          <h2 class="title-center">{% translate "Two-Factor" %}</h2>
         </div>
 
         <div class="mb-3">
           <label class="form-label">{% translate "Security Code:" %}</label>
           <br>
-          <input type="text" class='form-control' id="token" name="token" maxlength="6" required>
+          <input type="text" class='form-control' id="token" name="token" maxlength="7"
+            autocomplete="one-time-code" inputmode="numeric" required>
         </div>
+        <div class="alert-message error" data-role="error" role="alert" hidden></div>
         <input type="submit" class="btn btn-primary" value="verify code">
 
       </form>

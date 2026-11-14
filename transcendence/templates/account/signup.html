@@ -3,16 +3,20 @@
 {% load static i18n %}
 
 {% block title %}
-{% translate "Signup - Transcendence" %}
+{% translate "Sign up - Transcendence" %}
 {% endblock %}
 
 {% block content %}
+<header class="page-header">
+  {% include "includes/language_menu.html" %}
+</header>
+
 <div class="container popup-container">
 	<div class="bg-common bg-title-pink">
         <h2 class="title-center">{% translate "Sign up" %}</h2>
     </div>
 
-	<form method="post">
+	<form method="post" enctype="multipart/form-data">
 		{% csrf_token %}
 		{% comment %}Loop through form hidden fields{% endcomment %}
 		{% for hidden in form.hidden_fields %}
@@ -22,16 +26,32 @@
 		{% for field in form.visible_fields %}
 		<div class="mb-3">
 			<label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+			{% if field.name == "avatar" %}
+			<div class="avatar-picker">
+				<img src="{{ default_avatar_url }}" alt="" width="72" height="72" class="avatar-preview" data-avatar-preview>
+				{{ field }}
+			</div>
+			<div class="form-text avatar-help">{% translate "Optional. JPEG, PNG, GIF or WebP, up to 5 MB." %}</div>
+			{% else %}
 			{{ field }}
+			{% endif %}
 			{% for error in field.errors %}
-			<div class="invalid-feedback">
+			<div class="invalid-feedback d-block">
 				{{ error }}
 			</div>
 			{% endfor %}
 		</div>
 		{% endfor %}
 		<button type="submit" class="btn btn-primary">{% translate "sign up" %}</button>
+		<p class="login-links">
+			{% translate "Already have an account?" %}
+			<a href="{% url 'srcs_home:home' %}">{% translate "Log in" %}</a>
+		</p>
 
 	</form>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/avatarPicker.js' %}"></script>
+{% endblock scripts %}

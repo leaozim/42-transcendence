@@ -1,0 +1,16 @@
+/* Exo 2 (SIL Open Font License 1.1, see ../fonts/exo-2/OFL.txt), served locally
+   so the site works without internet access. Files from @fontsource/exo-2 5.3.0. */
+@font-face {
+  font-family: "Exo 2";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/exo-2/exo-2-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Exo 2";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/exo-2/exo-2-latin-700-normal.woff2") format("woff2");
+}

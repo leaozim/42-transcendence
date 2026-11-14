@@ -10,9 +10,13 @@ class Command(BaseCommand):
     help = "Cria um superusuário padrão automaticamente"
 
     def handle(self, *args, **options):
-        username = os.getenv("POSTGRES_USER") + " (BOT)"
+        # BOT_USERNAME/BOT_PASSWORD are preferred; POSTGRES_USER/POSTGRES_PASSWORD are
+        # kept as fallbacks so existing .env files keep producing the same bot user.
+        base_name = os.getenv("BOT_USERNAME") or os.getenv("POSTGRES_USER") or "pong"
+        username = base_name + " (BOT)"
         email = ""
-        password = os.getenv("POSTGRES_PASSWORD")
+        # With no password configured the bot gets an unusable password (no login).
+        password = os.getenv("BOT_PASSWORD") or os.getenv("POSTGRES_PASSWORD") or None
         try:
             user = User.objects.get(username=username)
             self.stdout.write(

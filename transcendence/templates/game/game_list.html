@@ -2,22 +2,47 @@
 
 <div class="wrapper-user-list">
   <div class="bg-common bg-title-pink mt-0 mb-5">
-    <h2 class="title-center">{% translate "Players" %}</h2>
+    <h2 class="title-center">{% translate "New game" %}</h2>
   </div>
+  <form id="game-settings" class="game-settings mb-4" method="post" action="{% url 'srcs_game:computer' %}">
+    {% csrf_token %}
+    <div class="row g-2 mb-2">
+      <div class="col-6">
+        <label for="game-minutes" class="form-label">{% translate "Time (minutes)" %}</label>
+        <input type="number" id="game-minutes" name="minutes" class="form-control" inputmode="numeric"
+          min="1" max="{{ max_minutes }}" value="{{ default_minutes }}">
+      </div>
+      <div class="col-6">
+        <label for="game-score" class="form-label">{% translate "Points to win" %}</label>
+        <input type="number" id="game-score" name="score" class="form-control" inputmode="numeric"
+          min="1" max="{{ max_score }}" placeholder="{% translate 'No limit' %}">
+      </div>
+    </div>
+    <p class="game-settings-help">{% translate "The game ends when the time is up or a player reaches the points, whichever comes first." %}</p>
+    <div class="alert-message error game-settings-error" role="alert" hidden></div>
+    <button type="submit" class="btn btn-primary">
+      <i class="bi bi-cpu" aria-hidden="true"></i> {% translate "Play against the computer" %}
+    </button>
+  </form>
+  {% if object_list %}
+  <p class="text-blue mb-3">{% translate "Or challenge a player:" %}</p>
+  {% else %}
+  <p class="text-blue mb-3">{% translate "No other players have signed up yet." %}</p>
+  {% endif %}
   <ul class="user-list">
     {% for user in object_list %}
     <li>
-      <img src="{% if user.avatar %}{{ user.avatar }}{% else %}{% static " images/sloth.jpg" %}{% endif %}" alt="image"
+      <img src="{% if user.avatar %}{{ user.avatar }}{% else %}{% static 'images/sloth.jpg' %}{% endif %}" alt="image"
         width="48" height="48" class="avatar img-fluid rounded-circle" />
       <div class="user-list-item user-frame">
         <span>{{ user.username }}</span>
         <div class="user-list-btns">
-          <button id="game-button" class="btn-round bg-blue" type="button" data-toggle="modal" data-target="#chat-modal"
+          <button class="btn-round bg-blue" type="button" data-toggle="modal" data-target="#chat-modal"
             onclick="openChatScreen('{{ user.id }}', '{{ user.username }}', '{{ user.avatar }}')">
             <i class="bi bi-chat-left"></i>
           </button>
-          <button id="game-button" class="btn-round bg-pink" type="button" data-toggle="modal" data-target=""
-            onclick="onCreateGame(`{{ user.id }}`)">
+          <button class="btn-round bg-pink" type="button" data-toggle="modal" data-target=""
+            onclick="onCreateGame('{{ user.id }}')">
             <i class="bi bi-controller"></i>
           </button>
         </div>
@@ -27,34 +52,3 @@
   </ul>
 </div>
 
-<script>
-  function onUserClick(userId, username) {
-    if (!userId || isNaN(userId)) {
-      console.error('ID do usuário inválido:', userId);
-      return;
-    }
-
-    fetch("/chat/create_or_open_chat/" + userId)
-      .then(response => response.json())
-      .then(data => {
-        window.location.pathname = '/chat/' + data.room_name + '/';
-      })
-      .catch(error => console.error('Erro ao criar/abrir sala:', error));
-  }
-
-  function onCreateGame(rightPlayerId) {
-    if (!rightPlayerId || isNaN(rightPlayerId)) {
-      console.error('Invalid user ID for the right player:', rightPlayerId);
-      return;
-    }
-
-    fetch("/game/create_game/" + rightPlayerId)
-      .then(response => response.json())
-      .then(data => {
-        window.location.pathname = '/game/' + data.room_id + '/';
-      })
-      .catch(error => {
-        console.error('Error creating game:', error);
-      });
-  }
-</script>
